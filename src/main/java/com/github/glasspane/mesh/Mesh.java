@@ -12,6 +12,11 @@ public class Mesh implements ModInitializer {
     public static final String MOD_NAME = "Mesh";
     public static final String VERSION = "${version}";
 
+    //TODO debug switch
+    public static boolean isDebugMode() {
+        return true;
+    }
+
     private static final Logger log = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
     private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + " Debug"));
 

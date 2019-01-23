@@ -1,3 +1,4 @@
+import java.nio.charset.StandardCharsets
 import java.time.Year
 
 plugins {
@@ -94,26 +95,60 @@ publishing {
             artifact jar
             artifact javadocJar
             artifact sourcesJar
+            pom {
+                name = "Mesh"
+                url = "https://github.com/GlassPane/Mesh"
+                licenses {
+                    license {
+                        name = "GNU Lesser General Public License"
+                        url = "https://github.com/GlassPane/Mesh/blob/master/LICENSE.md"
+                    }
+                }
+                scm {
+                    url = "https://github.com/GlassPane/Mesh"
+                    connection = "scm:git:git://github.com/GlassPane/mesh.git"
+                    developerConnection = "scm:git:git@github.com:GlassPane/Mesh.git"
+                }
+                issueManagement {
+                    system = "github"
+                    url = "https://github.com/GlassPane/Mesh/issues"
+                }
+            }
         }
     }
 
     repositories {
-        mavenLocal()
+        //mavenLocal() //uncomment this to publish to the local maven
+
+        //publish to the nerdhub maven if credentials are set
+        if (project.hasProperty("nerdhub_maven_user")) {
+            maven {
+                name = "NerdHub"
+                url = findProperty("nerdhub_maven_url")
+                credentials {
+                    username = findProperty("nerdhub_maven_user")
+                    password = findProperty("nerdhub_maven_pass")
+                }
+                authentication {
+                    basic(BasicAuthentication)
+                }
+            }
+        }
     }
 }
 
 license {
     header = file("code_quality/${license_header}_HEADER.txt")
-    include "src/main/java/**.java"
-    tasks {
-        main {
-            files = project.files("src/main/java")
-            ignoreFailures = true //Ignore failures and only print a warning on license violations
-        }
-    }
+    // Apply licenses only to main source set
+    sourceSets = [project.sourceSets.main]
+    include "**/*.java"
+    charset = StandardCharsets.UTF_8.name()
+
     style {
         java = "BLOCK_COMMENT"
     }
+    newLine = false // Disables the empty line between the header and package name
+    ignoreFailures = true //Ignore failures and only print a warning on license violations
 
     //export variables
     ext {
