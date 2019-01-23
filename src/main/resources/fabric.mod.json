@@ -1,0 +1,18 @@
+{
+  "id": "mesh",
+  "name": "Mesh",
+  "description": "Modding Library",
+  "version": "${version}",
+  "side": "universal",
+  "initializers": [
+    "com.github.glasspane.mesh.Mesh"
+  ],
+  "requires": {
+    "fabric": "*",
+    "textilelib": "*"
+  },
+  "mixins": {
+    "client": "mesh.client.json",
+    "common": "mesh.common.json"
+  }
+}
