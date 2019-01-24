@@ -18,8 +18,8 @@
 package com.github.glasspane.mesh.util;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.*;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.*;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class MeshHelper {
     /**
      * @param entity        the raytrace source
      * @param range         the maximum range of the raytrace
-     * @param shapeType     {@link RayTraceContext.ShapeType#COLLIDER} for collision raytracing, {@link RayTraceContext.ShapeType#OUTLINE} for tracing the block outline shape (render bounding box)
+     * @param shapeType     <b>COLLIDER</b> for collision raytracing, <b>OUTLINE</b> for tracing the block outline shape (render bounding box)
      * @param fluidHandling how to handle fluids
      */
     @Nonnull
@@ -40,7 +40,7 @@ public class MeshHelper {
     /**
      * @param entity        the raytrace source
      * @param range         the maximum range of the raytrace
-     * @param shapeType     {@link RayTraceContext.ShapeType#COLLIDER} for collision raytracing, {@link RayTraceContext.ShapeType#OUTLINE} for tracing the block outline shape (render bounding box)
+     * @param shapeType     <b>COLLIDER</b> for collision raytracing, <b>OUTLINE</b> for tracing the block outline shape (render bounding box)
      * @param fluidHandling how to handle fluids
      * @param tickDeltaTime the delta tick time (partial render tick)
      */
@@ -57,7 +57,7 @@ public class MeshHelper {
      * @param source        the entity to be used for determining block bounding boxes
      * @param start         the start point
      * @param end           the end point, if no result was found
-     * @param shapeType     {@link RayTraceContext.ShapeType#COLLIDER} for collision raytracing, {@link RayTraceContext.ShapeType#OUTLINE} for tracing the block outline shape (render bounding box)
+     * @param shapeType     <b>COLLIDER</b> for collision raytracing, <b>OUTLINE</b> for tracing the block outline shape (render bounding box)
      * @param fluidHandling how to handle fluids
      */
     @Nonnull
