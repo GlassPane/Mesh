@@ -138,7 +138,7 @@ publishing {
 }
 
 license {
-    header = file("code_quality/${license_header}_HEADER.txt")
+    header = file("code_quality/${project.license_header}_HEADER.txt")
     // Apply licenses only to main source set
     sourceSets = [project.sourceSets.main]
     include "**/*.java"
