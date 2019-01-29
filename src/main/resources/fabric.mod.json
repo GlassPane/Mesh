@@ -1,17 +1,17 @@
 {
-  "id": "mesh",
-  "name": "Mesh",
-  "description": "Modding Library",
-  "version": "${version}",
-  "side": "universal",
-  "initializers": [
-    "com.github.glasspane.mesh.Mesh"
-  ],
-  "requires": {
-    "fabric": "*"
-  },
-  "mixins": {
-    "client": "mesh.client.json",
-    "common": "mesh.common.json"
-  }
+    "id": "mesh",
+    "name": "Mesh",
+    "description": "Modding Library",
+    "version": "${version}",
+    "side": "universal",
+    "initializers": [
+        "com.github.glasspane.mesh.Mesh"
+    ],
+    "requires": {
+        "fabric": "*"
+    },
+    "mixins": {
+        "client": "mesh.client.json",
+        "common": "mesh.common.json"
+    }
 }

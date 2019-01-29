@@ -1,6 +1,6 @@
 /*
  * Mesh
- * Copyright (C) 2019-2019 GlassPane
+ * Copyright (C) 2019 GlassPane
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,8 +21,8 @@ import java.util.function.Supplier;
 
 public class LazyReference<T> {
 
-    private T object = null;
     private final Supplier<T> getter;
+    private T object = null;
 
     public LazyReference(Supplier<T> getter) {
         this.getter = getter;

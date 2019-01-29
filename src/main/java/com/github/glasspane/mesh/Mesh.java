@@ -1,6 +1,6 @@
 /*
  * Mesh
- * Copyright (C) 2019-2019 GlassPane
+ * Copyright (C) 2019 GlassPane
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,14 +28,13 @@ public class Mesh implements ModInitializer {
     public static final String MODID = "mesh";
     public static final String MOD_NAME = "Mesh";
     public static final String VERSION = "${version}";
+    private static final Logger log = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
+    private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + " Debug"));
 
     //TODO debug switch
     public static boolean isDebugMode() {
         return true;
     }
-
-    private static final Logger log = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
-    private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + " Debug"));
 
     public static Logger getLogger() {
         return log;

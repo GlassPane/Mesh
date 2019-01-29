@@ -1,6 +1,6 @@
 /*
  * Mesh
- * Copyright (C) 2019-2019 GlassPane
+ * Copyright (C) 2019 GlassPane
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,9 +17,7 @@
  */
 package com.github.glasspane.mesh.util.logging;
 
-import org.apache.logging.log4j.message.AbstractMessageFactory;
-import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.ParameterizedMessage;
+import org.apache.logging.log4j.message.*;
 
 public class PrefixMessageFactory extends AbstractMessageFactory {
 
@@ -33,5 +31,4 @@ public class PrefixMessageFactory extends AbstractMessageFactory {
     public Message newMessage(String message, Object... params) {
         return new ParameterizedMessage("[" + prefix + "]: " + message, params);
     }
-
 }

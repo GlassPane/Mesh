@@ -1,10 +1,10 @@
 {
-  "required": true,
-  "package": "com.github.glasspane.mesh.mixin.common",
-  "compatibilityLevel": "JAVA_8",
-  "mixins": [
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  }
+    "required": true,
+    "package": "com.github.glasspane.mesh.mixin.common",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
 }

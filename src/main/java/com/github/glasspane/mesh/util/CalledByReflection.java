@@ -1,6 +1,6 @@
 /*
  * Mesh
- * Copyright (C) 2019-2019 GlassPane
+ * Copyright (C) 2019 GlassPane
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,12 +17,8 @@
  */
 package com.github.glasspane.mesh.util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
-public @interface CalledByReflection {
-}
+public @interface CalledByReflection { }

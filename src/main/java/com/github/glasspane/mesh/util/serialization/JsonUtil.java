@@ -1,6 +1,6 @@
 /*
  * Mesh
- * Copyright (C) 2019-2019 GlassPane
+ * Copyright (C) 2019 GlassPane
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,9 +24,12 @@ import net.minecraft.util.Identifier;
 public class JsonUtil {
 
     public static final Gson GSON;
+
     static {
         GsonBuilder builder = new GsonBuilder();
-        if(Mesh.isDebugMode()) builder.setPrettyPrinting();
+        if(Mesh.isDebugMode()) {
+            builder.setPrettyPrinting();
+        }
         builder.disableHtmlEscaping();
         builder.serializeNulls();
         builder.registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer());
