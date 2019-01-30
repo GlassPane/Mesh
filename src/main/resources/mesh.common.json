@@ -3,6 +3,7 @@
     "package": "com.github.glasspane.mesh.mixin.common",
     "compatibilityLevel": "JAVA_8",
     "mixins": [
+        "MixinRecipeManager"
     ],
     "injectors": {
         "defaultRequire": 1
