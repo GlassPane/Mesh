@@ -17,26 +17,26 @@
  */
 package com.github.glasspane.mesh.util.serialization;
 
-import com.github.glasspane.mesh.Mesh;
 import com.google.gson.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
+import net.minecraft.recipe.crafting.ShapedRecipe;
+import net.minecraft.util.registry.Registry;
 
-public class JsonUtil {
+import java.lang.reflect.Type;
 
-    public static final Gson GSON;
+public class ItemStackJsonSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
+    @Override
+    public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        return ShapedRecipe.deserializeItemStack(json.getAsJsonObject());
+    }
 
-    static {
-        GsonBuilder builder = new GsonBuilder();
-        if(Mesh.isDebugMode()) {
-            builder.setPrettyPrinting();
+    @Override
+    public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
+        JsonObject ret = new JsonObject();
+        ret.addProperty("item", Registry.ITEM.getId(src.getItem()).toString());
+        if(src.getAmount() > 1) {
+            ret.addProperty("count", src.getAmount());
         }
-        builder.disableHtmlEscaping();
-        builder.registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer());
-        builder.registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer());
-        //TODO register type adapters here
-        GSON = builder.create();
+        return ret;
     }
 }

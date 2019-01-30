@@ -17,26 +17,19 @@
  */
 package com.github.glasspane.mesh.util.serialization;
 
-import com.github.glasspane.mesh.Mesh;
 import com.google.gson.*;
-import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.util.Identifier;
 
-public class JsonUtil {
+import java.lang.reflect.Type;
 
-    public static final Gson GSON;
+public class IngredientJsonSerializer implements JsonSerializer<Ingredient>, JsonDeserializer<Ingredient> {
+    @Override
+    public Ingredient deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        return Ingredient.fromJson(json);
+    }
 
-    static {
-        GsonBuilder builder = new GsonBuilder();
-        if(Mesh.isDebugMode()) {
-            builder.setPrettyPrinting();
-        }
-        builder.disableHtmlEscaping();
-        builder.registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer());
-        builder.registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer());
-        //TODO register type adapters here
-        GSON = builder.create();
+    @Override
+    public JsonElement serialize(Ingredient src, Type typeOfSrc, JsonSerializationContext context) {
+        return src.toJson();
     }
 }
