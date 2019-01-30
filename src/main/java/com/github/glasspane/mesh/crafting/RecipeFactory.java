@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.util.crafting;
+package com.github.glasspane.mesh.crafting;
 
 import com.github.glasspane.mesh.Mesh;
 import net.minecraft.item.ItemStack;

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.util.crafting.recipe;
+package com.github.glasspane.mesh.crafting.recipe;
 
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.item.ItemStack;

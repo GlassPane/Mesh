@@ -24,7 +24,7 @@ import net.minecraft.world.*;
 
 import javax.annotation.Nonnull;
 
-public class MeshHelper {
+public class RayHelper {
 
     /**
      * @param entity        the raytrace source

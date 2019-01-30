@@ -31,7 +31,7 @@ public class Mesh implements ModInitializer {
     private static final Logger log = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
     private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + "/Debug"));
     private static final boolean isDev = Boolean.getBoolean("fabric.development"); //TODO will probably be rafactored in Loom 0.4.0
-    private static boolean debug = false;
+    private static final boolean debug = false;
 
     //TODO debug switch
     public static boolean isDebugMode() {

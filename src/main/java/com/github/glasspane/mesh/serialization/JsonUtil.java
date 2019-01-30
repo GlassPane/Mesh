@@ -15,30 +15,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.util.crafting.recipe;
+package com.github.glasspane.mesh.serialization;
 
-import com.github.glasspane.mesh.util.crafting.RecipeHelper;
-import com.google.gson.annotations.SerializedName;
+import com.github.glasspane.mesh.Mesh;
+import com.google.gson.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
-import javax.annotation.Nullable;
-import java.util.Arrays;
+public class JsonUtil {
 
-public class ShapelessRecipe extends Recipe {
+    public static final Gson GSON;
 
-    private transient static final Identifier TYPE = new Identifier("crafting_shaped");
-
-    @SerializedName("ingredients")
-    private final Ingredient[] inputs;
-
-    public ShapelessRecipe(ItemStack output, @Nullable Identifier name, @Nullable String group, Object... inputs) {
-        super(TYPE, output, name, group);
-        this.inputs = Arrays.stream(inputs).map(RecipeHelper::toIngredient).toArray(Ingredient[]::new);
-    }
-
-    public Ingredient[] getIngredients() {
-        return inputs;
+    static {
+        GsonBuilder builder = new GsonBuilder();
+        if(Mesh.isDebugMode()) {
+            builder.setPrettyPrinting();
+        }
+        builder.disableHtmlEscaping();
+        builder.registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer());
+        builder.registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer());
+        builder.registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer());
+        //TODO register type adapters here
+        GSON = builder.create();
     }
 }

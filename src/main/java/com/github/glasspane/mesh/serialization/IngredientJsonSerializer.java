@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.util.serialization;
+package com.github.glasspane.mesh.serialization;
 
 import com.google.gson.*;
 import net.minecraft.recipe.Ingredient;

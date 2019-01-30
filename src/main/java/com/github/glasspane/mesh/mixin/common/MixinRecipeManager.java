@@ -17,7 +17,7 @@
  */
 package com.github.glasspane.mesh.mixin.common;
 
-import com.github.glasspane.mesh.util.crafting.RecipeFactoryImpl;
+import com.github.glasspane.mesh.crafting.RecipeFactoryImpl;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
 import org.spongepowered.asm.mixin.Mixin;
