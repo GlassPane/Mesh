@@ -29,11 +29,17 @@ public class Mesh implements ModInitializer {
     public static final String MOD_NAME = "Mesh";
     public static final String VERSION = "${version}";
     private static final Logger log = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
-    private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + " Debug"));
+    private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + "/Debug"));
+    private static final boolean isDev = Boolean.getBoolean("fabric.development"); //TODO will probably be rafactored in Loom 0.4.0
+    private static boolean debug = false;
 
     //TODO debug switch
     public static boolean isDebugMode() {
-        return true;
+        return debug || isDevEnvironment();
+    }
+
+    public static boolean isDevEnvironment() {
+        return isDev;
     }
 
     public static Logger getLogger() {
