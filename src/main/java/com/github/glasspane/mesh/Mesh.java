@@ -17,6 +17,7 @@
  */
 package com.github.glasspane.mesh;
 
+import com.github.glasspane.mesh.registry.RegistryEntryDiscoverer;
 import com.github.glasspane.mesh.util.CalledByReflection;
 import com.github.glasspane.mesh.util.logging.PrefixMessageFactory;
 import net.fabricmc.api.ModInitializer;
@@ -53,5 +54,6 @@ public class Mesh implements ModInitializer {
     @Override
     public void onInitialize() {
         log.info("Send Reinforcements!");
+        RegistryEntryDiscoverer.init();
     }
 }
