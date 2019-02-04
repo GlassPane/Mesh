@@ -6,7 +6,7 @@ plugins {
     id "net.minecrell.licenser" version "0.2.1"
     id "com.matthewprenger.cursegradle" version "1.1.2"
     id "maven-publish"
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    //id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
@@ -48,11 +48,11 @@ repositories {
     }
 }
 
-configurations {
-    embed {
-        //transitive = false
-    }
-}
+//configurations {
+//    embed {
+//        transitive = false
+//    }
+//}
 
 dependencies {
     minecraft "com.mojang:minecraft:${mc_version}"
@@ -62,8 +62,6 @@ dependencies {
     modCompile "net.fabricmc:fabric:${fabric_version}"
     compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
 
-    implementation "org.reflections:reflections:${reflections_version}"
-    embed "org.reflections:reflections:${reflections_version}"
 }
 
 compileJava {
@@ -89,11 +87,10 @@ jar {
     )
 }
 
-shadowJar {
-    from "LICENSE.md"
-    classifier = null
-    configurations = [project.configurations.embed]
-}
+//shadowJar {
+//    classifier = null
+//    configurations = [project.configurations.embed]
+//}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
@@ -173,5 +170,5 @@ license {
         projectDisplayName = project.archivesBaseName
     }
 }
-tasks.build.dependsOn shadowJar
+tasks.build.dependsOn javadocJar
 tasks.publish.dependsOn build
