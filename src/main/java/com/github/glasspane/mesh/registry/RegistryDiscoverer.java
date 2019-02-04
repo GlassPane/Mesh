@@ -67,7 +67,7 @@ public class RegistryDiscoverer {
             Class<?> type = pair.getRight();
             for(Field f : clazz.getDeclaredFields()) {
                 int modField = f.getModifiers();
-                if(Modifier.isStatic(modField) && Modifier.isPublic(modField) && Modifier.isFinal(modField)) {
+                if(Modifier.isStatic(modField) && Modifier.isPublic(modField) && Modifier.isFinal(modField) && f.getAnnotation(AutoRegistry.Ignore.class) == null) {
                     try {
                         Object value = f.get(null);
                         if(value != null && type.isAssignableFrom(value.getClass())) {

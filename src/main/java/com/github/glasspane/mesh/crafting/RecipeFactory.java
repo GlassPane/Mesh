@@ -27,7 +27,8 @@ import java.io.File;
 
 public interface RecipeFactory {
     //TODO brewing
-//TODO new vanilla "machines"
+    //TODO new vanilla "machines"
+    //TODO Item/Block Tags
 
     /**
      * create a new instance of the recipe factory that is tied to the provided mod container

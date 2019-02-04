@@ -17,7 +17,10 @@
  */
 package com.github.glasspane.mesh.registry;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -38,4 +41,13 @@ public @interface AutoRegistry {
      * @return the (super-) type of fields to look for
      */
     Class value();
+
+    /**
+     * used to ignore a field inside a class annotated with {@link AutoRegistry}
+     */
+    @Target(ElementType.FIELD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface Ignore {
+
+    }
 }
