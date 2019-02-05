@@ -8,10 +8,8 @@
         "com.github.glasspane.mesh.Mesh"
     ],
     "requires": {
-        "fabric": "*"
     },
     "mixins": {
-        "client": "mesh.client.json",
         "common": "mesh.common.json"
     }
 }

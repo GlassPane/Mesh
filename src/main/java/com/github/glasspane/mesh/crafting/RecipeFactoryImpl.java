@@ -47,10 +47,7 @@ public class RecipeFactoryImpl implements RecipeFactory {
     }
 
     public static void createRecipes() {
-        if(!Mesh.isDevEnvironment()) {
-            return;
-        }
-        Mesh.getDebugLogger().info("Development environment detected, creating recipe files...");
+        Mesh.getDebugLogger().info("Creating recipe files...");
         RECIPE_FACTORIES.forEach(RecipeFactoryImpl::saveRecipes);
         RECIPE_FACTORIES.clear();
     }

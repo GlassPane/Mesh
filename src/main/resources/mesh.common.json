@@ -1,7 +1,9 @@
 {
     "required": true,
-    "package": "com.github.glasspane.mesh.mixin.common",
+    "minVersion": "0.7.11",
     "compatibilityLevel": "JAVA_8",
+    "package": "com.github.glasspane.mesh.mixin.common",
+    "plugin": "com.github.glasspane.mesh.mixin.MeshMixinConfig",
     "mixins": [
         "MixinRecipeManager"
     ],

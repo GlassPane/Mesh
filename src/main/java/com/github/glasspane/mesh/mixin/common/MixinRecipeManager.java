@@ -17,6 +17,7 @@
  */
 package com.github.glasspane.mesh.mixin.common;
 
+import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.crafting.RecipeFactoryImpl;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
@@ -29,6 +30,7 @@ public class MixinRecipeManager {
 
     @Inject(method = "onResourceReload", at = @At(value = "RETURN"))
     private void onResourceReload(ResourceManager resourceManager_1, CallbackInfo ci) {
+        Mesh.getDebugLogger().info("Development Environment detected. Applying Resource reload hook.");
         RecipeFactoryImpl.createRecipes();
     }
 }
