@@ -17,6 +17,9 @@
  */
 package com.github.glasspane.mesh.util.objects;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class LazyReference<T> {
@@ -28,10 +31,20 @@ public class LazyReference<T> {
         this.getter = getter;
     }
 
+    @Nullable
     public T get() {
         if(this.object == null) {
             this.object = getter.get();
         }
         return this.object;
+    }
+
+    @Override
+    public String toString() {
+        return "LazyRef(" + this.get() + ")";
+    }
+
+    public void ifPresent(Consumer<T> action) {
+        Optional.ofNullable(this.get()).ifPresent(action);
     }
 }
