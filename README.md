@@ -13,6 +13,6 @@ Minecraft Mod that lets you stick Totems on Entities
 ##Modules
 
 - Crafting: allows for exporting recipes into json format<br/>
-    *Requires `mesh.resourcesDir` to be set.*
+    *Requires the `mesh.resourcesDir` System property to be set to your output directory (usually `src/main/resources`)*
 
 - Registry: allows for automatically registering objects via annotations.
