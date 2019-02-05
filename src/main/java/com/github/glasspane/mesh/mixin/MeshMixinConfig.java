@@ -2,12 +2,12 @@ package com.github.glasspane.mesh.mixin;
 
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.util.CalledByReflection;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
@@ -15,7 +15,6 @@ import java.util.function.BooleanSupplier;
 @CalledByReflection
 public class MeshMixinConfig implements IMixinConfigPlugin {
     private static final String PACKAGE_NAME = "com.github.glasspane.mesh.mixin.common";
-    private static final ImmutableList<String> MIXINS = ImmutableList.of("MixinRecipeManager");
     private static final ImmutableMap<String, BooleanSupplier> MIXIN_STATES = ImmutableMap.of(
             PACKAGE_NAME + ".MixinRecipeManager", Mesh::isDevEnvironment
     );
@@ -34,9 +33,7 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        System.out.println("Mixin: " + mixinClassName + " @ " + targetClassName);
-        return false;
-        //return MIXIN_STATES.getOrDefault(mixinClassName, () -> false).getAsBoolean();
+        return MIXIN_STATES.getOrDefault(mixinClassName, () -> false).getAsBoolean();
     }
 
     @Override
@@ -46,7 +43,7 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public List<String> getMixins() {
-        return MIXINS;
+        return Collections.emptyList(); //NO-OP
     }
 
     @Override
