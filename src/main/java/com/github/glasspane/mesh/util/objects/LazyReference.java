@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 
 public class LazyReference<T> {
 
-    private final Supplier<T> getter;
+    private Supplier<T> getter;
     private T object = null;
 
     public LazyReference(Supplier<T> getter) {
@@ -33,8 +33,9 @@ public class LazyReference<T> {
 
     @Nullable
     public T get() {
-        if(this.object == null) {
+        if(this.getter != null) {
             this.object = getter.get();
+            this.getter = null;
         }
         return this.object;
     }

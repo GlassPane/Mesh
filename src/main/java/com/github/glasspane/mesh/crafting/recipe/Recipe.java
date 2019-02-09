@@ -17,6 +17,7 @@
  */
 package com.github.glasspane.mesh.crafting.recipe;
 
+import com.github.glasspane.mesh.util.objects.LazyReference;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -30,13 +31,13 @@ public abstract class Recipe {
     @Nullable
     @SerializedName("group")
     private final String recipeGroup;
-    transient private final Identifier name;
+    transient private final LazyReference<Identifier> name;
     @SerializedName("result") private ItemStack output;
 
     protected Recipe(Identifier recipeType, ItemStack output, @Nullable Identifier name, @Nullable String group) {
         this.recipeType = recipeType;
         this.recipeGroup = group;
-        this.name = name != null ? name : Registry.ITEM.getId(output.getItem());
+        this.name = new LazyReference<>(() -> name != null ? name : Registry.ITEM.getId(this.output.getItem()));
         this.output = output;
     }
 
@@ -50,7 +51,7 @@ public abstract class Recipe {
     }
 
     public Identifier getName() {
-        return name;
+        return this.name.get();
     }
 
     public ItemStack getOutput() {
