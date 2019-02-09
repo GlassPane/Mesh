@@ -43,6 +43,12 @@ public @interface AutoRegistry {
     Class value();
 
     /**
+     * used to make loading conditional<br/>
+     * will only register if <strong>ALL</strong> of hte specified mod IDs are loaded
+     */
+    String[] modsLoaded() default { };
+
+    /**
      * used to ignore a field inside a class annotated with {@link AutoRegistry}
      */
     @Target(ElementType.FIELD)

@@ -26,6 +26,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Map;
@@ -39,19 +40,24 @@ public class RegistryDiscoverer {
         FabricLoader.INSTANCE.getInitializers(AutoRegistryHook.class).stream().map(Object::getClass).sorted(Comparator.comparing(Class::getCanonicalName)).forEachOrdered(clazz -> {
             AutoRegistry ann = clazz.getAnnotation(AutoRegistry.class);
             if(ann != null) {
-                String modid = ann.modid();
-                Class<?> type = ann.value();
-                Identifier registryName = new Identifier(ann.registry());
-                if(Registry.REGISTRIES.contains(registryName)) {
-                    ModifiableRegistry registry = Registry.REGISTRIES.get(registryName);
-                    toRegister.computeIfAbsent(registry, k -> new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo))).put(clazz, new Pair<>(modid, type));
+                if(Arrays.stream(ann.modsLoaded()).allMatch(net.fabricmc.loader.api.FabricLoader.getInstance()::isModLoaded)) {
+                    String modid = ann.modid();
+                    Class<?> type = ann.value();
+                    Identifier registryName = new Identifier(ann.registry());
+                    if(Registry.REGISTRIES.contains(registryName)) {
+                        ModifiableRegistry registry = Registry.REGISTRIES.get(registryName);
+                        toRegister.computeIfAbsent(registry, k -> new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo))).put(clazz, new Pair<>(modid, type));
+                    }
+                    else if(Mesh.isDebugMode()) {
+                        Mesh.getDebugLogger().info("ignoring non-existent registry {} for class {}", registryName, clazz.getCanonicalName());
+                    }
                 }
                 else if(Mesh.isDebugMode()) {
-                    Mesh.getDebugLogger().info("ignoring non-existent registry {} for class {}", registryName, clazz.getCanonicalName());
+                    Mesh.getDebugLogger().debug("ignoring class {} for registration because one or more mods are not loaded: {}", clazz.getCanonicalName(), Arrays.toString(ann.modsLoaded()));
                 }
             }
             else {
-                Mesh.getDebugLogger().error("ignoring class {}: no AutoRegistry annotation present!", clazz.getCanonicalName());
+                Mesh.getLogger().error("ignoring class {}: no AutoRegistry annotation present!", clazz.getCanonicalName());
             }
         });
         //special treatment for the item and block registry
