@@ -28,7 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-    @Inject(method = "onResourceReload", at = @At(value = "HEAD"))
+    //previously onResourceReload
+    @Inject(method = "method_14491", at = @At(value = "HEAD"))
     private void onResourceReload(ResourceManager resourceManager_1, CallbackInfo ci) {
         Mesh.getDebugLogger().info("Development Environment detected. Applying Resource reload hook.");
         RecipeFactoryImpl.createRecipes();
