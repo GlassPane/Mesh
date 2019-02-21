@@ -17,21 +17,28 @@
  */
 package com.github.glasspane.mesh.util.objects;
 
+import org.apache.commons.lang3.Validate;
+
 import javax.annotation.Nullable;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class LazyReference<T> {
+public class LazyReference<T> implements Supplier<T> {
 
     private Supplier<T> getter;
     private T object = null;
 
     public LazyReference(Supplier<T> getter) {
-        this.getter = getter;
+        this.getter = Validate.notNull(getter, "Supplier must not be NULL");
+    }
+
+    @Override
+    public String toString() {
+        return "LazyRef(" + this.get() + ")";
     }
 
     @Nullable
+    @Override
     public T get() {
         if(this.getter != null) {
             this.object = getter.get();
@@ -40,12 +47,9 @@ public class LazyReference<T> {
         return this.object;
     }
 
-    @Override
-    public String toString() {
-        return "LazyRef(" + this.get() + ")";
-    }
-
     public void ifPresent(Consumer<T> action) {
-        Optional.ofNullable(this.get()).ifPresent(action);
+        if(this.get() != null) {
+            action.accept(this.object);
+        }
     }
 }

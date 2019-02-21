@@ -17,9 +17,13 @@
  */
 package com.github.glasspane.mesh.crafting;
 
-import net.minecraft.item.*;
+import com.google.gson.JsonElement;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemProvider;
+import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.tag.*;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 public class RecipeHelper {
@@ -49,6 +53,9 @@ public class RecipeHelper {
         }
         else if(object instanceof Identifier) {
             return Ingredient.fromTag(ItemTags.getContainer().get((Identifier) object));
+        }
+        else if(object instanceof JsonElement) {
+            return Ingredient.fromJson((JsonElement) object);
         }
         else if(object == null) {
             return Ingredient.EMPTY;

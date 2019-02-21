@@ -18,20 +18,24 @@
 package com.github.glasspane.mesh.mixin.common;
 
 import com.github.glasspane.mesh.Mesh;
+import com.github.glasspane.mesh.api.crafting.RecipeCreator;
+import com.github.glasspane.mesh.api.crafting.RecipeFactory;
 import com.github.glasspane.mesh.crafting.RecipeFactoryImpl;
+import net.fabricmc.loader.FabricLoader;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-    //previously onResourceReload
-    @Inject(method = "method_14491", at = @At(value = "HEAD"))
-    private void onResourceReload(ResourceManager resourceManager_1, CallbackInfo ci) {
-        Mesh.getDebugLogger().info("Development Environment detected. Applying Resource reload hook.");
-        RecipeFactoryImpl.createRecipes();
+    @Inject(method = "apply", at = @At(value = "HEAD"))
+    private void createMeshRecipes(ResourceManager resourceManager, CallbackInfo ci) {
+        Mesh.getDebugLogger().info("Development Environment detected. Creating recipe files...");
+        RecipeFactory factory = new RecipeFactoryImpl();
+        FabricLoader.INSTANCE.getInitializers(RecipeCreator.class).forEach(creator -> creator.createRecipes(factory));
     }
 }

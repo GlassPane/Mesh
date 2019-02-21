@@ -37,6 +37,7 @@ public class RegistryDiscoverer {
 
     public static void init() {
         Map<ModifiableRegistry<?>, Map<Class, Pair<String, Class>>> toRegister = new TreeMap<>(Comparator.comparing(Registry.REGISTRIES::getId));
+        //noinspection deprecation
         FabricLoader.INSTANCE.getInitializers(AutoRegistryHook.class).stream().map(Object::getClass).sorted(Comparator.comparing(Class::getCanonicalName)).forEachOrdered(clazz -> {
             AutoRegistry ann = clazz.getAnnotation(AutoRegistry.class);
             if(ann != null) {
@@ -75,14 +76,16 @@ public class RegistryDiscoverer {
                 int modField = f.getModifiers();
                 if(Modifier.isStatic(modField) && Modifier.isPublic(modField) && Modifier.isFinal(modField) && f.getAnnotation(AutoRegistry.Ignore.class) == null) {
                     try {
-                        Object value = f.get(null);
-                        if(value != null && type.isAssignableFrom(value.getClass())) {
+                        Optional.ofNullable(f.get(null)).filter((o) -> type.isAssignableFrom(o.getClass())).ifPresent(value -> {
                             Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
                             if(Mesh.isDebugMode()) {
                                 Mesh.getDebugLogger().debug("registering: {}", name);
                             }
                             registry.register(name, type.cast(value));
-                        }
+                            if(registry == Registry.BLOCK && value instanceof ItemBlockProvider) {
+                                Registry.ITEM.register(name, ((ItemBlockProvider) value).createItem());
+                            }
+                        });
                     }
                     catch (IllegalAccessException e) {
                         Mesh.getDebugLogger().error("unable to register entry {}: {}", new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e.getMessage());

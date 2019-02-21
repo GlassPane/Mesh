@@ -17,11 +17,13 @@
  */
 package com.github.glasspane.mesh;
 
+import com.github.glasspane.mesh.crafting.RecipeFactoryImpl;
 import com.github.glasspane.mesh.registry.RegistryDiscoverer;
 import com.github.glasspane.mesh.util.CalledByReflection;
 import com.github.glasspane.mesh.util.logging.PrefixMessageFactory;
 import net.fabricmc.api.ModInitializer;
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CalledByReflection
 public class Mesh implements ModInitializer {
@@ -55,5 +57,6 @@ public class Mesh implements ModInitializer {
     public void onInitialize() {
         log.info("Send Reinforcements!");
         RegistryDiscoverer.init();
+        RecipeFactoryImpl.init();
     }
 }

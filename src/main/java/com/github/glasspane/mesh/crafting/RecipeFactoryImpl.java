@@ -18,91 +18,83 @@
 package com.github.glasspane.mesh.crafting;
 
 import com.github.glasspane.mesh.Mesh;
-import com.github.glasspane.mesh.crafting.recipe.*;
+import com.github.glasspane.mesh.api.crafting.RecipeFactory;
+import com.github.glasspane.mesh.crafting.recipe.Recipe;
+import com.github.glasspane.mesh.crafting.recipe.ShapedRecipe;
+import com.github.glasspane.mesh.crafting.recipe.ShapelessRecipe;
+import com.github.glasspane.mesh.crafting.recipe.SmeltingRecipe;
 import com.github.glasspane.mesh.serialization.JsonUtil;
+import com.google.gson.JsonElement;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class RecipeFactoryImpl implements RecipeFactory {
 
     private static final Identifier TYPE_FURNACE = new Identifier("smelting");
     private static final Identifier TYPE_BLAST_FURNACE = new Identifier("blasting");
     private static final Identifier TYPE_SMOKER = new Identifier("smoking");
-    private static Set<RecipeFactoryImpl> RECIPE_FACTORIES = new HashSet<>();
-    private final String modid;
-    private final File resourcesDir;
-    private final Map<Identifier, Recipe> RECIPES = new HashMap<>();
+    private static File resourcesDir;
 
-    RecipeFactoryImpl(String modid, File resourcesDir) {
-        this.modid = modid;
-        this.resourcesDir = resourcesDir;
+    public static void init() {
+        String path = System.getProperty("mesh.resourcesDir", null);
+        if(path == null) {
+            throw new IllegalStateException("mesh.resourcesDir property not set!");
+        }
+        resourcesDir = new File(path, "data");
     }
 
-    static void addFactory(RecipeFactoryImpl factory) {
-        RECIPE_FACTORIES.add(factory);
-    }
-
-    public static void createRecipes() {
-        Mesh.getDebugLogger().info("Creating recipe files...");
-        RECIPE_FACTORIES.forEach(RecipeFactoryImpl::saveRecipes);
-        RECIPE_FACTORIES.clear();
-    }
-
-    private void saveRecipes() {
-        this.RECIPES.forEach((id, recipe) -> {
-            File outputFile = modid.equals(id.getNamespace()) ? this.resourcesDir : new File(this.resourcesDir.getParentFile(), this.modid);
-            outputFile = new File(outputFile, "recipes/" + id.getPath() + ".json");
-            if(outputFile.exists()) {
-                Mesh.getDebugLogger().warn("overriding recipe file: {}", outputFile.getAbsolutePath());
-                outputFile.delete();
-            }
-            outputFile.getParentFile().mkdirs();
-            try(FileWriter writer = new FileWriter(outputFile)) {
-                writer.write(JsonUtil.GSON.toJson(recipe));
-            }
-            catch (IOException e) {
-                Mesh.getDebugLogger().error("unable to write recipe", e);
-            }
-        });
-    }
-
-    //FIXME implement
     @Override
     public RecipeFactory addShaped(ItemStack output, @Nullable Identifier name, String recipeGroup, Object... recipe) {
-        return this.appendRecipe(new ShapedRecipe(output, name, recipeGroup, recipe));
+        return this.saveRecipe(new ShapedRecipe(output, name, recipeGroup, recipe));
     }
 
     @Override
     public RecipeFactory addSmelting(ItemStack output, @Nullable Identifier name, String group, Object input, float experience, int cookingTime) {
-        return this.appendRecipe(new SmeltingRecipe(TYPE_FURNACE, output, name, group, RecipeHelper.toIngredient(input), experience, cookingTime));
+        return this.saveRecipe(new SmeltingRecipe(TYPE_FURNACE, output, name, group, RecipeHelper.toIngredient(input), experience, cookingTime));
     }
 
     @Override
     public RecipeFactory addBlasting(ItemStack output, @Nullable Identifier name, String group, Object input, float experience, int cookingTime) {
-        return this.appendRecipe(new SmeltingRecipe(TYPE_BLAST_FURNACE, output, name, group, RecipeHelper.toIngredient(input), experience, cookingTime));
+        return this.saveRecipe(new SmeltingRecipe(TYPE_BLAST_FURNACE, output, name, group, RecipeHelper.toIngredient(input), experience, cookingTime));
     }
 
     @Override
     public RecipeFactory addSmoking(ItemStack output, @Nullable Identifier name, String group, Object input, float experience, int cookingTime) {
-        return this.appendRecipe(new SmeltingRecipe(TYPE_SMOKER, output, name, group, RecipeHelper.toIngredient(input), experience, cookingTime));
+        return this.saveRecipe(new SmeltingRecipe(TYPE_SMOKER, output, name, group, RecipeHelper.toIngredient(input), experience, cookingTime));
     }
 
     @Override
     public RecipeFactory addShapeless(ItemStack output, @Nullable Identifier name, String group, Object... ingredients) {
-        return this.appendRecipe(new ShapelessRecipe(output, name, group, ingredients));
+        return this.saveRecipe(new ShapelessRecipe(output, name, group, ingredients));
     }
 
-    private RecipeFactory appendRecipe(Recipe recipe) {
-        if(!RECIPES.containsKey(recipe.getName())) {
-            RECIPES.put(recipe.getName(), recipe);
+    @Override
+    public <T extends net.minecraft.recipe.Recipe<?>> RecipeFactory addCustomRecipe(T recipe) {
+        return this.save(recipe.getId(), JsonUtil.GSON.toJsonTree(recipe));
+    }
+
+    private RecipeFactory save(Identifier name, JsonElement json) {
+        File outputFile = new File(resourcesDir, name.getNamespace() + "/recipes/" + name.getPath() + ".json");
+        if(outputFile.exists()) {
+            Mesh.getDebugLogger().warn("Recipe file {} already exists. overwriting!", name, outputFile.getAbsolutePath());
+            outputFile.delete();
         }
-        else {
-            Mesh.getDebugLogger().error("duplicate recipe name: {}", recipe.getName());
+        outputFile.getParentFile().mkdirs();
+        try(FileWriter writer = new FileWriter(outputFile)) {
+            JsonUtil.GSON.toJson(json, writer);
+        }
+        catch (IOException e) {
+            Mesh.getDebugLogger().error("unable to write recipe", e);
         }
         return this;
+    }
+
+    private RecipeFactory saveRecipe(Recipe recipe) {
+        return save(recipe.getName(), JsonUtil.GSON.toJsonTree(recipe));
     }
 }

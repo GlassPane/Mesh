@@ -15,36 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.crafting;
+package com.github.glasspane.mesh.api.crafting;
 
-import com.github.glasspane.mesh.Mesh;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
-import java.io.File;
 
 public interface RecipeFactory {
     //TODO brewing
     //TODO new vanilla "machines"
     //TODO Item/Block Tags
-
-    /**
-     * create a new instance of the recipe factory that is tied to the provided mod container
-     */
-    static RecipeFactory getInstance(String modid) {
-        if(Mesh.isDevEnvironment()) {
-            String resourcesDir = System.getProperty("mesh.resourcesDir");
-            if(resourcesDir == null) {
-                throw new IllegalStateException("mesh.resourcesDir property not set!");
-            }
-            RecipeFactoryImpl factory = new RecipeFactoryImpl(modid, new File(resourcesDir, "data/" + modid));
-            RecipeFactoryImpl.addFactory(factory);
-            return factory;
-        }
-        return new DummyRecipeFactory();
-    }
 
     /**
      * create a shaped recipe
@@ -90,4 +73,6 @@ public interface RecipeFactory {
     }
 
     RecipeFactory addShapeless(ItemStack output, @Nullable Identifier name, String group, Object... ingredients);
+
+    <T extends Recipe<?>> RecipeFactory addCustomRecipe(T recipe);
 }

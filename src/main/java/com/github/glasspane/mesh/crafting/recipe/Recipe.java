@@ -27,6 +27,14 @@ import javax.annotation.Nullable;
 
 public abstract class Recipe {
 
+    @SuppressWarnings("unused")
+    @SerializedName("__created")
+    private final String meshComment = "generated using the Mesh Library";
+
+    @SuppressWarnings("unused")
+    @SerializedName("__author")
+    private final String authorComment = "UpcraftLP";
+
     @SerializedName("type") private final Identifier recipeType;
     @Nullable
     @SerializedName("group")
