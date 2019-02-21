@@ -91,7 +91,7 @@ task apiJar(type: Jar, dependsOn: jar) {
     onlyIf {
         project.hasProperty("api_package")
     }
-    from (sourceSets.main.allJava) {
+    from (sourceSets.main.output) {
         include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     }
     from "LICENSE.md"
@@ -106,6 +106,9 @@ task apiJar(type: Jar, dependsOn: jar) {
 }
 
 task remapApiJar(type: RemapJar, dependsOn: apiJar) {
+    onlyIf {
+        project.hasProperty("api_package")
+    }
     jar = apiJar.archivePath
 }
 
