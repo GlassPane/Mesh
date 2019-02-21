@@ -20,7 +20,7 @@ package com.github.glasspane.mesh.mixin.common;
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.crafting.RecipeCreator;
 import com.github.glasspane.mesh.api.crafting.RecipeFactory;
-import com.github.glasspane.mesh.crafting.RecipeFactoryImpl;
+import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;

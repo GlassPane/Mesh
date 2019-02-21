@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.registry;
+package com.github.glasspane.mesh.impl.registry;
 
 import com.github.glasspane.mesh.Mesh;
+import com.github.glasspane.mesh.api.annotation.AutoRegistry;
+import com.github.glasspane.mesh.api.registry.AutoRegistryHook;
+import com.github.glasspane.mesh.api.registry.ItemBlockProvider;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;

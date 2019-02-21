@@ -85,6 +85,24 @@ jar {
     )
 }
 
+task apiJar(type: Jar, dependsOn: jar) {
+    onlyIf {
+        project.hasProperty("api_package")
+    }
+    from (sourceSets.main.allJava) {
+        include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
+    }
+    from "LICENSE.md"
+    manifest.mainAttributes(
+            "Implementation-Title": project.archivesBaseName + "-api",
+            "Implementation-Version": project.version,
+            "Maven-Artifact": "${project.group}:${project.name}:${project.version}:api".toLowerCase(Locale.ROOT),
+            "Built-On-Minecraft": "${mc_version}",
+            "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+    )
+    classifier = "api"
+}
+
 //shadowJar {
 //    classifier = null
 //    configurations = [project.configurations.embed]
@@ -104,9 +122,14 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifact jar
+            artifact(jar.archivePath) {
+                builtBy remapJar
+            }
+            artifact(sourcesJar.archivePath) {
+                builtBy remapSourcesJar
+            }
+            artifact apiJar
             artifact javadocJar
-            artifact sourcesJar
             pom {
                 name = "Mesh"
                 url = "https://github.com/GlassPane/Mesh"
@@ -168,5 +191,4 @@ license {
         projectDisplayName = project.archivesBaseName
     }
 }
-tasks.build.dependsOn javadocJar
-tasks.publish.dependsOn build
+tasks.build.dependsOn javadocJar, apiJar

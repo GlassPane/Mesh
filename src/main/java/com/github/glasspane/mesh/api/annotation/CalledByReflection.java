@@ -15,12 +15,10 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.registry;
+package com.github.glasspane.mesh.api.annotation;
 
-import net.minecraft.item.Item;
+import java.lang.annotation.*;
 
-@FunctionalInterface
-public interface ItemBlockProvider {
-
-    Item createItem();
-}
+@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
+public @interface CalledByReflection { }

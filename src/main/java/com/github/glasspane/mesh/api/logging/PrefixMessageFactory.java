@@ -15,10 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.registry;
+package com.github.glasspane.mesh.api.logging;
 
-/**
- * hook for catching AutoRegistry annotations<br/>
- * <b>all classes implementing this must be annoted with {@link AutoRegistry}!</b>
- */
-public interface AutoRegistryHook { }
+import org.apache.logging.log4j.message.*;
+
+public class PrefixMessageFactory extends AbstractMessageFactory {
+
+    private final String prefix;
+
+    public PrefixMessageFactory(String prefix) {
+        this.prefix = prefix;
+    }
+
+    @Override
+    public Message newMessage(String message, Object... params) {
+        return new ParameterizedMessage("[" + prefix + "]: " + message, params);
+    }
+}

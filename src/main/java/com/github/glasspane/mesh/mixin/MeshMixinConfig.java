@@ -18,7 +18,7 @@
 package com.github.glasspane.mesh.mixin;
 
 import com.github.glasspane.mesh.Mesh;
-import com.github.glasspane.mesh.util.CalledByReflection;
+import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.google.common.collect.ImmutableMap;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;

@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.serialization;
+package com.github.glasspane.mesh.util;
 
 import com.github.glasspane.mesh.Mesh;
+import com.github.glasspane.mesh.impl.serialization.IdentifierJsonSerializer;
+import com.github.glasspane.mesh.impl.serialization.IngredientJsonSerializer;
+import com.github.glasspane.mesh.impl.serialization.ItemStackJsonSerializer;
 import com.google.gson.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;

@@ -15,21 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.serialization;
+package com.github.glasspane.mesh.api.registry;
 
-import com.google.gson.*;
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.item.Item;
 
-import java.lang.reflect.Type;
+@FunctionalInterface
+public interface ItemBlockProvider {
 
-public class IngredientJsonSerializer implements JsonSerializer<Ingredient>, JsonDeserializer<Ingredient> {
-    @Override
-    public Ingredient deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return Ingredient.fromJson(json);
-    }
-
-    @Override
-    public JsonElement serialize(Ingredient src, Type typeOfSrc, JsonSerializationContext context) {
-        return src.toJson();
-    }
+    Item createItem();
 }

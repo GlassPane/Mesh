@@ -15,30 +15,40 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.crafting.recipe;
+package com.github.glasspane.mesh.impl.crafting.recipe;
 
-import com.github.glasspane.mesh.crafting.RecipeHelper;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 
-public class ShapelessRecipe extends Recipe {
+/**
+ * universally used for furnace, smoker and blast furnace recipes
+ */
+public class SmeltingRecipe extends Recipe {
 
-    private transient static final Identifier TYPE = new Identifier("crafting_shaped");
+    @SerializedName("ingredient") private final Ingredient input;
+    @SerializedName("experience") private final float xp;
+    @SerializedName("cookingtime") private final int smeltTime;
 
-    @SerializedName("ingredients")
-    private final Ingredient[] inputs;
-
-    public ShapelessRecipe(ItemStack output, @Nullable Identifier name, @Nullable String group, Object... inputs) {
-        super(TYPE, output, name, group);
-        this.inputs = Arrays.stream(inputs).map(RecipeHelper::toIngredient).toArray(Ingredient[]::new);
+    public SmeltingRecipe(Identifier recipeType, ItemStack output, @Nullable Identifier name, @Nullable String group, Ingredient input, float experience, int smeltTime) {
+        super(recipeType, output, name, group);
+        this.input = input;
+        this.xp = experience;
+        this.smeltTime = smeltTime;
     }
 
-    public Ingredient[] getIngredients() {
-        return inputs;
+    public float getExperience() {
+        return xp;
+    }
+
+    public int getCookingTime() {
+        return smeltTime;
+    }
+
+    public Ingredient getIngredient() {
+        return input;
     }
 }

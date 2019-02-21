@@ -15,15 +15,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.crafting;
+package com.github.glasspane.mesh.impl.crafting;
 
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.crafting.RecipeFactory;
-import com.github.glasspane.mesh.crafting.recipe.Recipe;
-import com.github.glasspane.mesh.crafting.recipe.ShapedRecipe;
-import com.github.glasspane.mesh.crafting.recipe.ShapelessRecipe;
-import com.github.glasspane.mesh.crafting.recipe.SmeltingRecipe;
-import com.github.glasspane.mesh.serialization.JsonUtil;
+import com.github.glasspane.mesh.impl.crafting.recipe.Recipe;
+import com.github.glasspane.mesh.impl.crafting.recipe.ShapedRecipe;
+import com.github.glasspane.mesh.impl.crafting.recipe.ShapelessRecipe;
+import com.github.glasspane.mesh.impl.crafting.recipe.SmeltingRecipe;
+import com.github.glasspane.mesh.util.JsonUtil;
+import com.github.glasspane.mesh.util.RecipeHelper;
 import com.google.gson.JsonElement;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;

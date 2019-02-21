@@ -17,10 +17,10 @@
  */
 package com.github.glasspane.mesh;
 
-import com.github.glasspane.mesh.crafting.RecipeFactoryImpl;
-import com.github.glasspane.mesh.registry.RegistryDiscoverer;
-import com.github.glasspane.mesh.util.CalledByReflection;
-import com.github.glasspane.mesh.util.logging.PrefixMessageFactory;
+import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
+import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
+import com.github.glasspane.mesh.api.annotation.CalledByReflection;
+import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
 import net.fabricmc.api.ModInitializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
