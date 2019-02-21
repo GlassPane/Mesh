@@ -87,11 +87,13 @@ jar {
     )
 }
 
-task apiJar(type: Jar, dependsOn: jar) {
+task apiJar(type: Jar, dependsOn: classes) {
     onlyIf {
         project.hasProperty("api_package")
     }
-    from (sourceSets.main.output) {
+    //TODO waiting on Loom 0.3.0
+    //from (sourceSets.main.output) {
+    from(sourceSets.main.allJava) {
         include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     }
     from "LICENSE.md"
@@ -137,9 +139,11 @@ publishing {
             artifact(sourcesJar) {
                 builtBy remapSourcesJar
             }
-            artifact(apiJar) {
-                builtBy remapApiJar
-            }
+            //TODO waiting on Loom 0.3.0
+            artifact apiJar
+            //artifact(apiJar) {
+            //    builtBy remapApiJar
+            //}
             artifact javadocJar
             pom {
                 name = "Mesh"
@@ -202,4 +206,4 @@ license {
         projectDisplayName = project.archivesBaseName
     }
 }
-tasks.build.dependsOn javadocJar, remapApiJar
+tasks.build.dependsOn javadocJar //, remapApiJar //TODO temp fix until Loom 0.3.0 releases

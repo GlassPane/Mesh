@@ -40,6 +40,7 @@ public class EndTextureRenderer {
     private static final FloatBuffer modelBuffer = GlAllocationUtils.allocateFloatBuffer(16);
     private static final FloatBuffer projectionBuffer = GlAllocationUtils.allocateFloatBuffer(16);
     private static final FloatBuffer STRBuffer = GlAllocationUtils.allocateFloatBuffer(16);
+
     /**
      * render the end portal texture
      *
@@ -51,9 +52,8 @@ public class EndTextureRenderer {
     }
 
     /**
-     * render the end portal texture
-     *
-     * @param red,green,blue,alpha the color components in a range from 0.0 to 1.0 (both inclusive)
+     * render the end portal texture<br/>
+     * <p>the color components are in a range from 0.0 to 1.0 (both inclusive)</p>
      */
     public static void renderEndPortalTexture(double x, double y, double width, double height, double zLevel, float red, float green, float blue, float alpha) {
         RANDOM.setSeed(31100L);
