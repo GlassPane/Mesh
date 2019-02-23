@@ -20,7 +20,6 @@ package com.github.glasspane.mesh;
 import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
 import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
-import com.github.glasspane.mesh.impl.debug.RegistryDumper;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -45,17 +44,6 @@ public class Mesh implements ModInitializer {
         return DEBUG_LOGGER;
     }
 
-    @Override
-    public void onInitialize() {
-        LOGGER.info("Send Reinforcements!");
-        RegistryDiscoverer.init();
-        RecipeFactoryImpl.init();
-        //FIXME find better injection point!
-        if(Mesh.isDebugMode()) {
-            RegistryDumper.dumpRegistries();
-        }
-    }
-
     //TODO debug switch
     public static boolean isDebugMode() {
         return DEBUG_MODE || isDevEnvironment();
@@ -63,5 +51,12 @@ public class Mesh implements ModInitializer {
 
     public static boolean isDevEnvironment() {
         return DEVELOPMENT_ENVIRONMENT;
+    }
+
+    @Override
+    public void onInitialize() {
+        LOGGER.info("Send Reinforcements!");
+        RegistryDiscoverer.init();
+        RecipeFactoryImpl.init();
     }
 }
