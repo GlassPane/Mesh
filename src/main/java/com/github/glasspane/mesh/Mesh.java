@@ -17,11 +17,13 @@
  */
 package com.github.glasspane.mesh;
 
-import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
-import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
+import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
+import com.github.glasspane.mesh.impl.debug.RegistryDumper;
+import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,33 +32,36 @@ public class Mesh implements ModInitializer {
 
     public static final String MODID = "mesh";
     public static final String MOD_NAME = "Mesh";
-    public static final String VERSION = "${version}";
-    private static final Logger log = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
-    private static final Logger debugLog = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + "/Debug"));
-    private static final boolean isDev = Boolean.getBoolean("fabric.development"); //TODO will probably be rafactored in Loom 0.4.0
-    private static final boolean debug = Boolean.getBoolean("mesh.debug");
-
-    //TODO debug switch
-    public static boolean isDebugMode() {
-        return debug || isDevEnvironment();
-    }
-
-    public static boolean isDevEnvironment() {
-        return isDev;
-    }
+    private static final Logger LOGGER = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
+    private static final Logger DEBUG_LOGGER = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + "/Debug"));
+    private static final boolean DEVELOPMENT_ENVIRONMENT = FabricLoader.getInstance().isDevelopmentEnvironment();
+    private static final boolean DEBUG_MODE = Boolean.getBoolean("mesh.debug");
 
     public static Logger getLogger() {
-        return log;
+        return LOGGER;
     }
 
     public static Logger getDebugLogger() {
-        return debugLog;
+        return DEBUG_LOGGER;
     }
 
     @Override
     public void onInitialize() {
-        log.info("Send Reinforcements!");
+        LOGGER.info("Send Reinforcements!");
         RegistryDiscoverer.init();
         RecipeFactoryImpl.init();
+        //FIXME find better injection point!
+        if(Mesh.isDebugMode()) {
+            RegistryDumper.dumpRegistries();
+        }
+    }
+
+    //TODO debug switch
+    public static boolean isDebugMode() {
+        return DEBUG_MODE || isDevEnvironment();
+    }
+
+    public static boolean isDevEnvironment() {
+        return DEVELOPMENT_ENVIRONMENT;
     }
 }

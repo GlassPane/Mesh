@@ -39,7 +39,7 @@ public class RecipeHelper {
         }
         else if(object instanceof Tag) {
             try {
-                //noinspection unchecked
+                @SuppressWarnings("unchecked")
                 Tag<Item> itemTag = (Tag<Item>) object;
                 return Ingredient.fromTag(itemTag);
             }

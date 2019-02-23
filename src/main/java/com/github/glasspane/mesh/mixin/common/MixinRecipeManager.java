@@ -29,6 +29,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * This class is used in a development environment <strong>ONLY</strong>!
+ */
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 

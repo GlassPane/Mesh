@@ -24,7 +24,7 @@ import com.github.glasspane.mesh.api.registry.ItemBlockProvider;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.ModifiableRegistry;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
 import java.lang.reflect.Field;
@@ -39,7 +39,7 @@ import java.util.TreeMap;
 public class RegistryDiscoverer {
 
     public static void init() {
-        Map<ModifiableRegistry<?>, Map<Class, Pair<String, Class>>> toRegister = new TreeMap<>(Comparator.comparing(Registry.REGISTRIES::getId));
+        Map<MutableRegistry<?>, Map<Class, Pair<String, Class>>> toRegister = new TreeMap<>(Comparator.comparing(Registry.REGISTRIES::getId));
         //noinspection deprecation
         FabricLoader.INSTANCE.getInitializers(AutoRegistryHook.class).stream().map(Object::getClass).sorted(Comparator.comparing(Class::getCanonicalName)).forEachOrdered(clazz -> {
             AutoRegistry ann = clazz.getAnnotation(AutoRegistry.class);
@@ -48,8 +48,8 @@ public class RegistryDiscoverer {
                     String modid = ann.modid();
                     Class<?> type = ann.value();
                     Identifier registryName = new Identifier(ann.registry());
-                    if(Registry.REGISTRIES.contains(registryName)) {
-                        ModifiableRegistry registry = Registry.REGISTRIES.get(registryName);
+                    if(Registry.REGISTRIES.containsId(registryName)) {
+                        MutableRegistry registry = Registry.REGISTRIES.get(registryName);
                         toRegister.computeIfAbsent(registry, k -> new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo))).put(clazz, new Pair<>(modid, type));
                     }
                     else if(Mesh.isDebugMode()) {
@@ -65,16 +65,16 @@ public class RegistryDiscoverer {
             }
         });
         //special treatment for the item and block registry
-        for(ModifiableRegistry registry : new ModifiableRegistry[]{Registry.BLOCK, Registry.ITEM}) {
+        for(MutableRegistry registry : new MutableRegistry[]{Registry.BLOCK, Registry.ITEM}) {
             Optional.ofNullable(toRegister.remove(registry)).ifPresent(map -> RegistryDiscoverer.registerEntries(registry, map));
         }
         toRegister.forEach(RegistryDiscoverer::registerEntries);
     }
 
-    private static void registerEntries(ModifiableRegistry registry, Map<Class, Pair<String, Class>> entries) {
+    private static <T> void registerEntries(MutableRegistry<T> registry, Map<Class, Pair<String, Class>> entries) {
         entries.forEach((clazz, pair) -> {
             String modid = pair.getLeft();
-            Class<?> type = pair.getRight();
+            @SuppressWarnings("unchecked") Class<T> type = pair.getRight();
             for(Field f : clazz.getDeclaredFields()) {
                 int modField = f.getModifiers();
                 if(Modifier.isStatic(modField) && Modifier.isPublic(modField) && Modifier.isFinal(modField) && f.getAnnotation(AutoRegistry.Ignore.class) == null) {
@@ -84,9 +84,9 @@ public class RegistryDiscoverer {
                             if(Mesh.isDebugMode()) {
                                 Mesh.getDebugLogger().debug("registering: {}", name);
                             }
-                            registry.register(name, type.cast(value));
+                            Registry.register(registry, name, type.cast(value));
                             if(registry == Registry.BLOCK && value instanceof ItemBlockProvider) {
-                                Registry.ITEM.register(name, ((ItemBlockProvider) value).createItem());
+                                Registry.register(Registry.ITEM, name, ((ItemBlockProvider) value).createItem());
                             }
                         });
                     }
