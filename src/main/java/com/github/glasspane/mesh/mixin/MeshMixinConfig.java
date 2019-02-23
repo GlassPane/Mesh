@@ -31,9 +31,11 @@ import java.util.function.BooleanSupplier;
 
 @CalledByReflection
 public class MeshMixinConfig implements IMixinConfigPlugin {
-    private static final String PACKAGE_NAME = "com.github.glasspane.mesh.mixin.common";
+    private static final String PACKAGE_NAME = "com.github.glasspane.mesh.mixin";
     private static final ImmutableMap<String, BooleanSupplier> MIXIN_STATES = ImmutableMap.of(
-            PACKAGE_NAME + ".MixinRecipeManager", Mesh::isDevEnvironment
+            PACKAGE_NAME + "common.MixinRecipeManager", Mesh::isDevEnvironment,
+            PACKAGE_NAME + "client.MixinMinecraftClient", Mesh::isDebugMode,
+            PACKAGE_NAME + "server.MixinMinecraftDedicatedServer", Mesh::isDebugMode
     );
 
     @Override
