@@ -52,12 +52,13 @@ public class RegistryDiscoverer {
                         MutableRegistry registry = Registry.REGISTRIES.get(registryName);
                         toRegister.computeIfAbsent(registry, k -> new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo))).put(clazz, new Pair<>(modid, type));
                     }
-                    else if(Mesh.isDebugMode()) {
-                        Mesh.getDebugLogger().info("ignoring non-existent registry {} for class {}", registryName, clazz.getCanonicalName());
+                    else {
+                        Mesh.getLogger().warn("ignoring non-existent registry {} for class {}", registryName, clazz.getCanonicalName());
                     }
                 }
-                else if(Mesh.isDebugMode()) {
-                    Mesh.getDebugLogger().debug("ignoring class {} for registration because one or more mods are not loaded: {}", clazz.getCanonicalName(), Arrays.toString(ann.modsLoaded()));
+                else {
+                    Mesh.getLogger().debug("ignoring class {} for registration", clazz.getCanonicalName());
+                    Mesh.getLogger().trace("Missing one or more loaded mods: {}", Arrays.toString(ann.modsLoaded()));
                 }
             }
             else {
@@ -81,9 +82,7 @@ public class RegistryDiscoverer {
                     try {
                         Optional.ofNullable(f.get(null)).filter((o) -> type.isAssignableFrom(o.getClass())).ifPresent(value -> {
                             Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
-                            if(Mesh.isDebugMode()) {
-                                Mesh.getDebugLogger().debug("registering: {}", name);
-                            }
+                            Mesh.getLogger().trace("registering: {}", name);
                             Registry.register(registry, name, type.cast(value));
                             if(registry == Registry.BLOCK && value instanceof ItemBlockProvider) {
                                 Registry.register(Registry.ITEM, name, ((ItemBlockProvider) value).createItem());
@@ -91,7 +90,7 @@ public class RegistryDiscoverer {
                         });
                     }
                     catch (IllegalAccessException e) {
-                        Mesh.getDebugLogger().error("unable to register entry {}: {}", new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e.getMessage());
+                        Mesh.getLogger().debug("unable to register entry {}: {}", new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e.getMessage());
                     }
                 }
             }

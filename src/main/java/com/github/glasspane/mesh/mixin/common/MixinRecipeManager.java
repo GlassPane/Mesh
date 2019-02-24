@@ -37,7 +37,7 @@ public class MixinRecipeManager {
 
     @Inject(method = "apply", at = @At(value = "HEAD"))
     private void createMeshRecipes(ResourceManager resourceManager, CallbackInfo ci) {
-        Mesh.getDebugLogger().info("Development Environment detected. Creating recipe files...");
+        Mesh.getLogger().debug("Development Environment detected. Creating recipe files...");
         RecipeFactory factory = new RecipeFactoryImpl();
         FabricLoader.INSTANCE.getInitializers(RecipeCreator.class).forEach(creator -> creator.createRecipes(factory));
     }

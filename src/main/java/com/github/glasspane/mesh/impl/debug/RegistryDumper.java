@@ -36,9 +36,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RegistryDumper {
 
     public static void dumpRegistries() {
-        Mesh.getDebugLogger().debug("dumping registry data...");
+        Mesh.getLogger().debug("dumping registry data...");
         File outputDir = new File(FabricLoader.getInstance().getGameDirectory(), "mesh/registry_dump");
-        Mesh.getDebugLogger().debug("dumping registries to {}", outputDir.getAbsolutePath());
+        Mesh.getLogger().trace("dumping registries to {}", outputDir.getAbsolutePath());
         Map<Registry<?>, AtomicInteger> registrySizes = new HashMap<>();
         if(outputDir.exists() || outputDir.mkdirs()) {
             Registry.REGISTRIES.getIds().forEach(registryName -> {
@@ -48,14 +48,17 @@ public class RegistryDumper {
             });
             dumpRegistry(outputDir, Registry.REGISTRIES, new Identifier("registries"), registrySizes);
         }
-        else Mesh.getDebugLogger().error("Error dumping registries: unable to create directory at {}", outputDir.getAbsolutePath());
+        else {
+            Mesh.getLogger().debug("Error dumping registries!");
+            Mesh.getLogger().trace("unable to create directory at {}", outputDir.getAbsolutePath());
+        }
     }
 
     private static <T> void dumpRegistry(File outputDir, Registry<T> registry, Identifier registryName, Map<Registry<?>, AtomicInteger> registrySizes) {
         File outputFile = new File(outputDir, registryName.getNamespace() + "/" + registryName.getPath() + ".csv");
         if(!outputFile.exists() || outputFile.delete()) {
             outputFile.getParentFile().mkdirs();
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))){
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
                 List<Identifier> idList = new LinkedList<>(registry.getIds());
                 Collections.sort(idList);
                 String types = "Namespace,Name,Raw ID";
@@ -74,15 +77,19 @@ public class RegistryDumper {
                     AtomicInteger rawID = new AtomicInteger(registry.getRawId(entry));
                     StringBuilder builder = new StringBuilder();
                     builder.append(id.getNamespace()).append(",").append(id.getPath()).append(",").append(rawID);
-                    if(registry == Registry.REGISTRIES) builder.append(",").append(registrySizes.getOrDefault(entry, new AtomicInteger(0)));
+                    if(registry == Registry.REGISTRIES) {
+                        builder.append(",").append(registrySizes.getOrDefault(entry, new AtomicInteger(0)));
+                    }
                     writer.write(builder.toString());
                     writer.newLine();
                 }
             }
             catch (IOException e) {
-                Mesh.getDebugLogger().error("unable to dump registry " + registryName, e);
+                Mesh.getLogger().debug("unable to dump registry " + registryName, e);
             }
         }
-        else Mesh.getDebugLogger().error("unable to delete old registry file at {}, registry will not be dumped!", outputFile.getAbsolutePath());
+        else {
+            Mesh.getLogger().trace("unable to delete old registry file at {}, registry will not be dumped!", outputFile.getAbsolutePath());
+        }
     }
 }

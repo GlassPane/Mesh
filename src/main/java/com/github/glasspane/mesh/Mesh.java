@@ -23,8 +23,10 @@ import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 @CalledByReflection
 public class Mesh implements ModInitializer {
@@ -32,16 +34,17 @@ public class Mesh implements ModInitializer {
     public static final String MODID = "mesh";
     public static final String MOD_NAME = "Mesh";
     private static final Logger LOGGER = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
-    private static final Logger DEBUG_LOGGER = LogManager.getLogger(MODID + "-debug", new PrefixMessageFactory(MOD_NAME + "/Debug"));
     private static final boolean DEVELOPMENT_ENVIRONMENT = FabricLoader.getInstance().isDevelopmentEnvironment();
     private static final boolean DEBUG_MODE = Boolean.getBoolean("mesh.debug");
 
-    public static Logger getLogger() {
-        return LOGGER;
+    static {
+        // configure the logger for debug mode
+        // see https://logging.apache.org/log4j/2.0/faq.html#reconfig_level_from_code
+        Configurator.setLevel(MODID, isDebugMode() ? Level.ALL : Level.INFO);
     }
 
-    public static Logger getDebugLogger() {
-        return DEBUG_LOGGER;
+    public static Logger getLogger() {
+        return LOGGER;
     }
 
     //TODO debug switch

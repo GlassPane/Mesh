@@ -82,7 +82,7 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private RecipeFactory save(Identifier name, JsonElement json) {
         File outputFile = new File(resourcesDir, name.getNamespace() + "/recipes/" + name.getPath() + ".json");
         if(outputFile.exists()) {
-            Mesh.getDebugLogger().warn("Recipe file {} already exists. overwriting!", name, outputFile.getAbsolutePath());
+            Mesh.getLogger().trace("Recipe file {} already exists. overwriting!", name, outputFile.getAbsolutePath());
             outputFile.delete();
         }
         outputFile.getParentFile().mkdirs();
@@ -90,7 +90,7 @@ public class RecipeFactoryImpl implements RecipeFactory {
             JsonUtil.GSON.toJson(json, writer);
         }
         catch (IOException e) {
-            Mesh.getDebugLogger().error("unable to write recipe", e);
+            Mesh.getLogger().debug("unable to write recipe", e);
         }
         return this;
     }
