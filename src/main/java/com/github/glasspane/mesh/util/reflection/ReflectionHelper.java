@@ -46,7 +46,9 @@ public class ReflectionHelper {
             method.setAccessible(true);
             return method;
         }
-        else throw new IllegalStateException("reflection error: method");
+        else {
+            throw new IllegalStateException("reflection error: method");
+        }
     }
 
     @SuppressWarnings("unchecked")
