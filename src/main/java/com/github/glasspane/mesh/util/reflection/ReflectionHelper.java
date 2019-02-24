@@ -44,8 +44,9 @@ public class ReflectionHelper {
         }
         if(method != null) {
             method.setAccessible(true);
+            return method;
         }
-        return method;
+        else throw new IllegalStateException("reflection error: method");
     }
 
     @SuppressWarnings("unchecked")
@@ -75,6 +76,16 @@ public class ReflectionHelper {
                 Mesh.getLogger().fatal(String.format("unable to access field %s in class %s", f.getName(), clazz.getCanonicalName()), e);
             }
         }
-        return null;
+        throw new IllegalStateException("reflection error: field");
+    }
+
+    public static <T> T newInstance(Class<T> clazz) {
+        try {
+            return clazz.newInstance();
+        }
+        catch (IllegalAccessException | InstantiationException e) {
+            Mesh.getLogger().fatal("unable to instantiate " + clazz.getCanonicalName(), e);
+            throw new IllegalStateException("reflection error: instance");
+        }
     }
 }
