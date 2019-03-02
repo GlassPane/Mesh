@@ -28,6 +28,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * used to load and store config objects.<br/>
@@ -57,7 +58,7 @@ public class ConfigHandler {
         return reloadConfig(configClass);
     }
 
-    private static <T> T reloadConfig(Class<T> configClass) {
+    public static <T> T reloadConfig(Class<T> configClass) {
         File configFile = new File(FabricLoader.getInstance().getConfigDirectory(), CONFIG_ID_LOOKUP.get(configClass));
         if(!configFile.exists()) {
             try(FileWriter writer = new FileWriter(configFile)) {
@@ -78,5 +79,9 @@ public class ConfigHandler {
         }
         CONFIG_OBJECTS.put(configClass, config);
         return config;
+    }
+
+    public static Set<Class<?>> getRegisteredConfigs() {
+        return CONFIG_OBJECTS.keySet();
     }
 }

@@ -21,8 +21,11 @@ import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
 import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
+import com.github.glasspane.mesh.util.config.ConfigReloader;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.resource.ResourceType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -61,5 +64,8 @@ public class Mesh implements ModInitializer {
         LOGGER.info("Send Reinforcements!");
         RegistryDiscoverer.init();
         RecipeFactoryImpl.init();
+        if(FabricLoader.getInstance().isModLoaded("fabric")) {
+            ResourceManagerHelper.get(ResourceType.DATA).registerReloadListener(new ConfigReloader());
+        }
     }
 }
