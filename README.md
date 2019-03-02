@@ -1,6 +1,8 @@
 # Mesh
 Minecraft Modding library
 
+[![Build Status](https://travis-ci.com/GlassPane/Mesh.svg?branch=master)](https://travis-ci.com/GlassPane/Mesh "Travis Build Status") [![Maven Repository](https://img.shields.io/maven-metadata/v/https/maven.abusedmaster.xyz/com/github/GlassPane/Mesh/maven-metadata.xml.svg)](https://maven.abusedmaster.xyz/com/github/GlassPane/Mesh "NerdHubMC Maven") [![JitPack](https://jitpack.io/v/GlassPane/Mesh.svg)](https://jitpack.io/#GlassPane/Mesh "Jitpack Build Status")
+
 ---
 
 ## Notes
