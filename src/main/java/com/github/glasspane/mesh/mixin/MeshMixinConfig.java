@@ -33,14 +33,14 @@ import java.util.function.BooleanSupplier;
 public class MeshMixinConfig implements IMixinConfigPlugin {
     private static final String PACKAGE_NAME = "com.github.glasspane.mesh.mixin";
     private static final ImmutableMap<String, BooleanSupplier> MIXIN_STATES = ImmutableMap.of(
-            PACKAGE_NAME + "common.MixinRecipeManager", Mesh::isDevEnvironment,
-            PACKAGE_NAME + "client.MixinMinecraftClient", Mesh::isDebugMode,
-            PACKAGE_NAME + "server.MixinMinecraftDedicatedServer", Mesh::isDebugMode
+            PACKAGE_NAME + ".common.MixinRecipeManager", Mesh::isDevEnvironment,
+            PACKAGE_NAME + ".client.MixinMinecraftClient", Mesh::isDebugMode,
+            PACKAGE_NAME + ".server.MixinMinecraftDedicatedServer", Mesh::isDebugMode
     );
 
     @Override
     public void onLoad(String mixinPackage) {
-        if(!PACKAGE_NAME.equals(mixinPackage)) {
+        if(!mixinPackage.startsWith(PACKAGE_NAME)) {
             throw new IllegalArgumentException("Invalid Package: " + mixinPackage + ", expected: " + PACKAGE_NAME);
         }
     }

@@ -29,6 +29,12 @@ import java.io.IOException;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
+/**
+ * used to load and store config objects.<br/>
+ * serialization to/from json files.
+ *
+ * @deprecated will be dropped when fabric gets it's own config system
+ */
 @Deprecated
 public class ConfigHandler {
 
@@ -37,7 +43,9 @@ public class ConfigHandler {
 
     @SuppressWarnings("unchecked")
     public static <T> T getConfig(Class<T> clazz) {
-        if(!CONFIG_OBJECTS.containsKey(clazz)) throw new IllegalStateException("config not registered before accessing: " + clazz.getCanonicalName());
+        if(!CONFIG_OBJECTS.containsKey(clazz)) {
+            throw new IllegalStateException("config not registered before accessing: " + clazz.getCanonicalName());
+        }
         return (T) CONFIG_OBJECTS.get(clazz);
     }
 
