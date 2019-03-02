@@ -25,6 +25,10 @@ import java.lang.reflect.Method;
 
 public class ReflectionHelper {
 
+    public static <T> MethodInvoker<T> getMethodInvoker(Class<T> clazz, String obfName, String yarnName, Class... parameters) {
+        return new MethodInvoker<>(getMethod(clazz, obfName, yarnName, parameters));
+    }
+
     @Nullable
     public static <T> Method getMethod(Class<T> clazz, String obfName, @Nullable String yarnName, Class... parameters) {
         Method method = null;

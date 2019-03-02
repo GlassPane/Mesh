@@ -17,7 +17,9 @@
  */
 package com.github.glasspane.mesh.api.crafting;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
@@ -25,9 +27,21 @@ import net.minecraft.util.Identifier;
 import javax.annotation.Nullable;
 
 public interface RecipeFactory {
-    //TODO brewing
     //TODO new vanilla "machines"
     //TODO Item/Block Tags
+    /**
+     * register items that can hold potions
+     * (splash potions, lingering potions, potion bottles)
+     */
+    RecipeFactory addPotionType(Item item);
+
+    /**
+     * register recipes that change the item of a potion, not the potion itself
+     * @param modifier the item that is applied to the potion item
+     */
+    RecipeFactory addPotionItemRecipe(Item potionItem, Item modifier, Item resultPotionItem);
+
+    RecipeFactory addPotionRecipe(Potion input, Item modifier, Potion output);
 
     /**
      * create a shaped recipe
