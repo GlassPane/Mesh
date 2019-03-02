@@ -12,6 +12,8 @@ jdk:
     - oraclejdk8
 before_install:
     - "chmod +x gradlew"
+
+install:
     - "./gradlew cleanLoomBinaries cleanLoomMappings clean"
 
 script:
@@ -26,8 +28,7 @@ cache:
         - "$HOME/.gradle/wrapper/"
 
 before_deploy:
-    - echo "deploying to NerdHub Maven:"
-    - echo $(ls  | tr '\n' ', ')
+    - echo "deploying to NerdHub Maven"
 
 deploy:
     -   provider: script
@@ -35,14 +36,12 @@ deploy:
         on:
             repo: GlassPane/Mesh
             branch: master
-        skip_cleanup: true
 
-    # if commit tag is created, deploy to curseforge
-    -   provider: script
-        script: "./gradlew curseforge"
-        skip_cleanup: true
-        target_commitsh: $TRAVIS_TAG
-        on:
-            repo: GlassPane/Mesh
-            tags: true
-            branch: master
+#    # if commit tag is created, deploy to curseforge
+#    -   provider: script
+#        script: "./gradlew curseforge"
+#        target_commitsh: $TRAVIS_TAG
+#        on:
+#            repo: GlassPane/Mesh
+#            tags: true
+#            branch: master

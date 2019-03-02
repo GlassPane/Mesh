@@ -46,6 +46,8 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private static final Identifier TYPE_SMOKER = new Identifier("smoking");
     private static File resourcesDir;
 
+    //FIXME won't work outside dev!
+    // -> extract to json files!
     private static final MethodInvoker<BrewingRecipeRegistry> _registerPotionType = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8080", "registerPotionType", Item.class);
     private static final MethodInvoker<BrewingRecipeRegistry> _registerItemRecipe = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8071", "registerItemRecipe", Item.class, Item.class, Item.class);
     private static final MethodInvoker<BrewingRecipeRegistry> _registerPotionRecipe = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8074", "registerPotionRecipe", Potion.class, Item.class, Potion.class);

@@ -15,7 +15,7 @@ sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "com.github.GlassPane"
 archivesBaseName = "Mesh"
-version = "${mod_version}"
+version = System.getenv("TRAVIS_TAG") ?: project.mod_version
 
 minecraft {
 }
@@ -41,8 +41,12 @@ processResources {
 repositories {
     mavenCentral()
     maven {
-        name = "Fabric"
+        name = "FabricMC"
         url = "https://maven.fabricmc.net"
+    }
+    maven {
+        name = "TehNut"
+        url = "https://tehnut.info/maven"
     }
     maven {
         name = "JamiesWhiteShirt"
@@ -72,11 +76,21 @@ dependencies {
     //optional dependency!
     modCompile "net.fabricmc:fabric:${fabric_version}"
 
-    //TODO remove if we ever get a modRuntime configuration
-    modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
-    modCompile "com.jamieswhiteshirt:developer-mode:${developer_mode_version}"
-
     compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
+
+    //Fabric Dev Suite
+    //TODO remove if we ever get a modRuntime configuration
+    modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}" // FabricMC
+    modCompile "com.jamieswhiteshirt:developer-mode:${developer_mode_version}" // JamiesWhiteShirt
+    modCompile "whilewewait:whilewewait:${while_we_wait_version}" // CurseForge
+    modCompile "roughly-enough-items:RoughlyEnoughItems:${roughly_enough_items_version}" // CurseForge
+    //modCompile "rei-addons:REIAddons:${rei_addons_version}" // CurseForge
+    modCompile "mcp.mobius.waila:Hwyla:${hwyla_version}" // TehNut
+    //modCompile "info.tehnut.pluginloader:plugin-loader:${plugin_loader_version}" // TehNut
+    modCompile "gamemode-numbers-fabric:GamemodeNumbers:${gm_numbers_version}" // CurseForge
+    //modCompile "fabric-controlling:fabriccontrolling:${fabric_controlling_version}" // CurseForge
+    //modCompile "target-dummy:target:dummy:${target_dummy_version}" // CurseForge
+    //modCompile "sewingkit:SewingKit:${sewingkit_version}" // CurseForge
 }
 
 compileJava {
@@ -186,13 +200,13 @@ publishing {
         //mavenLocal() //uncomment this to publish to the local maven
 
         //publish to the nerdhub maven if credentials are set
-        if (project.hasProperty("nerdhub_maven_user")) {
+        if (getProjectProperty("nerdhub_maven_user") != null) {
             maven {
                 name = "NerdHub"
-                url = findProperty("nerdhub_maven_url")
+                url = getProjectProperty("nerdhub_maven_url")
                 credentials {
-                    username = findProperty("nerdhub_maven_user")
-                    password = findProperty("nerdhub_maven_pass")
+                    username = getProjectProperty("nerdhub_maven_user")
+                    password = getProjectProperty("nerdhub_maven_pass")
                 }
                 authentication {
                     basic(BasicAuthentication)
@@ -200,6 +214,10 @@ publishing {
             }
         }
     }
+}
+
+def getProjectProperty(String name) {
+    return findProperty(name) ?: System.getenv(name)
 }
 
 license {
