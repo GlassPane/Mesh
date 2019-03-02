@@ -33,6 +33,7 @@ before_deploy:
 deploy:
     -   provider: script
         script: "./gradlew publish"
+        skip_cleanup: true
         on:
             repo: GlassPane/Mesh
             branch: master
@@ -41,6 +42,7 @@ deploy:
 #    -   provider: script
 #        script: "./gradlew curseforge"
 #        target_commitsh: $TRAVIS_TAG
+#        skip_cleanup: true
 #        on:
 #            repo: GlassPane/Mesh
 #            tags: true
