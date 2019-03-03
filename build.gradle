@@ -86,7 +86,7 @@ dependencies {
     modCompile "roughly-enough-items:RoughlyEnoughItems:${roughly_enough_items_version}" // CurseForge
     //modCompile "rei-addons:REIAddons:${rei_addons_version}" // CurseForge
     modCompile "mcp.mobius.waila:Hwyla:${hwyla_version}" // TehNut
-    //modCompile "info.tehnut.pluginloader:plugin-loader:${plugin_loader_version}" // TehNut
+    modCompile "info.tehnut.pluginloader:plugin-loader:${plugin_loader_version}" // TehNut
     modCompile "gamemode-numbers-fabric:GamemodeNumbers:${gm_numbers_version}" // CurseForge
     //modCompile "fabric-controlling:fabriccontrolling:${fabric_controlling_version}" // CurseForge
     //modCompile "target-dummy:target:dummy:${target_dummy_version}" // CurseForge
