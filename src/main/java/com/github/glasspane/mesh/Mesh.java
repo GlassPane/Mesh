@@ -65,7 +65,7 @@ public class Mesh implements ModInitializer {
         RegistryDiscoverer.init();
         RecipeFactoryImpl.init();
         if(FabricLoader.getInstance().isModLoaded("fabric")) {
-            ResourceManagerHelper.get(ResourceType.DATA).registerReloadListener(new ConfigReloader());
+            ConfigReloader.init();
         }
     }
 }
