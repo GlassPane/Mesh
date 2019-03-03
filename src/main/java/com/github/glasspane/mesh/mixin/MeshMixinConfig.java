@@ -17,9 +17,7 @@
  */
 package com.github.glasspane.mesh.mixin;
 
-import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.annotation.CalledByReflection;
-import com.google.common.collect.ImmutableMap;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -27,16 +25,10 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 @CalledByReflection
 public class MeshMixinConfig implements IMixinConfigPlugin {
     private static final String PACKAGE_NAME = "com.github.glasspane.mesh.mixin";
-    private static final ImmutableMap<String, BooleanSupplier> MIXIN_STATES = ImmutableMap.of(
-            PACKAGE_NAME + ".common.MixinRecipeManager", Mesh::isDevEnvironment,
-            PACKAGE_NAME + ".client.MixinMinecraftClient", Mesh::isDebugMode,
-            PACKAGE_NAME + ".server.MixinMinecraftDedicatedServer", Mesh::isDebugMode
-    );
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -52,7 +44,14 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return MIXIN_STATES.getOrDefault(mixinClassName, () -> false).getAsBoolean();
+        switch(mixinClassName) {
+            case PACKAGE_NAME + ".common.MixinRecipeManager":
+                return Boolean.getBoolean("fabric.development");
+            case PACKAGE_NAME + ".client.MixinMinecraftClient":
+            case PACKAGE_NAME + ".server.MixinMinecraftDedicatedServer":
+                return Boolean.getBoolean("mesh.debug");
+        }
+        throw new IllegalArgumentException("no config set for " + mixinClassName);
     }
 
     @Override
