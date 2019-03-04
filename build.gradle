@@ -1,5 +1,6 @@
 import net.fabricmc.loom.task.RemapJar
 
+import java.nio.charset.StandardCharsets
 import java.time.Year
 
 plugins {
