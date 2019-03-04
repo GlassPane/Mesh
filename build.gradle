@@ -1,6 +1,5 @@
 import net.fabricmc.loom.task.RemapJar
 
-import java.nio.charset.StandardCharsets
 import java.time.Year
 
 plugins {
@@ -11,14 +10,14 @@ plugins {
     //id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
+apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
+apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/development_suite.gradle"
+
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "com.github.GlassPane"
 archivesBaseName = "Mesh"
 version = System.getenv("TRAVIS_TAG") ?: project.mod_version
-
-minecraft {
-}
 
 processResources {
     // this will ensure that this task is redone when there"s a change
@@ -39,34 +38,11 @@ processResources {
 }
 
 repositories {
-    mavenCentral()
     maven {
         name = "FabricMC"
         url = "https://maven.fabricmc.net"
     }
-    maven {
-        name = "TehNut"
-        url = "https://tehnut.info/maven"
-    }
-    maven {
-        name = "JamiesWhiteShirt"
-        url = "https://maven.jamieswhiteshirt.com/libs-release"
-    }
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven"
-    }
-    maven {
-        name = "JitPack"
-        url = "https://jitpack.io"
-    }
 }
-
-//configurations {
-//    embed {
-//        transitive = false
-//    }
-//}
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -75,45 +51,6 @@ dependencies {
 
     //optional dependency!
     modCompile "net.fabricmc:fabric:${fabric_version}"
-
-    compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
-
-    //Fabric Dev Suite
-    //TODO remove if we ever get a modRuntime configuration
-    modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}" // FabricMC
-    modCompile "com.jamieswhiteshirt:developer-mode:${developer_mode_version}" // JamiesWhiteShirt
-    modCompile "whilewewait:whilewewait:${while_we_wait_version}" // CurseForge
-    modCompile "roughly-enough-items:RoughlyEnoughItems:${roughly_enough_items_version}" // CurseForge
-    //modCompile "rei-addons:REIAddons:${rei_addons_version}" // CurseForge
-    modCompile "mcp.mobius.waila:Hwyla:${hwyla_version}" // TehNut
-    modCompile "info.tehnut.pluginloader:plugin-loader:${plugin_loader_version}" // TehNut
-    modCompile "gamemode-numbers-fabric:GamemodeNumbers:${gm_numbers_version}" // CurseForge
-    //modCompile "fabric-controlling:fabriccontrolling:${fabric_controlling_version}" // CurseForge
-    //modCompile "target-dummy:target:dummy:${target_dummy_version}" // CurseForge
-    //modCompile "sewingkit:SewingKit:${sewingkit_version}" // CurseForge
-}
-
-compileJava {
-    options.encoding = "UTF-8"
-}
-
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption("Xdoclint:none", "-quiet")
-        }
-    }
-}
-
-jar {
-    from "LICENSE.md"
-    manifest.mainAttributes(
-            "Implementation-Title": project.archivesBaseName,
-            "Implementation-Version": project.version,
-            "Maven-Artifact": "${project.group}:${project.name}:${project.version}".toLowerCase(Locale.ROOT),
-            "Built-On-Minecraft": project.minecraft_version,
-            "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
-    )
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
@@ -143,83 +80,6 @@ task remapApiJar(type: RemapJar, dependsOn: apiJar) {
     jar = apiJar.archivePath
 }
 
-//shadowJar {
-//    classifier = null
-//    configurations = [project.configurations.embed]
-//}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
-    classifier = "sources"
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    from "LICENSE.md"
-    classifier = "javadoc"
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact(jar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-            //TODO waiting on Loom 0.3.0
-            artifact apiJar
-            //artifact(apiJar) {
-            //    builtBy remapApiJar
-            //}
-            artifact javadocJar
-            pom {
-                name = "Mesh"
-                url = "https://github.com/GlassPane/Mesh"
-                licenses {
-                    license {
-                        name = "GNU Lesser General Public License"
-                        url = "https://github.com/GlassPane/Mesh/blob/master/LICENSE.md"
-                    }
-                }
-                scm {
-                    url = "https://github.com/GlassPane/Mesh"
-                    connection = "scm:git:git://github.com/GlassPane/mesh.git"
-                    developerConnection = "scm:git:git@github.com:GlassPane/Mesh.git"
-                }
-                issueManagement {
-                    system = "github"
-                    url = "https://github.com/GlassPane/Mesh/issues"
-                }
-            }
-        }
-    }
-
-    repositories {
-        //mavenLocal() //uncomment this to publish to the local maven
-
-        //publish to the nerdhub maven if credentials are set
-        if (getProjectProperty("nerdhub_maven_user") != null) {
-            maven {
-                name = "NerdHub"
-                url = getProjectProperty("nerdhub_maven_url")
-                credentials {
-                    username = getProjectProperty("nerdhub_maven_user")
-                    password = getProjectProperty("nerdhub_maven_pass")
-                }
-                authentication {
-                    basic(BasicAuthentication)
-                }
-            }
-        }
-    }
-}
-
-def getProjectProperty(String name) {
-    return findProperty(name) ?: System.getenv(name)
-}
-
 license {
     header = file("code_quality/${project.license_header}_HEADER.txt")
     // Apply licenses only to main source set
@@ -239,4 +99,3 @@ license {
         projectDisplayName = project.archivesBaseName
     }
 }
-tasks.build.dependsOn javadocJar //, remapApiJar //TODO temp fix until Loom 0.3.0 releases
