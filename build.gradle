@@ -11,14 +11,14 @@ plugins {
     //id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
-apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
-apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/development_suite.gradle"
-
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "com.github.GlassPane"
 archivesBaseName = "Mesh"
 version = System.getenv("TRAVIS_TAG") ?: project.mod_version
+
+apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
+apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/development_suite.gradle"
 
 processResources {
     // this will ensure that this task is redone when there"s a change

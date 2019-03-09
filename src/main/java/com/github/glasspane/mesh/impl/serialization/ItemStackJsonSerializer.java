@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 public class ItemStackJsonSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
     @Override
     public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return ShapedRecipe.deserializeItemStack(json.getAsJsonObject());
+        return ShapedRecipe.getItemStack(json.getAsJsonObject());
     }
 
     @Override
