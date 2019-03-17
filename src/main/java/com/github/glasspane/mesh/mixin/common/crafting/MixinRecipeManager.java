@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.mixin.common;
+package com.github.glasspane.mesh.mixin.common.crafting;
 
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.crafting.RecipeCreator;

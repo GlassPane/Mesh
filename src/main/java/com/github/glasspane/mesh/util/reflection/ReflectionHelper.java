@@ -25,6 +25,22 @@ import java.lang.reflect.Method;
 
 public class ReflectionHelper {
 
+    private static final boolean devEnv;
+
+    static {
+        Class c;
+        try {
+            c = Class.forName("net.minecraft.network.NetworkEncryptionUtils");
+        }
+        catch (ClassNotFoundException ignore) {
+            c = null;
+        }
+        devEnv = c != null;
+        if(devEnv) {
+            Mesh.getLogger().info("Managed to load a deobfuscated class, we are in a development environment!");
+        }
+    }
+
     public static <T> MethodInvoker<T> getMethodInvoker(Class<T> clazz, String obfName, String yarnName, Class... parameters) {
         return new MethodInvoker<>(getMethod(clazz, obfName, yarnName, parameters));
     }
@@ -33,26 +49,21 @@ public class ReflectionHelper {
     public static <T> Method getMethod(Class<T> clazz, String obfName, @Nullable String yarnName, Class... parameters) {
         Method method = null;
         try {
-            method = clazz.getDeclaredMethod(obfName, parameters);
-        }
-        catch (NoSuchMethodException e) {
-            try {
-                if(yarnName == null) {
-                    throw e;
-                }
+            if(devEnv && yarnName != null) {
                 method = clazz.getDeclaredMethod(yarnName, parameters);
             }
-            catch (NoSuchMethodException e1) {
-                Mesh.getLogger().fatal(String.format("unable to find method %s (%s) in class %s", obfName, yarnName, clazz.getCanonicalName()), e);
+            else {
+                method = clazz.getDeclaredMethod(obfName, parameters);
             }
+        }
+        catch (NoSuchMethodException e) {
+            Mesh.getLogger().fatal(String.format("unable to find method %s (%s) in class %s", obfName, yarnName, clazz.getCanonicalName()), e);
         }
         if(method != null) {
             method.setAccessible(true);
             return method;
         }
-        else {
-            throw new IllegalStateException("reflection error: method");
-        }
+        throw new IllegalStateException("reflection error: method");
     }
 
     @SuppressWarnings("unchecked")
@@ -60,25 +71,22 @@ public class ReflectionHelper {
     public static <T> T getField(Class<T> clazz, @Nullable T instance, String obfName, @Nullable String yarnName) {
         Field f = null;
         try {
-            f = clazz.getDeclaredField(obfName);
-        }
-        catch (NoSuchFieldException e) {
-            try {
-                if(yarnName == null) {
-                    throw e;
-                }
+            if(devEnv && yarnName != null) {
                 f = clazz.getDeclaredField(yarnName);
             }
-            catch (NoSuchFieldException e1) {
-                Mesh.getLogger().fatal(String.format("unable to find field %s (%s) in class %s", obfName, yarnName, clazz.getCanonicalName()), e);
+            else {
+                f = clazz.getDeclaredField(obfName);
             }
+        }
+        catch (NoSuchFieldException e) {
+            Mesh.getLogger().fatal(String.format("unable to find field %s (%s) in class %s", obfName, yarnName, clazz.getCanonicalName()), e);
         }
         if(f != null) {
             f.setAccessible(true);
             try {
                 return (T) f.get(instance);
             }
-            catch (IllegalAccessException e) {
+            catch (IllegalAccessException | ClassCastException e) {
                 Mesh.getLogger().fatal(String.format("unable to access field %s in class %s", f.getName(), clazz.getCanonicalName()), e);
             }
         }

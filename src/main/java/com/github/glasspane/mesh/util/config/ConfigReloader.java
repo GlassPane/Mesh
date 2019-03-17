@@ -30,6 +30,7 @@ public class ConfigReloader implements SimpleSynchronousResourceReloadListener {
     private static final Identifier ID = new Identifier(Mesh.MODID, "config_reloader");
 
     public static void init() {
+        Mesh.getLogger().debug("enabling config reloader");
         ResourceManagerHelper.get(ResourceType.DATA).registerReloadListener(new ConfigReloader());
     }
 
@@ -40,6 +41,7 @@ public class ConfigReloader implements SimpleSynchronousResourceReloadListener {
 
     @Override
     public void apply(ResourceManager var1) {
+        Mesh.getLogger().debug("reloading configs");
         ConfigHandler.getRegisteredConfigs().forEach(ConfigHandler::reloadConfig);
     }
 }

@@ -5,11 +5,10 @@
     "version": "${version}",
     "side": "universal",
     "initializers": [
-        "com.github.glasspane.mesh.Mesh"
+        "com.github.glasspane.mesh.Mesh",
+        "com.github.glasspane.mesh.impl.multiblock.MultiblockRegistry"
     ],
-    "requires": {
-    },
     "mixins": {
-        "common": "mesh.common.json"
+        "common": "mixins.mesh.common.json"
     }
 }

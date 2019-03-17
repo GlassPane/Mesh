@@ -19,13 +19,12 @@ package com.github.glasspane.mesh;
 
 import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
+import com.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import com.github.glasspane.mesh.util.config.ConfigReloader;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.resource.ResourceType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,22 +36,16 @@ public class Mesh implements ModInitializer {
     public static final String MODID = "mesh";
     public static final String MOD_NAME = "Mesh";
     private static final Logger LOGGER = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
-    private static final boolean DEVELOPMENT_ENVIRONMENT = FabricLoader.getInstance().isDevelopmentEnvironment();
-    private static final boolean DEBUG_MODE = Boolean.getBoolean("mesh.debug");
+    private static final boolean DEVELOPMENT_ENVIRONMENT = Boolean.getBoolean("fabric.development");
 
     static {
         // configure the logger for debug mode
         // see https://logging.apache.org/log4j/2.0/faq.html#reconfig_level_from_code
-        Configurator.setLevel(MODID, isDebugMode() ? Level.ALL : Level.INFO);
+        Configurator.setLevel(MODID, Boolean.getBoolean("mesh.debug") ? Level.ALL : Level.INFO);
     }
 
     public static Logger getLogger() {
         return LOGGER;
-    }
-
-    //TODO debug switch
-    public static boolean isDebugMode() {
-        return DEBUG_MODE || isDevEnvironment();
     }
 
     public static boolean isDevEnvironment() {
@@ -64,8 +57,19 @@ public class Mesh implements ModInitializer {
         LOGGER.info("Send Reinforcements!");
         RegistryDiscoverer.init();
         RecipeFactoryImpl.init();
-        if(FabricLoader.getInstance().isModLoaded("fabric")) {
+        if(Compat.FABRIC) {
             ConfigReloader.init();
+            MultiblockReloader.init();
+        }
+    }
+
+    public static class Compat {
+        public static final boolean FABRIC = FabricLoader.getInstance().isModLoaded("fabric");
+
+        public static void ensureFabricLoaded() {
+            if(!Compat.FABRIC) {
+                throw new IllegalStateException("Please install Fabric API!");
+            }
         }
     }
 }

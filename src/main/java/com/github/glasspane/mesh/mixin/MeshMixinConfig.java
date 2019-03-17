@@ -51,7 +51,12 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
             case PACKAGE_NAME + ".server.MixinMinecraftDedicatedServer":
                 return Boolean.getBoolean("mesh.debug");
         }
-        throw new IllegalArgumentException("no config set for " + mixinClassName);
+        if(mixinClassName.startsWith(PACKAGE_NAME)) {
+            return true;
+        }
+        else {
+            throw new IllegalArgumentException("Invalid Package for Class " + mixinClassName + ", expected: " + PACKAGE_NAME);
+        }
     }
 
     @Override

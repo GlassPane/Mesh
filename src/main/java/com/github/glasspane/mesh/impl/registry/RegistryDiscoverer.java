@@ -22,6 +22,9 @@ import com.github.glasspane.mesh.api.annotation.AutoRegistry;
 import com.github.glasspane.mesh.api.registry.AutoRegistryHook;
 import com.github.glasspane.mesh.api.registry.ItemBlockProvider;
 import net.fabricmc.loader.FabricLoader;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.MutableRegistry;
@@ -35,11 +38,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegistryDiscoverer {
 
+    private static Identifier registriesID = new Identifier("registries");
+
     public static void init() {
-        Map<MutableRegistry<?>, Map<Class, Pair<String, Class>>> toRegister = new TreeMap<>(Comparator.comparing(Registry.REGISTRIES::getId));
+        Mesh.getLogger().debug("discovering registry entries...");
+        Map<Identifier, Map<Class, Pair<String, Class>>> toRegister = new TreeMap<>();
+        Map<Class, Pair<String, Class>> newRegistries = new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo));
+        AtomicInteger counter = new AtomicInteger(0);
         //noinspection deprecation
         FabricLoader.INSTANCE.getInitializers(AutoRegistryHook.class).stream().map(Object::getClass).sorted(Comparator.comparing(Class::getCanonicalName)).forEachOrdered(clazz -> {
             AutoRegistry ann = clazz.getAnnotation(AutoRegistry.class);
@@ -48,12 +57,11 @@ public class RegistryDiscoverer {
                     String modid = ann.modid();
                     Class<?> type = ann.value();
                     Identifier registryName = new Identifier(ann.registry());
-                    if(Registry.REGISTRIES.containsId(registryName)) {
-                        MutableRegistry registry = Registry.REGISTRIES.get(registryName);
-                        toRegister.computeIfAbsent(registry, k -> new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo))).put(clazz, new Pair<>(modid, type));
+                    if(registriesID.equals(registryName)) {
+                        newRegistries.put(clazz, new Pair<>(modid, type));
                     }
                     else {
-                        Mesh.getLogger().warn("ignoring non-existent registry {} for class {}", registryName, clazz.getCanonicalName());
+                        toRegister.computeIfAbsent(registryName, k -> new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo))).put(clazz, new Pair<>(modid, type));
                     }
                 }
                 else {
@@ -65,35 +73,57 @@ public class RegistryDiscoverer {
                 Mesh.getLogger().error("ignoring class {}: no AutoRegistry annotation present!", clazz.getCanonicalName());
             }
         });
-        //special treatment for the item and block registry
-        for(MutableRegistry registry : new MutableRegistry[]{Registry.BLOCK, Registry.ITEM}) {
-            Optional.ofNullable(toRegister.remove(registry)).ifPresent(map -> RegistryDiscoverer.registerEntries(registry, map));
+        int registryCount = toRegister.size();
+        //register registries first
+        if(!newRegistries.isEmpty()) {
+            Mesh.getLogger().debug("adding new registries...");
+            registerEntries(registriesID, newRegistries, counter);
+            registryCount++;
         }
-        toRegister.forEach(RegistryDiscoverer::registerEntries);
+        Mesh.getLogger().debug("registering objects...");
+        //special treatment for the item and block registry
+        for(Identifier registryName : new Identifier[]{new Identifier("items"), new Identifier("blocks")}) {
+            Optional.ofNullable(toRegister.remove(registryName)).ifPresent(map -> RegistryDiscoverer.registerEntries(registryName, map, counter));
+        }
+        toRegister.forEach((registryName, entries) -> registerEntries(registryName, entries, counter));
+        Mesh.getLogger().debug("registered {} objects for {} registries", counter.get(), registryCount);
     }
 
-    private static <T> void registerEntries(MutableRegistry<T> registry, Map<Class, Pair<String, Class>> entries) {
-        entries.forEach((clazz, pair) -> {
-            String modid = pair.getLeft();
-            @SuppressWarnings("unchecked") Class<T> type = pair.getRight();
-            for(Field f : clazz.getDeclaredFields()) {
-                int modField = f.getModifiers();
-                if(Modifier.isStatic(modField) && Modifier.isPublic(modField) && Modifier.isFinal(modField) && f.getAnnotation(AutoRegistry.Ignore.class) == null) {
-                    try {
-                        Optional.ofNullable(f.get(null)).filter((o) -> type.isAssignableFrom(o.getClass())).ifPresent(value -> {
-                            Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
-                            Mesh.getLogger().trace("registering: {}", name);
-                            Registry.register(registry, name, type.cast(value));
-                            if(registry == Registry.BLOCK && value instanceof ItemBlockProvider) {
-                                Registry.register(Registry.ITEM, name, ((ItemBlockProvider) value).createItem());
-                            }
-                        });
-                    }
-                    catch (IllegalAccessException e) {
-                        Mesh.getLogger().debug("unable to register entry {}: {}", new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e.getMessage());
+    @SuppressWarnings("unchecked")
+    private static void registerEntries(Identifier registryName, Map<Class, Pair<String, Class>> entries, AtomicInteger counter) {
+        MutableRegistry registry = registriesID.equals(registryName) ? Registry.REGISTRIES : Registry.REGISTRIES.get(registryName);
+        if(registry != null) {
+            entries.forEach((clazz, pair) -> {
+                String modid = pair.getLeft();
+                Class type = pair.getRight();
+                for(Field f : clazz.getDeclaredFields()) {
+                    int modField = f.getModifiers();
+                    if(Modifier.isStatic(modField) && Modifier.isPublic(modField) && Modifier.isFinal(modField) && f.getAnnotation(AutoRegistry.Ignore.class) == null) {
+                        try {
+                            Optional.ofNullable(f.get(null)).filter((o) -> type.isAssignableFrom(o.getClass())).ifPresent(value -> {
+                                Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
+                                Mesh.getLogger().trace("registering {}: {}", value.getClass().getSimpleName(), name);
+                                Registry.register(registry, name, type.cast(value));
+                                counter.incrementAndGet();
+                                if(registry == Registry.BLOCK) {
+                                    Item item = value instanceof ItemBlockProvider ? ((ItemBlockProvider) value).createItem() : new BlockItem((Block) value, new Item.Settings());
+                                    if(item != null) {
+                                        Mesh.getLogger().trace("registering {}: {}", item.getClass().getSimpleName(), name);
+                                        Registry.register(Registry.ITEM, name, item);
+                                        counter.incrementAndGet();
+                                    }
+                                }
+                            });
+                        }
+                        catch (IllegalAccessException e) {
+                            Mesh.getLogger().debug("unable to register entry {}: {}", new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e.getMessage());
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+        else {
+            Mesh.getLogger().warn("ignoring non-existent registry {} for classes {}", registryName, Arrays.toString(entries.keySet().stream().map(Class::getSimpleName).toArray(String[]::new)));
+        }
     }
 }

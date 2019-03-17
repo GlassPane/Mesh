@@ -19,3 +19,6 @@ Minecraft Modding library
     *Requires the `mesh.resourcesDir` system property to be set to your output directory (usually `src/main/resources`)*
 
 - Registry: allows for automatically registering objects via annotations.
+
+- Multiblock: allows for easy management of Multiblock BlockEntities
+    *Requires `Fabric API` to be loaded*
