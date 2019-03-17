@@ -34,5 +34,5 @@ import net.minecraft.util.registry.SimpleRegistry;
 @AutoRegistry(value = Registry.class, modid = Mesh.MODID, registry = "registries", modsLoaded = "fabric")
 public class MultiblockRegistry implements AutoRegistryHook {
 
-    static final MutableRegistry<MultiblockTemplate<?>> MULTIBLOCKS = new SimpleRegistry<>();
+    public static final MutableRegistry<MultiblockTemplate<?>> MULTIBLOCKS = new SimpleRegistry<>();
 }

@@ -54,15 +54,15 @@ public class MultiblockTemplate<T extends BlockEntity> {
     }
 
     public Multiblock<T> newInstance(ServerWorld world, BlockPos pos, Direction orientation) {
-        return isValidMultiblock(world, pos, orientation) ? this.factory.newInstance(this, world, pos, orientation) : null;
+        return this.factory.newInstance(this, world, pos, orientation);
     }
 
-    public boolean isValidMultiblock(ServerWorld world, BlockPos centerPos, Direction orientation) {
+    public boolean isValidMultiblock(ServerWorld world, BlockPos pos, Direction orientation) {
         Rotation rot = toRotation(orientation);
-        BlockPos start = centerPos.subtract(Structure.method_15168(this.getControllerOffset(), Mirror.NONE, rot, BlockPos.ORIGIN));
-        return !this.predicates.isEmpty() && this.predicates.entrySet().parallelStream().allMatch(entry -> {
-            BlockPos pos = start.add(Structure.method_15168(entry.getKey(), Mirror.NONE, rot, BlockPos.ORIGIN));
-            return entry.getValue().test(world.getBlockState(pos));
+        BlockPos startPos = pos.subtract(Structure.method_15168(this.getControllerOffset(), Mirror.NONE, rot, BlockPos.ORIGIN));
+        return !this.predicates.isEmpty() && this.predicates.entrySet().stream().allMatch(entry -> {
+            BlockState state = world.getBlockState(startPos.add(Structure.method_15168(entry.getKey(), Mirror.NONE, rot, BlockPos.ORIGIN)));
+            return entry.getValue().test(state);
         });
     }
 

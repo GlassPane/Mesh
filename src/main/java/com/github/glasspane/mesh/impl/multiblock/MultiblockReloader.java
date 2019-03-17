@@ -85,7 +85,7 @@ public class MultiblockReloader implements SimpleSynchronousResourceReloadListen
                 template.setSize(size);
                 template.setPredicates(predicateMap);
                 File output = new File("structures/" + template.getResourcePath().getNamespace() + "/" + template.getResourcePath().getPath() + ".json");
-                Mesh.getLogger().debug("writing structure data to {}", output.getAbsolutePath());
+                Mesh.getLogger().debug("writing structure data to {}", output::getAbsolutePath);
                 output.getParentFile().mkdirs();
                 try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(output))) {
                     gson.toJson(Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, structureTag), writer);

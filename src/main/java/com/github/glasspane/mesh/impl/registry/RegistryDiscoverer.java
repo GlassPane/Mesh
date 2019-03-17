@@ -65,20 +65,20 @@ public class RegistryDiscoverer {
                     }
                 }
                 else {
-                    Mesh.getLogger().debug("ignoring class {} for registration", clazz.getCanonicalName());
-                    Mesh.getLogger().trace("Missing one or more loaded mods: {}", Arrays.toString(ann.modsLoaded()));
+                    Mesh.getLogger().debug("ignoring class {} for registration", clazz::getCanonicalName);
+                    Mesh.getLogger().trace("Missing one or more loaded mods: {}", () -> Arrays.toString(ann.modsLoaded()));
                 }
             }
             else {
-                Mesh.getLogger().error("ignoring class {}: no AutoRegistry annotation present!", clazz.getCanonicalName());
+                Mesh.getLogger().error("ignoring class {}: no AutoRegistry annotation present!", clazz::getCanonicalName);
             }
         });
-        int registryCount = toRegister.size();
+        AtomicInteger registryCount = new AtomicInteger(toRegister.size());
         //register registries first
         if(!newRegistries.isEmpty()) {
             Mesh.getLogger().debug("adding new registries...");
             registerEntries(registriesID, newRegistries, counter);
-            registryCount++;
+            registryCount.incrementAndGet();
         }
         Mesh.getLogger().debug("registering objects...");
         //special treatment for the item and block registry
@@ -86,7 +86,7 @@ public class RegistryDiscoverer {
             Optional.ofNullable(toRegister.remove(registryName)).ifPresent(map -> RegistryDiscoverer.registerEntries(registryName, map, counter));
         }
         toRegister.forEach((registryName, entries) -> registerEntries(registryName, entries, counter));
-        Mesh.getLogger().debug("registered {} objects for {} registries", counter.get(), registryCount);
+        Mesh.getLogger().debug("registered {} objects for {} registries", counter::get, registryCount::get);
     }
 
     @SuppressWarnings("unchecked")
@@ -102,13 +102,13 @@ public class RegistryDiscoverer {
                         try {
                             Optional.ofNullable(f.get(null)).filter((o) -> type.isAssignableFrom(o.getClass())).ifPresent(value -> {
                                 Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
-                                Mesh.getLogger().trace("registering {}: {}", value.getClass().getSimpleName(), name);
+                                Mesh.getLogger().trace("registering {}: {}", () -> value.getClass().getSimpleName(), () -> name);
                                 Registry.register(registry, name, type.cast(value));
                                 counter.incrementAndGet();
                                 if(registry == Registry.BLOCK) {
                                     Item item = value instanceof ItemBlockProvider ? ((ItemBlockProvider) value).createItem() : new BlockItem((Block) value, new Item.Settings());
                                     if(item != null) {
-                                        Mesh.getLogger().trace("registering {}: {}", item.getClass().getSimpleName(), name);
+                                        Mesh.getLogger().trace("registering {}: {}", () -> item.getClass().getSimpleName(), () -> name);
                                         Registry.register(Registry.ITEM, name, item);
                                         counter.incrementAndGet();
                                     }
@@ -116,14 +116,14 @@ public class RegistryDiscoverer {
                             });
                         }
                         catch (IllegalAccessException e) {
-                            Mesh.getLogger().debug("unable to register entry {}: {}", new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e.getMessage());
+                            Mesh.getLogger().debug("unable to register entry {}: {}", () -> new Identifier(modid, f.getName().toLowerCase(Locale.ROOT)), e::getMessage);
                         }
                     }
                 }
             });
         }
         else {
-            Mesh.getLogger().warn("ignoring non-existent registry {} for classes {}", registryName, Arrays.toString(entries.keySet().stream().map(Class::getSimpleName).toArray(String[]::new)));
+            Mesh.getLogger().warn("ignoring non-existent registry {} for classes {}", () -> registryName, () -> Arrays.toString(entries.keySet().stream().map(Class::getSimpleName).toArray(String[]::new)));
         }
     }
 }

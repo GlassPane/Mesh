@@ -38,7 +38,7 @@ public class RegistryDumper {
     public static void dumpRegistries() {
         Mesh.getLogger().debug("dumping registry data...");
         File outputDir = new File(FabricLoader.getInstance().getGameDirectory(), "mesh/registry_dump");
-        Mesh.getLogger().trace("dumping registries to {}", outputDir.getAbsolutePath());
+        Mesh.getLogger().trace("dumping registries to {}", outputDir::getAbsolutePath);
         Map<Registry<?>, AtomicInteger> registrySizes = new HashMap<>();
         if(outputDir.exists() || outputDir.mkdirs()) {
             Registry.REGISTRIES.getIds().forEach(registryName -> {
@@ -50,7 +50,7 @@ public class RegistryDumper {
         }
         else {
             Mesh.getLogger().debug("Error dumping registries!");
-            Mesh.getLogger().trace("unable to create directory at {}", outputDir.getAbsolutePath());
+            Mesh.getLogger().trace("unable to create directory at {}", outputDir::getAbsolutePath);
         }
     }
 
@@ -89,7 +89,7 @@ public class RegistryDumper {
             }
         }
         else {
-            Mesh.getLogger().trace("unable to delete old registry file at {}, registry will not be dumped!", outputFile.getAbsolutePath());
+            Mesh.getLogger().trace("unable to delete old registry file at {}, registry will not be dumped!", outputFile::getAbsolutePath);
         }
     }
 }

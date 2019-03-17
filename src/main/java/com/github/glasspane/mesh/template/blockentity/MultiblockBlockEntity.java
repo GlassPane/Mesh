@@ -49,22 +49,28 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
         this.multiblockTemplate = multiblockTemplate;
     }
 
+    protected void validateMultiblock() {
+        if(this.multiblock != null && !this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
+            this.multiblock.invalidate();
+            this.multiblock = null;
+            this.markDirty();
+            Mesh.getLogger().trace("invalidated multiblock at {}", this::getPos);
+        }
+    }
+
     @Override
     public void tick() {
         if(!this.world.isClient) {
             //TODO find BlockEntity
             if(firstTick) {
                 this.onLoad();
+                this.validateMultiblock();
                 this.multiblockData = null;
                 firstTick = false;
             }
             //check the integrity of the multiblock every 20 ticks
-            if((this.world.getTime() % 20 == randomTickOffset) && this.multiblock != null) {
-                if(!this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
-                    this.multiblock.invalidate();
-                    this.multiblock = null;
-                    this.markDirty();
-                }
+            if((this.world.getTime() % 20 == randomTickOffset)) {
+                this.validateMultiblock();
             }
         }
     }

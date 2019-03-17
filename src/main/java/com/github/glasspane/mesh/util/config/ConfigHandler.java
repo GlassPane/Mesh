@@ -65,7 +65,7 @@ public class ConfigHandler {
                 JsonUtil.GSON.toJson(configClass.newInstance(), writer);
             }
             catch (IOException | IllegalAccessException | InstantiationException e) {
-                Mesh.getLogger().error("unable to write config file for {}", configClass.getCanonicalName());
+                Mesh.getLogger().error("unable to write config file for {}", configClass::getCanonicalName);
                 Mesh.getLogger().trace("file location: " + configFile.getAbsolutePath(), e);
             }
         }

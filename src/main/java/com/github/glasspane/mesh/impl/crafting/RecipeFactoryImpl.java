@@ -116,7 +116,7 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private RecipeFactory save(Identifier name, JsonElement json) {
         File outputFile = new File(resourcesDir, name.getNamespace() + "/recipes/" + name.getPath() + ".json");
         if(outputFile.exists()) {
-            Mesh.getLogger().trace("Recipe file {} already exists. overwriting!", name, outputFile.getAbsolutePath());
+            Mesh.getLogger().trace("Recipe file {} already exists. overwriting!", () -> name);
             outputFile.delete();
         }
         outputFile.getParentFile().mkdirs();
