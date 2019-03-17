@@ -18,7 +18,7 @@ archivesBaseName = "Mesh"
 version = System.getenv("TRAVIS_TAG") ?: project.mod_version
 
 apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
-apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/development_suite.gradle"
+//apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/development_suite.gradle"
 
 processResources {
     // this will ensure that this task is redone when there"s a change
@@ -43,12 +43,17 @@ repositories {
         name = "FabricMC"
         url = "https://maven.fabricmc.net"
     }
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings "net.fabricmc:yarn:${yarn_mappings}"
-    modCompile "net.fabricmc:fabric-loader:${loader_version}"
+    //modCompile "net.fabricmc:fabric-loader:${loader_version}"
+    modCompile "com.github.FabricMC:fabric-loader:dev~0.4-SNAPSHOT"
 
     //optional dependency!
     modCompile "net.fabricmc:fabric:${fabric_version}"
