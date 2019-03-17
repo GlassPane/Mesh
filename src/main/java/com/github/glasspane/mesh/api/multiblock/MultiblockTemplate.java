@@ -30,17 +30,22 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BoundingBox;
 import net.minecraft.util.math.Direction;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class MultiblockTemplate<T extends BlockEntity> {
 
+    static {
+        Mesh.Compat.ensureFabricLoaded();
+    }
+
     private final BlockPos controllerOffset;
     private final MultiblockFactory<T> factory;
     private final Identifier path;
     private BlockPos size;
-    private Map<BlockPos, Predicate<BlockState>> predicates;
+    private Map<BlockPos, Predicate<BlockState>> predicates = new HashMap<>();
 
     public MultiblockTemplate(Identifier path, BlockPos controllerOffset, MultiblockFactory<T> factory) {
         this.path = path;

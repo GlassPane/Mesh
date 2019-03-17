@@ -19,8 +19,8 @@ package com.github.glasspane.mesh;
 
 import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
-import com.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
+import com.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import com.github.glasspane.mesh.util.config.ConfigReloader;
 import net.fabricmc.api.ModInitializer;

@@ -41,6 +41,8 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     protected final int randomTickOffset = RANDOM.nextInt(20);
     protected final MultiblockTemplate<T> multiblockTemplate;
     protected Multiblock<T> multiblock = null;
+    protected CompoundTag multiblockData = null;
+    private boolean firstTick = true;
 
     public MultiblockBlockEntity(BlockEntityType<?> type, MultiblockTemplate<T> multiblockTemplate) {
         super(type);
@@ -49,27 +51,47 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
 
     @Override
     public void tick() {
-        if(!this.world.isClient && this.world.getTime() % randomTickOffset == 0 && this.multiblock != null) {
-            if(!this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
-                this.multiblock.invalidate();
-                this.multiblock = null;
+        if(!this.world.isClient) {
+            //TODO find BlockEntity
+            if(firstTick) {
+                this.onLoad();
+                this.multiblockData = null;
+                firstTick = false;
+            }
+            //check the integrity of the multiblock every 20 ticks
+            if((this.world.getTime() % 20 == randomTickOffset) && this.multiblock != null) {
+                if(!this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
+                    this.multiblock.invalidate();
+                    this.multiblock = null;
+                    this.markDirty();
+                }
             }
         }
     }
 
+    /**
+     * called at the beginning of the first tick, to allow for updating values that require the world and position of the {@link BlockEntity} to be set
+     */
+    public void onLoad() {
+        Direction orientation = this.getOrientation();
+        if(this.multiblockData != null && this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, orientation)) {
+            this.multiblock = this.multiblockTemplate.newInstance((ServerWorld) this.world, this.pos, orientation);
+            this.multiblock.fromTag(this.multiblockData);
+        }
+    }
+
     public Direction getOrientation() {
-        BlockState state = this.world.getBlockState(this.pos);
+        BlockState state = this.getCachedState();
         return state.getProperties().contains(HorizontalFacingBlock.field_11177) ? state.get(HorizontalFacingBlock.field_11177) : Direction.NORTH;
     }
 
     @Override
     public void fromTag(CompoundTag compoundTag_1) {
         super.fromTag(compoundTag_1);
-        Direction orientation = this.getOrientation();
-        if(!this.world.isClient && compoundTag_1.containsKey(MULTIBLOCK_NBT_KEY, NbtType.COMPOUND) && this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, orientation)) {
-            this.multiblock = this.multiblockTemplate.newInstance((ServerWorld) this.world, this.pos, orientation);
-            this.multiblock.fromTag(compoundTag_1.getCompound(MULTIBLOCK_NBT_KEY));
+        if(compoundTag_1.containsKey(MULTIBLOCK_NBT_KEY, NbtType.COMPOUND)) {
+            this.multiblockData = compoundTag_1.getCompound(MULTIBLOCK_NBT_KEY);
         }
+        this.firstTick = true;
     }
 
     @Override

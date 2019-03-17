@@ -44,20 +44,21 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private static final Identifier TYPE_FURNACE = new Identifier("smelting");
     private static final Identifier TYPE_BLAST_FURNACE = new Identifier("blasting");
     private static final Identifier TYPE_SMOKER = new Identifier("smoking");
-    private static File resourcesDir;
-
     //FIXME won't work outside dev!
     // -> extract to json files!
     private static final MethodInvoker<BrewingRecipeRegistry> _registerPotionType = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8080", "registerPotionType", Item.class);
     private static final MethodInvoker<BrewingRecipeRegistry> _registerItemRecipe = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8071", "registerItemRecipe", Item.class, Item.class, Item.class);
     private static final MethodInvoker<BrewingRecipeRegistry> _registerPotionRecipe = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8074", "registerPotionRecipe", Potion.class, Item.class, Potion.class);
+    private static File resourcesDir;
 
     public static void init() {
-        String path = System.getProperty("mesh.resourcesDir", null);
-        if(path == null) {
-            throw new IllegalStateException("mesh.resourcesDir property not set!");
+        if(Mesh.isDevEnvironment()) {
+            String path = System.getProperty("mesh.resourcesDir", null);
+            if(path == null) {
+                throw new IllegalStateException("mesh.resourcesDir property not set!");
+            }
+            resourcesDir = new File(path, "data");
         }
-        resourcesDir = new File(path, "data");
     }
 
     @Override
@@ -108,6 +109,10 @@ public class RecipeFactoryImpl implements RecipeFactory {
         return this.save(recipe.getId(), JsonUtil.GSON.toJsonTree(recipe));
     }
 
+    private RecipeFactory saveRecipe(Recipe recipe) {
+        return save(recipe.getName(), JsonUtil.GSON.toJsonTree(recipe));
+    }
+
     private RecipeFactory save(Identifier name, JsonElement json) {
         File outputFile = new File(resourcesDir, name.getNamespace() + "/recipes/" + name.getPath() + ".json");
         if(outputFile.exists()) {
@@ -122,9 +127,5 @@ public class RecipeFactoryImpl implements RecipeFactory {
             Mesh.getLogger().debug("unable to write recipe", e);
         }
         return this;
-    }
-
-    private RecipeFactory saveRecipe(Recipe recipe) {
-        return save(recipe.getName(), JsonUtil.GSON.toJsonTree(recipe));
     }
 }

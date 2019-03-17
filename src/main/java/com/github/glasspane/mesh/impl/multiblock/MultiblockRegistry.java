@@ -32,7 +32,7 @@ import net.minecraft.util.registry.SimpleRegistry;
  */
 @Deprecated
 @AutoRegistry(value = Registry.class, modid = Mesh.MODID, registry = "registries", modsLoaded = "fabric")
-final class MultiblockRegistry implements AutoRegistryHook {
+public class MultiblockRegistry implements AutoRegistryHook {
 
-    public static final MutableRegistry<MultiblockTemplate<?>> MULTIBLOCKS = new SimpleRegistry<>();
+    static final MutableRegistry<MultiblockTemplate<?>> MULTIBLOCKS = new SimpleRegistry<>();
 }
