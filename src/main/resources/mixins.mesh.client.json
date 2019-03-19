@@ -1,0 +1,13 @@
+{
+    "required": true,
+    "minVersion": "0.7.11",
+    "compatibilityLevel": "JAVA_8",
+    "package": "com.github.glasspane.mesh.mixin.client",
+    "plugin": "com.github.glasspane.mesh.mixin.MeshMixinConfig",
+    "mixins": [
+        "MixinMinecraftClient"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

@@ -26,8 +26,8 @@ import com.mojang.datafixers.types.JsonOps;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.fabric.api.util.NbtType;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -44,9 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
 public class MultiblockReloader implements SimpleSynchronousResourceReloadListener {
@@ -69,26 +67,44 @@ public class MultiblockReloader implements SimpleSynchronousResourceReloadListen
             Identifier path = new Identifier(template.getResourcePath().getNamespace(), "structures/" + template.getResourcePath().getPath() + ".nbt");
             try(InputStream stream = resourceManager.getResource(path).getInputStream()) {
                 CompoundTag structureTag = NbtIo.readCompressed(stream);
-                BlockPos size = getPos(structureTag, "size");
+                BlockPos size = getPos(structureTag, "size").add(-1, -1, -1);
                 ListTag blockTag = structureTag.getList("blocks", NbtType.COMPOUND);
                 ListTag paletteTag = structureTag.getList("palette", NbtType.COMPOUND);
-                List<BlockPos> exactMatches = template.getExactMatchPositions();
-                Map<BlockPos, Predicate<BlockState>> predicateMap = new HashMap<>();
+                BlockState[] states = new BlockState[paletteTag.size()];
+                for(int i = 0; i < paletteTag.size(); i++) {
+                    BlockState state = TagHelper.deserializeBlockState(paletteTag.getCompoundTag(i));
+                    //swap structure void and air, to make building easier
+                    if(!state.isAir()) {
+                        states[i] = state;
+                    }
+                    else {
+                        states[i] = null;
+                    }
+                }
+                Map<BlockPos, BlockState> stateMap = new HashMap<>();
+                BlockState air = Blocks.AIR.getDefaultState();
+                BlockPos.iterateBoxPositions(BlockPos.ORIGIN, size).forEach(pos -> stateMap.put(pos.toImmutable(), air)); //fill the map with default values
                 for(int i = 0; i < blockTag.size(); i++) {
                     CompoundTag tag = blockTag.getCompoundTag(i);
                     BlockPos pos = getPos(tag, "pos");
-                    CompoundTag stateTag = paletteTag.getCompoundTag(tag.getInt("state"));
-                    BlockState state = TagHelper.deserializeBlockState(stateTag);
-                    Block block = state.getBlock();
-                    predicateMap.put(pos, exactMatches.contains(pos) ? state1 -> state1 == state : state1 -> state1.getBlock() == block);
+                    BlockState state = states[tag.getInt("state")];
+                    if(state != null) {
+                        stateMap.put(pos, state);
+                    }
+                    else {
+                        stateMap.remove(pos);
+                    }
                 }
                 template.setSize(size);
-                template.setPredicates(predicateMap);
-                File output = new File("structures/" + template.getResourcePath().getNamespace() + "/" + template.getResourcePath().getPath() + ".json");
-                Mesh.getLogger().debug("writing structure data to {}", output::getAbsolutePath);
-                output.getParentFile().mkdirs();
-                try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(output))) {
-                    gson.toJson(Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, structureTag), writer);
+                template.setStateMap(stateMap);
+                if(Mesh.isDebugMode()) {
+                    String fileName = "structures/" + template.getResourcePath().getNamespace() + "/" + template.getResourcePath().getPath() + ".json";
+                    Mesh.getLogger().trace("writing structure {} to json: {}", () -> MultiblockManager.getInstance().getRegistry().getId(template), () -> fileName);
+                    File output = new File(Mesh.getOutputDir(), fileName);
+                    output.getParentFile().mkdirs();
+                    try(OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(output))) {
+                        gson.toJson(Dynamic.convert(NbtOps.INSTANCE, JsonOps.INSTANCE, structureTag), writer);
+                    }
                 }
             }
             catch (IOException e) {

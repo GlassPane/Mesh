@@ -18,7 +18,6 @@
 package com.github.glasspane.mesh.impl.debug;
 
 import com.github.glasspane.mesh.Mesh;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -27,6 +26,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class RegistryDumper {
 
     public static void dumpRegistries() {
         Mesh.getLogger().debug("dumping registry data...");
-        File outputDir = new File(FabricLoader.getInstance().getGameDirectory(), "mesh/registry_dump");
+        File outputDir = new File(Mesh.getOutputDir(), "registry_dump");
         Mesh.getLogger().trace("dumping registries to {}", outputDir::getAbsolutePath);
         Map<Registry<?>, AtomicInteger> registrySizes = new HashMap<>();
         if(outputDir.exists() || outputDir.mkdirs()) {
@@ -60,7 +60,7 @@ public class RegistryDumper {
             outputFile.getParentFile().mkdirs();
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
                 List<Identifier> idList = new LinkedList<>(registry.getIds());
-                Collections.sort(idList);
+                Collections.sort(idList, Comparator.comparing(Identifier::toString));
                 String types = "Namespace,Name,Raw ID";
                 writer.write(types);
                 if(registry == Registry.REGISTRIES) {

@@ -18,8 +18,9 @@
 package com.github.glasspane.mesh.api.multiblock;
 
 import com.github.glasspane.mesh.Mesh;
-import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.Structure;
@@ -30,10 +31,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BoundingBox;
 import net.minecraft.util.math.Direction;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 public class MultiblockTemplate<T extends BlockEntity> {
 
@@ -45,7 +46,7 @@ public class MultiblockTemplate<T extends BlockEntity> {
     private final MultiblockFactory<T> factory;
     private final Identifier path;
     private BlockPos size;
-    private Map<BlockPos, Predicate<BlockState>> predicates = new HashMap<>();
+    private Map<BlockPos, BlockState> stateMap = new HashMap<>();
 
     public MultiblockTemplate(Identifier path, BlockPos controllerOffset, MultiblockFactory<T> factory) {
         this.path = path;
@@ -60,9 +61,17 @@ public class MultiblockTemplate<T extends BlockEntity> {
     public boolean isValidMultiblock(ServerWorld world, BlockPos pos, Direction orientation) {
         Rotation rot = toRotation(orientation);
         BlockPos startPos = pos.subtract(Structure.method_15168(this.getControllerOffset(), Mirror.NONE, rot, BlockPos.ORIGIN));
-        return !this.predicates.isEmpty() && this.predicates.entrySet().stream().allMatch(entry -> {
-            BlockState state = world.getBlockState(startPos.add(Structure.method_15168(entry.getKey(), Mirror.NONE, rot, BlockPos.ORIGIN)));
-            return entry.getValue().test(state);
+        List<BlockPos> exactMatches = this.getExactMatchPositions();
+        return this.stateMap.entrySet().stream().allMatch(entry -> {
+            BlockPos testPos = startPos.add(Structure.method_15168(entry.getKey(), Mirror.NONE, rot, BlockPos.ORIGIN));
+            BlockState testState = world.getBlockState(testPos);
+            if(exactMatches.contains(entry.getKey())) {
+                return entry.getValue() == testState;
+            }
+            else {
+                Block block = entry.getValue().getBlock();
+                return block == Blocks.AIR ? testState.isAir() : block == testState.getBlock();
+            }
         });
     }
 
@@ -86,10 +95,10 @@ public class MultiblockTemplate<T extends BlockEntity> {
     }
 
     /**
-     * @return a list of {@link BlockPos} relative to the structure's position which have to be <strong>exact</strong> matches for the blockstate, rather than just matching the block
+     * @return a list of {@link BlockPos} relative to the structure's position which have to be <strong>exact</strong> matches for the {@link BlockState}, rather than just matching the {@link Block}
      */
     public List<BlockPos> getExactMatchPositions() {
-        return ImmutableList.of(this.getControllerOffset());
+        return Collections.singletonList(this.getControllerOffset());
     }
 
     public BoundingBox getSize() {
@@ -104,7 +113,7 @@ public class MultiblockTemplate<T extends BlockEntity> {
         return path;
     }
 
-    public void setPredicates(Map<BlockPos, Predicate<BlockState>> predicates) {
-        this.predicates = predicates;
+    public void setStateMap(Map<BlockPos, BlockState> stateMap) {
+        this.stateMap = stateMap;
     }
 }

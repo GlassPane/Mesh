@@ -30,6 +30,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import java.io.File;
+
 @CalledByReflection
 public class Mesh implements ModInitializer {
 
@@ -37,11 +39,13 @@ public class Mesh implements ModInitializer {
     public static final String MOD_NAME = "Mesh";
     private static final Logger LOGGER = LogManager.getLogger(MODID, new PrefixMessageFactory(MOD_NAME));
     private static final boolean DEVELOPMENT_ENVIRONMENT = Boolean.getBoolean("fabric.development");
+    private static final boolean DEBUG_MODE = Boolean.getBoolean("mesh.debug");
+    private static File outputDir;
 
     static {
         // configure the logger for debug mode
         // see https://logging.apache.org/log4j/2.0/faq.html#reconfig_level_from_code
-        Configurator.setLevel(MODID, Boolean.getBoolean("mesh.debug") ? Level.ALL : Level.INFO);
+        Configurator.setLevel(MODID, DEBUG_MODE ? Level.ALL : Level.INFO);
     }
 
     public static Logger getLogger() {
@@ -50,6 +54,20 @@ public class Mesh implements ModInitializer {
 
     public static boolean isDevEnvironment() {
         return DEVELOPMENT_ENVIRONMENT;
+    }
+
+    public static boolean isDebugMode() {
+        return DEBUG_MODE;
+    }
+
+    public static File getOutputDir() {
+        if(outputDir == null) {
+            outputDir = new File(FabricLoader.getInstance().getGameDirectory(), "mesh");
+            if(!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+        }
+        return outputDir;
     }
 
     @Override

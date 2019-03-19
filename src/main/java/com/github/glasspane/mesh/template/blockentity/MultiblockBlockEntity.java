@@ -31,17 +31,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
 
 public abstract class MultiblockBlockEntity<T extends BlockEntity> extends LockableContainerBlockEntity implements SidedInventory, Tickable {
 
-    private static final String MULTIBLOCK_NBT_KEY = Mesh.MODID + "_multiblock";
     protected static final Random RANDOM = new Random();
+    private static final String MULTIBLOCK_NBT_KEY = Mesh.MODID + "_multiblock";
     protected final int randomTickOffset = RANDOM.nextInt(20);
     protected final MultiblockTemplate<T> multiblockTemplate;
     protected Multiblock<T> multiblock = null;
     protected CompoundTag multiblockData = null;
+    protected int updateCounter;
     private boolean firstTick = true;
 
     public MultiblockBlockEntity(BlockEntityType<?> type, MultiblockTemplate<T> multiblockTemplate) {
@@ -49,19 +51,10 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
         this.multiblockTemplate = multiblockTemplate;
     }
 
-    protected void validateMultiblock() {
-        if(this.multiblock != null && !this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
-            this.multiblock.invalidate();
-            this.multiblock = null;
-            this.markDirty();
-            Mesh.getLogger().trace("invalidated multiblock at {}", this::getPos);
-        }
-    }
-
     @Override
     public void tick() {
         if(!this.world.isClient) {
-            //TODO find BlockEntity
+            //TODO is there a better way to do this?
             if(firstTick) {
                 this.onLoad();
                 this.validateMultiblock();
@@ -69,7 +62,7 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
                 firstTick = false;
             }
             //check the integrity of the multiblock every 20 ticks
-            if((this.world.getTime() % 20 == randomTickOffset)) {
+            if((MathHelper.abs(updateCounter++) % 20 == randomTickOffset)) {
                 this.validateMultiblock();
             }
         }
@@ -83,6 +76,15 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
         if(this.multiblockData != null && this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, orientation)) {
             this.multiblock = this.multiblockTemplate.newInstance((ServerWorld) this.world, this.pos, orientation);
             this.multiblock.fromTag(this.multiblockData);
+        }
+    }
+
+    protected void validateMultiblock() {
+        if(this.multiblock != null && !this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
+            this.multiblock.invalidate();
+            this.multiblock = null;
+            this.markDirty();
+            Mesh.getLogger().trace("invalidated multiblock at {}", this::getPos);
         }
     }
 
@@ -103,7 +105,8 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     @Override
     public CompoundTag toTag(CompoundTag compoundTag_1) {
         compoundTag_1 = super.toTag(compoundTag_1);
-        if(this.multiblock != null && this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
+        this.validateMultiblock();
+        if(this.multiblock != null) {
             compoundTag_1.put(MULTIBLOCK_NBT_KEY, this.multiblock.toTag(new CompoundTag()));
         }
         return compoundTag_1;

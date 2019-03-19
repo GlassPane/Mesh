@@ -28,12 +28,14 @@ import java.util.Set;
 
 @CalledByReflection
 public class MeshMixinConfig implements IMixinConfigPlugin {
-    private static final String PACKAGE_NAME = "com.github.glasspane.mesh.mixin";
+    private static final String MIXIN_PACKAGE = "com.github.glasspane.mesh.mixin";
+    private static final boolean DEBUG_MODE = Boolean.getBoolean("mesh.debug");
+    private static final boolean DEVELOPMENT = Boolean.getBoolean("fabric.development");
 
     @Override
     public void onLoad(String mixinPackage) {
-        if(!mixinPackage.startsWith(PACKAGE_NAME)) {
-            throw new IllegalArgumentException("Invalid Package: " + mixinPackage + ", expected: " + PACKAGE_NAME);
+        if(!mixinPackage.startsWith(MIXIN_PACKAGE)) {
+            throw new IllegalArgumentException("Invalid Package: " + mixinPackage + ", expected: " + MIXIN_PACKAGE);
         }
     }
 
@@ -45,17 +47,17 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         switch(mixinClassName) {
-            case PACKAGE_NAME + ".common.MixinRecipeManager":
-                return Boolean.getBoolean("fabric.development");
-            case PACKAGE_NAME + ".client.MixinMinecraftClient":
-            case PACKAGE_NAME + ".server.MixinMinecraftDedicatedServer":
-                return Boolean.getBoolean("mesh.debug");
+            case "com.github.glasspane.mesh.mixin.common.crafting.MixinRecipeManager":
+                return DEVELOPMENT;
+            case "com.github.glasspane.mesh.mixin.client.MixinMinecraftClient":
+            case "com.github.glasspane.mesh.mixin.server.MixinMinecraftDedicatedServer":
+                return DEBUG_MODE;
         }
-        if(mixinClassName.startsWith(PACKAGE_NAME)) {
+        if(mixinClassName.startsWith(MIXIN_PACKAGE)) {
             return true;
         }
         else {
-            throw new IllegalArgumentException("Invalid Package for Class " + mixinClassName + ", expected: " + PACKAGE_NAME);
+            throw new IllegalArgumentException("Invalid Package for Class " + mixinClassName + ", expected: " + MIXIN_PACKAGE);
         }
     }
 

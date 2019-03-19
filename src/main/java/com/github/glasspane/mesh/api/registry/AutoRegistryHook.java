@@ -22,5 +22,7 @@ import com.github.glasspane.mesh.api.annotation.AutoRegistry;
 /**
  * hook for catching AutoRegistry annotations<br/>
  * <b>all classes implementing this must be annotated with {@link AutoRegistry}!</b>
+ * @deprecated will soon be obsolete, only the {@link AutoRegistry} annotation will be required
  */
+@Deprecated
 public interface AutoRegistryHook { }

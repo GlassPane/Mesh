@@ -9,6 +9,8 @@
         "com.github.glasspane.mesh.impl.multiblock.MultiblockRegistry"
     ],
     "mixins": {
-        "common": "mixins.mesh.common.json"
+        "common": "mixins.mesh.common.json",
+        "client": "mixins.mesh.client.json",
+        "server": "mixins.mesh.server.json"
     }
 }
