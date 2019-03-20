@@ -66,7 +66,7 @@ public class MultiblockTemplate<T extends BlockEntity> {
             BlockPos testPos = startPos.add(Structure.method_15168(entry.getKey(), Mirror.NONE, rot, BlockPos.ORIGIN));
             BlockState testState = world.getBlockState(testPos);
             if(exactMatches.contains(entry.getKey())) {
-                return entry.getValue() == testState;
+                return entry.getValue().rotate(rot) == testState;
             }
             else {
                 Block block = entry.getValue().getBlock();
