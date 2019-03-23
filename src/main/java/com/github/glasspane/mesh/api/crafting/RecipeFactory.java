@@ -17,6 +17,7 @@
  */
 package com.github.glasspane.mesh.api.crafting;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -25,10 +26,15 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 public interface RecipeFactory {
-    //TODO new vanilla "machines"
-    //TODO Item/Block Tags
+    //TODO cartography table
+    //TODO fletching table
+    //TODO loom
+    //TODO smithing table
+    //TODO grindstone
+
     /**
      * register items that can hold potions
      * (splash potions, lingering potions, potion bottles)
@@ -37,6 +43,7 @@ public interface RecipeFactory {
 
     /**
      * register recipes that change the item of a potion, not the potion itself
+     *
      * @param modifier the item that is applied to the potion item
      */
     RecipeFactory addPotionItemRecipe(Item potionItem, Item modifier, Item resultPotionItem);
@@ -50,7 +57,7 @@ public interface RecipeFactory {
      * @param recipeGroup the recipe group (for the recipe book)
      * @param recipe      first the pattern (as up to three {@link String}s), the ingredients, in the form of a char to {@link Ingredient} mapping, ex: 's', Items.Stick
      */
-    default RecipeFactory addShaped(ItemStack output, String recipeGroup, Object... recipe) {
+    default RecipeFactory addShaped(ItemStack output, @Nullable String recipeGroup, Object... recipe) {
         return addShaped(output, null, recipeGroup, recipe);
     }
 
@@ -62,31 +69,43 @@ public interface RecipeFactory {
      * @param recipeGroup the recipe group (for the recipe book)
      * @param recipe      first the pattern (as up to three {@link String}s), the ingredients, in the form of a char to {@link Ingredient} mapping, ex: 's', Items.Stick
      */
-    RecipeFactory addShaped(ItemStack output, @Nullable Identifier name, String recipeGroup, Object... recipe);
+    RecipeFactory addShaped(ItemStack output, @Nullable Identifier name, @Nullable String recipeGroup, Object... recipe);
 
-    default RecipeFactory addSmelting(ItemStack output, String group, Object input, float experience, int cookingTime) {
+    default RecipeFactory addSmelting(ItemStack output, @Nullable String group, Object input, float experience, int cookingTime) {
         return addSmelting(output, null, group, input, experience, cookingTime);
     }
 
-    RecipeFactory addSmelting(ItemStack output, @Nullable Identifier name, String group, Object input, float experience, int cookingTime);
+    RecipeFactory addSmelting(ItemStack output, @Nullable Identifier name, @Nullable String group, Object input, float experience, int cookingTime);
 
     default RecipeFactory addBlasting(ItemStack output, String group, Object input, float experience, int cookingTime) {
         return addBlasting(output, null, group, input, experience, cookingTime);
     }
 
-    RecipeFactory addBlasting(ItemStack output, @Nullable Identifier name, String group, Object input, float experience, int cookingTime);
+    RecipeFactory addBlasting(ItemStack output, @Nullable Identifier name, @Nullable String group, Object input, float experience, int cookingTime);
 
-    default RecipeFactory addSmoking(ItemStack output, String group, Object input, float experience, int cookingTime) {
+    default RecipeFactory addSmoking(ItemStack output, @Nullable String group, Object input, float experience, int cookingTime) {
         return addSmoking(output, null, group, input, experience, cookingTime);
     }
 
-    RecipeFactory addSmoking(ItemStack output, @Nullable Identifier name, String group, Object input, float experience, int cookingTime);
+    RecipeFactory addSmoking(ItemStack output, @Nullable Identifier name, @Nullable String group, Object input, float experience, int cookingTime);
 
-    default RecipeFactory addShapeless(ItemStack output, String group, Object... ingredients) {
+    default RecipeFactory addShapeless(ItemStack output, @Nullable String group, Object... ingredients) {
         return addShapeless(output, null, group, ingredients);
     }
 
-    RecipeFactory addShapeless(ItemStack output, @Nullable Identifier name, String group, Object... ingredients);
+    RecipeFactory addShapeless(ItemStack output, @Nullable Identifier name, @Nullable String group, Object... ingredients);
 
     <T extends Recipe<?>> RecipeFactory addCustomRecipe(T recipe);
+
+    RecipeFactory addItemTag(Identifier name, boolean replace, Item... items);
+
+    RecipeFactory addBlockTag(Identifier name, boolean replace, Block... blocks);
+
+    <T> RecipeFactory addCustomTag(Identifier name, boolean replace, String tagName, Function<T, Identifier> idMapper, T... objects);
+
+    default RecipeFactory addStoneCutting(ItemStack output, @Nullable String group, Object input) {
+        return addStoneCutting(output, null, group, input);
+    }
+
+    RecipeFactory addStoneCutting(ItemStack output, @Nullable Identifier name, @Nullable String group, Object input);
 }

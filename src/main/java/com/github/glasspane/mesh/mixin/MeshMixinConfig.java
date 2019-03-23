@@ -47,8 +47,6 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         switch(mixinClassName) {
-            case "com.github.glasspane.mesh.mixin.common.crafting.MixinRecipeManager":
-                return DEVELOPMENT;
             case "com.github.glasspane.mesh.mixin.client.MixinMinecraftClient":
             case "com.github.glasspane.mesh.mixin.server.MixinMinecraftDedicatedServer":
                 return DEBUG_MODE;
