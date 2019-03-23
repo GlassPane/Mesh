@@ -49,17 +49,7 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private static final MethodInvoker<BrewingRecipeRegistry> _registerPotionType = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8080", "registerPotionType", Item.class);
     private static final MethodInvoker<BrewingRecipeRegistry> _registerItemRecipe = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8071", "registerItemRecipe", Item.class, Item.class, Item.class);
     private static final MethodInvoker<BrewingRecipeRegistry> _registerPotionRecipe = ReflectionHelper.getMethodInvoker(BrewingRecipeRegistry.class, "method_8074", "registerPotionRecipe", Potion.class, Item.class, Potion.class);
-    private static File resourcesDir;
-
-    public static void init() {
-        if(Mesh.isDevEnvironment()) {
-            String path = System.getProperty("mesh.resourcesDir", null);
-            if(path == null) {
-                throw new IllegalStateException("mesh.resourcesDir property not set!");
-            }
-            resourcesDir = new File(path, "data");
-        }
-    }
+    private static final File resourcesDir = Mesh.isDevEnvironment() ? new File(Mesh.getOutputDir(), "recipes") : null;
 
     @Override
     public RecipeFactory addPotionType(Item item) {

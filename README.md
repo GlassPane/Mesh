@@ -16,9 +16,9 @@ Minecraft Modding library
 ## Modules
 
 - Crafting: allows for exporting recipes into json format<br/>
-    *Requires the `mesh.resourcesDir` system property to be set to your output directory (usually `src/main/resources`)*
+    ~*Note: Generated recipes will be in `$RUN_DIR/mesh/recipes`*
 
 - Registry: allows for automatically registering objects via annotations.
 
 - Multiblock: allows for easy management of Multiblock BlockEntities
-    *Requires `Fabric API` to be loaded*
+    ~*Note: Requires `Fabric API` to be loaded*
