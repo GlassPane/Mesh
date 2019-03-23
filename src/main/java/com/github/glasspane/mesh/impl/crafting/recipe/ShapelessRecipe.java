@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 public class ShapelessRecipe extends Recipe {
 
-    private transient static final Identifier TYPE = new Identifier("crafting_shaped");
+    private transient static final Identifier TYPE = new Identifier("crafting_shapeless");
 
     @SerializedName("ingredients")
     private final Ingredient[] inputs;
