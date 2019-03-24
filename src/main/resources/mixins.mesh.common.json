@@ -5,7 +5,9 @@
     "package": "com.github.glasspane.mesh.mixin.common",
     "plugin": "com.github.glasspane.mesh.mixin.MeshMixinConfig",
     "mixins": [
-        "crafting.MixinRecipeManager"
+        "crafting.BrewingRecipeRegistryAcessor",
+        "crafting.MixinRecipeManager",
+        "resources.MixinMinecraftServer"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -20,8 +20,7 @@ package com.github.glasspane.mesh.mixin.common.crafting;
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.crafting.RecipeCreator;
 import com.github.glasspane.mesh.api.crafting.RecipeFactory;
-import com.github.glasspane.mesh.impl.crafting.RecipeFactoryDev;
-import com.github.glasspane.mesh.impl.crafting.RecipeFactoryRuntime;
+import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
@@ -35,8 +34,8 @@ public class MixinRecipeManager {
 
     @Inject(method = "apply", at = @At(value = "HEAD"))
     private void createMeshRecipes(ResourceManager resourceManager, CallbackInfo ci) {
-        Mesh.getLogger().debug("Development Environment detected. Creating recipe files...");
-        RecipeFactory factory = Mesh.isDevEnvironment() ? new RecipeFactoryDev() : new RecipeFactoryRuntime();
+        Mesh.getLogger().debug("Creating recipe files...");
+        RecipeFactory factory = new RecipeFactoryImpl();
         FabricLoader.INSTANCE.getInitializers(RecipeCreator.class).forEach(creator -> creator.createRecipes(factory));
     }
 }

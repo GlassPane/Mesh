@@ -24,6 +24,7 @@ import com.github.glasspane.mesh.impl.crafting.recipe.ShapedRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.ShapelessRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.SmeltingRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.StonecuttingRecipe;
+import com.github.glasspane.mesh.mixin.common.crafting.BrewingRecipeRegistryAcessor;
 import com.github.glasspane.mesh.util.JsonUtil;
 import com.github.glasspane.mesh.util.RecipeHelper;
 import com.google.gson.JsonElement;
@@ -31,6 +32,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -41,12 +43,30 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Function;
 
-public class RecipeFactoryDev extends RecipeFactoryRuntime {
+public class RecipeFactoryImpl implements RecipeFactory {
 
     private static final Identifier TYPE_FURNACE = new Identifier("smelting");
     private static final Identifier TYPE_BLAST_FURNACE = new Identifier("blasting");
     private static final Identifier TYPE_SMOKER = new Identifier("smoking");
-    private static final File resourcesDir = new File(Mesh.getOutputDir(), "recipes");
+    private static final File resourcesDir = new File(Mesh.getOutputDir(), "resources");
+
+    @Override
+    public RecipeFactory addPotionType(Item item) {
+        BrewingRecipeRegistryAcessor.registerPotionType(item);
+        return this;
+    }
+
+    @Override
+    public RecipeFactory addPotionItemRecipe(Item potionItem, Item modifier, Item resultPotionItem) {
+        BrewingRecipeRegistryAcessor.registerItemRecipe(potionItem, modifier, resultPotionItem);
+        return this;
+    }
+
+    @Override
+    public RecipeFactory addPotionRecipe(Potion input, Item modifier, Potion output) {
+        BrewingRecipeRegistryAcessor.registerPotionRecipe(input, modifier, output);
+        return this;
+    }
 
     @Override
     public RecipeFactory addShaped(ItemStack output, @Nullable Identifier name, @Nullable String recipeGroup, Object... recipe) {
@@ -107,9 +127,9 @@ public class RecipeFactoryDev extends RecipeFactoryRuntime {
     }
 
     private RecipeFactory save(Identifier name, String path, JsonElement json) {
-        File outputFile = new File(resourcesDir, name.getNamespace() + "/" + path + "/" + name.getPath() + ".json");
+        File outputFile = new File(resourcesDir, "data/" + name.getNamespace() + "/" + path + "/" + name.getPath() + ".json");
         if(outputFile.exists()) {
-            Mesh.getLogger().trace("Recipe file {} already exists. overwriting!", () -> name);
+            Mesh.getLogger().trace("Recipe file {} already exists. overwriting!", name);
             outputFile.delete();
         }
         outputFile.getParentFile().mkdirs();
