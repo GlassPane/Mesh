@@ -39,7 +39,7 @@ public class MixinMinecraftServer {
     @Final
     private ResourcePackContainerManager<ResourcePackContainer> resourcePackContainerManager;
 
-    @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 0, shift = At.Shift.AFTER))
+    @Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 0, shift = At.Shift.AFTER))
     private void createResourcepackContainers(File file, LevelProperties properties, CallbackInfo ci) {
         Mesh.getLogger().trace("registering external data pack");
         this.resourcePackContainerManager.addCreator(new ExternalResourcePackCreator());

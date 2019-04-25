@@ -24,9 +24,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.Structure;
+import net.minecraft.util.BlockMirror;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BoundingBox;
 import net.minecraft.util.math.Direction;
@@ -59,11 +59,11 @@ public class MultiblockTemplate<T extends BlockEntity> {
     }
 
     public boolean isValidMultiblock(ServerWorld world, BlockPos pos, Direction orientation) {
-        Rotation rot = toRotation(orientation);
-        BlockPos startPos = pos.subtract(Structure.method_15168(this.getControllerOffset(), Mirror.NONE, rot, BlockPos.ORIGIN));
+        BlockRotation rot = toRotation(orientation);
+        BlockPos startPos = pos.subtract(Structure.method_15168(this.getControllerOffset(), BlockMirror.NONE, rot, BlockPos.ORIGIN));
         List<BlockPos> exactMatches = this.getExactMatchPositions();
         return this.stateMap.entrySet().stream().allMatch(entry -> {
-            BlockPos testPos = startPos.add(Structure.method_15168(entry.getKey(), Mirror.NONE, rot, BlockPos.ORIGIN));
+            BlockPos testPos = startPos.add(Structure.method_15168(entry.getKey(), BlockMirror.NONE, rot, BlockPos.ORIGIN));
             BlockState testState = world.getBlockState(testPos);
             if(exactMatches.contains(entry.getKey())) {
                 return entry.getValue().rotate(rot) == testState;
@@ -75,18 +75,18 @@ public class MultiblockTemplate<T extends BlockEntity> {
         });
     }
 
-    public static Rotation toRotation(Direction direction) {
+    public static BlockRotation toRotation(Direction direction) {
         switch(direction) {
             default:
                 Mesh.getLogger().warn("invalid direction, only horizontals allowed!", new IllegalStateException("invalid horizontal direction: " + direction.name()));
             case NORTH:
-                return Rotation.ROT_0;
+                return BlockRotation.ROT_0;
             case EAST:
-                return Rotation.ROT_90;
+                return BlockRotation.ROT_90;
             case SOUTH:
-                return Rotation.ROT_180;
+                return BlockRotation.ROT_180;
             case WEST:
-                return Rotation.ROT_270;
+                return BlockRotation.ROT_270;
         }
     }
 

@@ -90,7 +90,7 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
 
     public Direction getOrientation() {
         BlockState state = this.getCachedState();
-        return state.getProperties().contains(HorizontalFacingBlock.field_11177) ? state.get(HorizontalFacingBlock.field_11177) : Direction.NORTH;
+        return state.getProperties().contains(HorizontalFacingBlock.FACING) ? state.get(HorizontalFacingBlock.FACING) : Direction.NORTH;
     }
 
     @Override
