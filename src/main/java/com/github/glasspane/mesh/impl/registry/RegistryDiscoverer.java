@@ -23,8 +23,8 @@ import com.github.glasspane.mesh.api.registry.AutoRegistryHook;
 import com.github.glasspane.mesh.api.registry.ItemBlockProvider;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.MutableRegistry;
@@ -50,7 +50,7 @@ public class RegistryDiscoverer {
         Map<Class, Pair<String, Class>> newRegistries = new TreeMap<>(Comparator.comparing(Class::getCanonicalName, String::compareTo));
         AtomicInteger counter = new AtomicInteger(0);
         //noinspection deprecation
-        FabricLoader.INSTANCE.getInitializers(AutoRegistryHook.class).stream().map(Object::getClass).sorted(Comparator.comparing(Class::getCanonicalName)).forEachOrdered(clazz -> {
+        FabricLoader.INSTANCE.getEntrypoints("mesh/registry", AutoRegistryHook.class).stream().map(Object::getClass).sorted(Comparator.comparing(Class::getCanonicalName)).forEachOrdered(clazz -> {
             AutoRegistry ann = clazz.getAnnotation(AutoRegistry.class);
             if(ann != null) {
                 if(Arrays.stream(ann.modsLoaded()).allMatch(net.fabricmc.loader.api.FabricLoader.getInstance()::isModLoaded)) {

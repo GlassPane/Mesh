@@ -80,7 +80,7 @@ public class EndTextureRenderer {
                     else {
                         client.getTextureManager().bindTexture(PORTAL_TEX);
                         flag = true;
-                        gameRenderer.method_3201(true);
+                        gameRenderer.setFogBlack(true);
                     }
                     if(i == 1) {
                         GlStateManager.enableBlend();
@@ -137,7 +137,7 @@ public class EndTextureRenderer {
         GlStateManager.disableTexGen(GlStateManager.TexCoord.R);
         GlStateManager.disableLighting();
         if(flag) {
-            gameRenderer.method_3201(false);
+            gameRenderer.setFogBlack(false);
         }
         GlStateManager.color3f(1.0F, 1.0F, 1.0F);
     }

@@ -83,7 +83,7 @@ public class MultiblockReloader implements SimpleSynchronousResourceReloadListen
                 }
                 Map<BlockPos, BlockState> stateMap = new HashMap<>();
                 BlockState air = Blocks.AIR.getDefaultState();
-                BlockPos.iterateBoxPositions(BlockPos.ORIGIN, size).forEach(pos -> stateMap.put(pos.toImmutable(), air)); //fill the map with default values
+                BlockPos.iterate(BlockPos.ORIGIN, size).forEach(pos -> stateMap.put(pos.toImmutable(), air)); //fill the map with default values
                 for(int i = 0; i < blockTag.size(); i++) {
                     CompoundTag tag = blockTag.getCompoundTag(i);
                     BlockPos pos = getPos(tag, "pos");

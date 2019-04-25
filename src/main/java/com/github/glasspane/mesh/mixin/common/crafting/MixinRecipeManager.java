@@ -34,8 +34,8 @@ public class MixinRecipeManager {
 
     @Inject(method = "apply", at = @At(value = "HEAD"))
     private void createMeshRecipes(ResourceManager resourceManager, CallbackInfo ci) {
-        Mesh.getLogger().debug("Creating recipe files...");
+        Mesh.getLogger().trace("reloading recipe registration...");
         RecipeFactory factory = new RecipeFactoryImpl();
-        FabricLoader.INSTANCE.getInitializers(RecipeCreator.class).forEach(creator -> creator.createRecipes(factory));
+        FabricLoader.INSTANCE.getEntrypoints(Mesh.MODID + "/recipes", RecipeCreator.class).forEach(creator -> creator.createRecipes(factory));
     }
 }
