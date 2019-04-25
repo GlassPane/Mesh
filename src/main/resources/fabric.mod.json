@@ -6,6 +6,20 @@
     "description": "Modding Library",
     "version": "${version}",
     "side": "universal",
+    "authors": [
+        {
+            "name": "UpcraftLP",
+            "contact": {
+                "homepage": "https://twitter.com/UpcraftLP"
+            }
+        }
+    ],
+    "contact": {
+        "homepage": "https://minecraft.curseforge.com/projects/320211",
+        "issues": "https://github.com/GlassPane/Mesh/issues",
+        "sources": "https://github.com/GlassPane/Mesh"
+    },
+    "license": "LGPL-3.0-or-later",
     "entrypoints": {
         "main": [
             "com.github.glasspane.mesh.Mesh"
