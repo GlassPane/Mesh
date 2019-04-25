@@ -1,0 +1,11 @@
+{
+    "itemGroup.mesh.additions": "Additional Resources",
+    "command.mesh.debug.helditem_name": "Name: %s",
+    "command.mesh.debug.helditem_id": "ID: %s",
+    "command.mesh.debug.helditem_count": "Count: %s",
+    "command.mesh.debug.helditem_nbt": "NBT: %s",
+    "command.mesh.debug.helditem_copy_nbt": "Click to copy NBT data to chat!",
+    "command.mesh.debug.error.helditem_empty": "No item in hand!",
+    "command.mesh.debug.tp_multiple": "Teleported %s entities to %s!",
+    "command.mesh.debug.tp_self": "Teleported to %s!"
+}

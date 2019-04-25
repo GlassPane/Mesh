@@ -21,6 +21,7 @@ import com.github.glasspane.mesh.api.annotation.CalledByReflection;
 import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
 import com.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
+import com.github.glasspane.mesh.util.command.MeshCommand;
 import com.github.glasspane.mesh.util.config.ConfigReloader;
 import com.github.glasspane.mesh.util.itemgroup.MeshItemGroup;
 import net.fabricmc.api.ModInitializer;
@@ -77,6 +78,7 @@ public class Mesh implements ModInitializer {
         if(Compat.FABRIC) {
             ConfigReloader.init();
             MultiblockReloader.init();
+            MeshCommand.init();
             MeshItemGroup.init();
         }
     }
