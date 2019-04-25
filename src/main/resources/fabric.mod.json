@@ -17,9 +17,6 @@
     "recommends": {
         "fabric": "*"
     },
-    "depends": {
-        "mesh_api": "*"
-    },
     "mixins": [
         {
             "environment": "*",

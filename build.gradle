@@ -19,7 +19,7 @@ archivesBaseName = "Mesh"
 version = System.getenv("TRAVIS_TAG") ?: project.mod_version
 
 apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
-//apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/${minecraft_version}/development_suite.gradle"
+apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/${minecraft_version}/development_suite.gradle"
 
 repositories {
     maven {
@@ -123,8 +123,10 @@ processResources {
                 if(obj.has("recommends")) {
                     obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
-                if(obj.has("depends")) {
-                    obj.getAsJsonObject("depends").addProperty("mesh_api", "^${project.version}")
+                JsonObject depends = obj.getAsJsonObject("depends") ?: new JsonObject()
+                depends.addProperty("mesh_api", "^${project.version}")
+                if(!depends.keySet().isEmpty()) {
+                    obj.add("depends", depends)
                 }
                 if(project.hasProperty("api_package")) {
                     JsonArray jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
@@ -133,7 +135,7 @@ processResources {
                     //noinspection GroovyAssignabilityCheck
                     apiJarObject.addProperty("file", "META-INF/libraries/" + apiJarTask.archivePath.name)
                     jarsArray.add(apiJarObject)
-                    content.add("jars", jarsArray)
+                    obj.add("jars", jarsArray)
                 }
             }
             file.text = gson.toJson(content)
