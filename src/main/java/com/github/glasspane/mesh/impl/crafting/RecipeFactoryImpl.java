@@ -24,6 +24,7 @@ import com.github.glasspane.mesh.impl.crafting.recipe.ShapedRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.ShapelessRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.SmeltingRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.StonecuttingRecipe;
+import com.github.glasspane.mesh.impl.resource.CraftingVirtualResourcePack;
 import com.github.glasspane.mesh.mixin.common.crafting.BrewingRecipeRegistryAcessor;
 import com.github.glasspane.mesh.util.JsonUtil;
 import com.github.glasspane.mesh.util.RecipeHelper;
@@ -33,6 +34,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -48,7 +50,6 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private static final Identifier TYPE_FURNACE = new Identifier("smelting");
     private static final Identifier TYPE_BLAST_FURNACE = new Identifier("blasting");
     private static final Identifier TYPE_SMOKER = new Identifier("smoking");
-    private static final File resourcesDir = new File(Mesh.getOutputDir(), "resources");
 
     @Override
     public RecipeFactory addPotionType(Item item) {
@@ -127,17 +128,16 @@ public class RecipeFactoryImpl implements RecipeFactory {
     }
 
     private RecipeFactory save(Identifier name, String path, JsonElement json) {
-        File outputFile = new File(resourcesDir, "data/" + name.getNamespace() + "/" + path + "/" + name.getPath() + ".json");
-        if(outputFile.exists()) {
-            Mesh.getLogger().trace("Recipe file {} already exists. overwriting!", name);
-            outputFile.delete();
-        }
-        outputFile.getParentFile().mkdirs();
-        try(FileWriter writer = new FileWriter(outputFile)) {
-            JsonUtil.GSON.toJson(json, writer);
-        }
-        catch (IOException e) {
-            Mesh.getLogger().debug("unable to write recipe", e);
+        CraftingVirtualResourcePack.getInstance().addResource(ResourceType.DATA, new Identifier(name.getNamespace(), path + "/" + name.getPath() + ".json"), json);
+        if(Mesh.isDebugMode()) {
+            File outputFile = new File(Mesh.getOutputDir(), "virtual_resource_pack_dump/data/" + name.getNamespace() + "/" + path + "/" + name.getPath() + ".json");
+            outputFile.getParentFile().mkdirs();
+            try(FileWriter writer = new FileWriter(outputFile)) {
+                JsonUtil.GSON.toJson(json, writer);
+            }
+            catch (IOException e) {
+                Mesh.getLogger().debug("unable to write recipe", e);
+            }
         }
         return this;
     }

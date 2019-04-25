@@ -19,6 +19,7 @@ package com.github.glasspane.mesh.mixin.common.resources;
 
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.impl.resource.ExternalResourcePackCreator;
+import com.github.glasspane.mesh.impl.resource.VirtualResourcePackCreator;
 import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainerManager;
 import net.minecraft.server.MinecraftServer;
@@ -43,5 +44,6 @@ public class MixinMinecraftServer {
     private void createResourcepackContainers(File file, LevelProperties properties, CallbackInfo ci) {
         Mesh.getLogger().trace("registering external data pack");
         this.resourcePackContainerManager.addCreator(new ExternalResourcePackCreator());
+        this.resourcePackContainerManager.addCreator(new VirtualResourcePackCreator());
     }
 }
