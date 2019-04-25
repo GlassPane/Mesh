@@ -1,10 +1,11 @@
+import com.google.gson.*
 import net.fabricmc.loom.task.RemapJar
 
 import java.nio.charset.StandardCharsets
 import java.time.Year
 
 plugins {
-    id "fabric-loom" version "0.2.0-SNAPSHOT"
+    id "fabric-loom" version "0.2.1-SNAPSHOT"
     id "net.minecrell.licenser" version "0.2.1"
     id "com.matthewprenger.cursegradle" version "1.1.2"
     id "maven-publish"
@@ -18,25 +19,7 @@ archivesBaseName = "Mesh"
 version = System.getenv("TRAVIS_TAG") ?: project.mod_version
 
 apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
-apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/${minecraft_version}/development_suite.gradle"
-
-processResources {
-    // this will ensure that this task is redone when there"s a change
-    inputs.property "version", project.version
-
-    // replace stuff in fabric.mod.json, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-
-        // add mod metadata
-        expand "version": project.version
-    }
-
-    // copy everything else, that"s not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
-}
+//apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/${minecraft_version}/development_suite.gradle"
 
 repositories {
     maven {
@@ -51,9 +34,8 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings "net.fabricmc:yarn:${minecraft_version}.${yarn_mappings}"
+    mappings "net.fabricmc:yarn:${minecraft_version}+build.${yarn_mappings}"
     modCompile "net.fabricmc:fabric-loader:${loader_version}"
-    //modCompile "com.github.FabricMC:fabric-loader:dev~0.4-SNAPSHOT"
 
     //optional dependency!
     modCompile "net.fabricmc:fabric:${fabric_version}"
@@ -64,8 +46,8 @@ task apiJar(type: Jar, dependsOn: classes) {
         project.hasProperty("api_package")
     }
     //TODO waiting on Loom 0.3.0
-    //from (sourceSets.main.output) {
-    from(sourceSets.main.allJava) {
+    from(sourceSets.main.output) {
+        //from(sourceSets.main.allJava) {
         include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     }
     from "LICENSE.md"
@@ -83,7 +65,85 @@ task remapApiJar(type: RemapJar, dependsOn: apiJar) {
     onlyIf {
         project.hasProperty("api_package")
     }
-    jar = apiJar.archivePath
+    jar = apiJar.archiveFile.get().asFile
+}
+
+if(project.hasProperty("api_package")) {
+    def apiJarTask = project.tasks.getByName("apiJar")
+    apiJarTask.with {
+        include "api.fabric.mod.json"
+        rename "api\\.fabric\\.mod\\.json", "fabric.mod.json"
+    }
+}
+
+jar {
+    if (project.hasProperty("api_package")) {
+        def apiJarTask = project.tasks.getByName("apiJar")
+        dependsOn apiJarTask
+
+        from(apiJarTask.archiveFile) {
+            into "META-INF/libraries"
+        }
+
+        exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
+        exclude "api.fabric.mod.json"
+    }
+}
+
+processResources {
+    // this will ensure that this task is redone when there's a change
+    inputs.property "version", project.version
+
+    // replace stuff in fabric.mod.json, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        include "api.fabric.mod.json"
+
+        // add mod metadata
+        expand "version": project.version
+
+        filter { String line ->
+            line.replace("\"fabric\": \"*\"", "\"fabric\": \"[${fabric_version},)\"") //FIXME doesn't work
+            line.replace("\"mesh_api\": \"*\"", "\"mesh_api\": \"[${project.version},)\"")
+        }
+    }
+
+    // copy everything else, that's not the fabric.mod.json
+    from(sourceSets.main.resources.srcDirs) {
+        include "**/*.mcmeta"
+        include "**/*.json"
+        exclude "fabric.mod.json"
+        exclude "api.fabric.mod.json"
+    }
+
+    doLast {
+        Gson gson = new GsonBuilder().create()
+        JsonParser parser = new JsonParser()
+
+        // Minify json resources
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each { File file ->
+            JsonElement content = parser.parse(file.text)
+            if(file.name == "fabric.mod.json") {
+                JsonObject obj = content.getAsJsonObject()
+                if(obj.has("recommends")) {
+                    obj.getAsJsonObject("recommends").addProperty("fabric", "[${fabric_version},)")
+                }
+                if(obj.has("depends")) {
+                    obj.getAsJsonObject("depends").addProperty("mesh_api", "[${project.version},)")
+                }
+                if(project.hasProperty("api_package")) {
+                    JsonArray jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
+                    JsonObject apiJarObject = new JsonObject()
+                    def apiJarTask = project.tasks.getByName("apiJar")
+                    //noinspection GroovyAssignabilityCheck
+                    apiJarObject.addProperty("file", "META-INF/libraries/" + apiJarTask.archivePath.name)
+                    jarsArray.add(apiJarObject)
+                    content.add("jars", jarsArray)
+                }
+            }
+            file.text = gson.toJson(content)
+        }
+    }
 }
 
 license {

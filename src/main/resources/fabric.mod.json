@@ -1,16 +1,37 @@
 {
+    "schemaVersion": 1,
+    "environment": "*",
     "id": "mesh",
     "name": "Mesh",
     "description": "Modding Library",
     "version": "${version}",
     "side": "universal",
-    "initializers": [
-        "com.github.glasspane.mesh.Mesh",
-        "com.github.glasspane.mesh.impl.multiblock.MultiblockRegistry"
-    ],
-    "mixins": {
-        "common": "mixins.mesh.common.json",
-        "client": "mixins.mesh.client.json",
-        "server": "mixins.mesh.server.json"
-    }
+    "entrypoints": {
+        "main": [
+            "com.github.glasspane.mesh.Mesh"
+        ],
+        "mesh/registry": [
+            "com.github.glasspane.mesh.impl.multiblock.MultiblockRegistry"
+        ]
+    },
+    "recommends": {
+        "fabric": "*"
+    },
+    "depends": {
+        "mesh_api": "*"
+    },
+    "mixins": [
+        {
+            "environment": "*",
+            "config": "mixins.mesh.common.json"
+        },
+        {
+            "environment": "client",
+            "config": "mixins.mesh.client.json"
+        },
+        {
+            "environment": "server",
+            "config": "mixins.mesh.server.json"
+        }
+    ]
 }
