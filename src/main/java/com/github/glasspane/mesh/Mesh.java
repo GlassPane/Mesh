@@ -22,6 +22,7 @@ import com.github.glasspane.mesh.api.logging.PrefixMessageFactory;
 import com.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import com.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import com.github.glasspane.mesh.util.config.ConfigReloader;
+import com.github.glasspane.mesh.util.itemgroup.MeshItemGroup;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.Level;
@@ -76,6 +77,7 @@ public class Mesh implements ModInitializer {
         if(Compat.FABRIC) {
             ConfigReloader.init();
             MultiblockReloader.init();
+            MeshItemGroup.init();
         }
     }
 
