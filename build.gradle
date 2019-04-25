@@ -101,11 +101,6 @@ processResources {
 
         // add mod metadata
         expand "version": project.version
-
-        filter { String line ->
-            line.replace("\"fabric\": \"*\"", "\"fabric\": \"[${fabric_version},)\"") //FIXME doesn't work
-            line.replace("\"mesh_api\": \"*\"", "\"mesh_api\": \"[${project.version},)\"")
-        }
     }
 
     // copy everything else, that's not the fabric.mod.json
@@ -126,10 +121,10 @@ processResources {
             if(file.name == "fabric.mod.json") {
                 JsonObject obj = content.getAsJsonObject()
                 if(obj.has("recommends")) {
-                    obj.getAsJsonObject("recommends").addProperty("fabric", "[${fabric_version},)")
+                    obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
                 if(obj.has("depends")) {
-                    obj.getAsJsonObject("depends").addProperty("mesh_api", "[${project.version},)")
+                    obj.getAsJsonObject("depends").addProperty("mesh_api", "^${project.version}")
                 }
                 if(project.hasProperty("api_package")) {
                     JsonArray jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()

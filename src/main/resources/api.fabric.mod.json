@@ -5,5 +5,8 @@
     "name": "Mesh Api",
     "description": "Modding Library",
     "version": "${version}",
-    "side": "universal"
+    "side": "universal",
+    "custom": {
+        "modmenu:api": true
+    }
 }
