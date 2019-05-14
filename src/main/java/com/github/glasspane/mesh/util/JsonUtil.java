@@ -31,13 +31,13 @@ public class JsonUtil {
     public static final Gson GSON;
 
     static {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        builder.disableHtmlEscaping();
-        builder.registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer());
-        builder.registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer());
         //TODO register type adapters here
-        GSON = builder.create();
+        GSON = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer())
+                .registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer())
+                .registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer())
+                .create();
     }
 }
