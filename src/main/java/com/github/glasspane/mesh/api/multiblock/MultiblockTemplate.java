@@ -18,6 +18,7 @@
 package com.github.glasspane.mesh.api.multiblock;
 
 import com.github.glasspane.mesh.Mesh;
+import com.github.glasspane.mesh.template.multiblock.MultiblockBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -47,6 +48,14 @@ public class MultiblockTemplate<T extends BlockEntity> {
     private final Identifier path;
     private BlockPos size;
     private Map<BlockPos, BlockState> stateMap = new HashMap<>();
+
+    public MultiblockTemplate(Identifier path, BlockPos controllerOffset){
+        this(path, controllerOffset, MultiblockBase::new);
+    }
+
+    public Map<BlockPos, BlockState> getStateMap() {
+        return Collections.unmodifiableMap(stateMap);
+    }
 
     public MultiblockTemplate(Identifier path, BlockPos controllerOffset, MultiblockFactory<T> factory) {
         this.path = path;

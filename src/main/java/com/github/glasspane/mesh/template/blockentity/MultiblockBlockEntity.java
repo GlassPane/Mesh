@@ -20,6 +20,9 @@ package com.github.glasspane.mesh.template.blockentity;
 import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.multiblock.Multiblock;
 import com.github.glasspane.mesh.api.multiblock.MultiblockTemplate;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -35,7 +38,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;
 
-public abstract class MultiblockBlockEntity<T extends BlockEntity> extends LockableContainerBlockEntity implements SidedInventory, Tickable {
+public abstract class MultiblockBlockEntity<T extends BlockEntity> extends LockableContainerBlockEntity implements SidedInventory, Tickable, BlockEntityClientSerializable {
 
     protected static final Random RANDOM = new Random();
     private static final String MULTIBLOCK_NBT_KEY = Mesh.MODID + "_multiblock";
@@ -44,11 +47,31 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     protected Multiblock<T> multiblock = null;
     protected CompoundTag multiblockData = null;
     protected int updateCounter;
-    private boolean firstTick = true;
+    protected boolean firstTick = true;
 
-    public MultiblockBlockEntity(BlockEntityType<?> type, MultiblockTemplate<T> multiblockTemplate) {
+    @Environment(EnvType.CLIENT) private boolean multiblockCreated = false;
+
+    public MultiblockBlockEntity(BlockEntityType<T> type, MultiblockTemplate<T> multiblockTemplate) {
         super(type);
         this.multiblockTemplate = multiblockTemplate;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public boolean isMultiblockCreated() {
+        return multiblockCreated;
+    }
+
+    @Override
+    public void fromClientTag(CompoundTag tag) {
+        if(tag.containsKey("mesh_multiblock_active", NbtType.BYTE)) {
+            this.multiblockCreated = tag.getBoolean("mesh_multiblock_active");
+        }
+    }
+
+    @Override
+    public CompoundTag toClientTag(CompoundTag tag) {
+        tag.putBoolean("mesh_multiblock_active", this.multiblock != null);
+        return tag;
     }
 
     @Override
@@ -60,6 +83,9 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
                 this.validateMultiblock();
                 this.multiblockData = null;
                 firstTick = false;
+                if(this.multiblock != null) {
+                    this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), 3);
+                }
             }
             //check the integrity of the multiblock every 20 ticks
             if((MathHelper.abs(updateCounter++) % 20 == randomTickOffset)) {
@@ -84,6 +110,7 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
             this.multiblock.invalidate();
             this.multiblock = null;
             this.markDirty();
+            this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), 3);
             Mesh.getLogger().trace("invalidated multiblock at {}", this::getPos);
         }
     }
