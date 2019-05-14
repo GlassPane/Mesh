@@ -5,9 +5,9 @@ import java.nio.charset.StandardCharsets
 import java.time.Year
 
 plugins {
-    id "fabric-loom" version "0.2.1-SNAPSHOT"
+    id "fabric-loom" //version "0.2.2-SNAPSHOT"
     id "net.minecrell.licenser" version "0.2.1"
-    id "com.matthewprenger.cursegradle" version "1.1.2"
+    id "com.matthewprenger.cursegradle" //version "1.2.0"
     id "maven-publish"
     //id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
@@ -17,9 +17,6 @@ sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 group = "com.github.GlassPane"
 archivesBaseName = "Mesh"
 version = System.getenv("TRAVIS_TAG") ?: project.mod_version
-
-apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
-apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/${minecraft_version}/development_suite.gradle"
 
 repositories {
     maven {
@@ -90,6 +87,9 @@ jar {
     }
 }
 
+apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/basic_project.gradle"
+//apply from: "https://raw.githubusercontent.com/NerdHubMC/Gradle-Scripts/master/scripts/fabric/dependencies/${minecraft_version}/development_suite.gradle"
+
 processResources {
     // this will ensure that this task is redone when there's a change
     inputs.property "version", project.version
@@ -123,12 +123,12 @@ processResources {
                 if(obj.has("recommends")) {
                     obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
-                JsonObject depends = obj.getAsJsonObject("depends") ?: new JsonObject()
-                depends.addProperty("mesh_api", "^${project.version}")
-                if(!depends.keySet().isEmpty()) {
-                    obj.add("depends", depends)
-                }
                 if(project.hasProperty("api_package")) {
+                    JsonObject depends = obj.getAsJsonObject("depends") ?: new JsonObject()
+                    depends.addProperty("mesh_api", "^${project.version}")
+                    if(!depends.keySet().isEmpty()) {
+                        obj.add("depends", depends)
+                    }
                     JsonArray jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
                     JsonObject apiJarObject = new JsonObject()
                     def apiJarTask = project.tasks.getByName("apiJar")
