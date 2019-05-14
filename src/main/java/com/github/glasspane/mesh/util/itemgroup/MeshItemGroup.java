@@ -24,19 +24,23 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
+
 public class MeshItemGroup {
 
     private static ItemGroup INSTANCE;
 
     public static void init() {
-        INSTANCE = FabricItemGroupBuilder.create(new Identifier(Mesh.MODID, "additions")).icon(() -> new ItemStack(Blocks.COMMAND_BLOCK)).appendItems(list -> {
-            list.add(new ItemStack(Blocks.BARRIER));
-            list.add(new ItemStack(Blocks.COMMAND_BLOCK));
-            list.add(new ItemStack(Blocks.REPEATING_COMMAND_BLOCK));
-            list.add(new ItemStack(Blocks.CHAIN_COMMAND_BLOCK));
-            list.add(new ItemStack(Blocks.STRUCTURE_BLOCK));
-            list.add(new ItemStack(Blocks.STRUCTURE_VOID));
-        }).build();
+        INSTANCE = FabricItemGroupBuilder.create(new Identifier(Mesh.MODID, "additions")).icon(() -> new ItemStack(Blocks.COMMAND_BLOCK)).appendItems(MeshItemGroup::appendItems).build();
+    }
+
+    private static void appendItems(List<ItemStack> list) {
+        list.add(new ItemStack(Blocks.BARRIER));
+        list.add(new ItemStack(Blocks.COMMAND_BLOCK));
+        list.add(new ItemStack(Blocks.REPEATING_COMMAND_BLOCK));
+        list.add(new ItemStack(Blocks.CHAIN_COMMAND_BLOCK));
+        list.add(new ItemStack(Blocks.STRUCTURE_BLOCK));
+        list.add(new ItemStack(Blocks.STRUCTURE_VOID));
     }
 
     public ItemGroup getInstance() {
