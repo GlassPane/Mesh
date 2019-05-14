@@ -19,10 +19,7 @@ package com.github.glasspane.mesh.api.annotation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.meta.TypeQualifierDefault;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 /**
  * This annotation can be applied to a package, class or method to indicate that
@@ -40,4 +37,5 @@ import java.lang.annotation.RetentionPolicy;
 @Nonnull
 @TypeQualifierDefault(ElementType.METHOD) // Note: This is a copy of javax.annotation.ParametersAreNonnullByDefault with target changed to METHOD
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PACKAGE, ElementType.TYPE})
 public @interface MethodsReturnNonnullByDefault {}
