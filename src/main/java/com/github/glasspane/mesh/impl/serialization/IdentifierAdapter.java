@@ -18,19 +18,21 @@
 package com.github.glasspane.mesh.impl.serialization;
 
 import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import net.minecraft.util.Identifier;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 
-public class IdentifierJsonSerializer implements JsonSerializer<Identifier>, JsonDeserializer<Identifier> {
-
+public class IdentifierAdapter extends TypeAdapter<Identifier> {
     @Override
-    public Identifier deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return new Identifier(json.getAsString());
+    public void write(JsonWriter out, Identifier value) throws IOException {
+        out.value(value.toString());
     }
 
     @Override
-    public JsonElement serialize(Identifier src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(String.valueOf(src.toString()));
+    public Identifier read(JsonReader in) throws IOException {
+        return Identifier.create(in.nextString());
     }
 }
