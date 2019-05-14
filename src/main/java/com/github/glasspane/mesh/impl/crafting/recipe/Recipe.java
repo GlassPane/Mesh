@@ -17,7 +17,7 @@
  */
 package com.github.glasspane.mesh.impl.crafting.recipe;
 
-import com.github.glasspane.mesh.api.objects.LazyReference;
+import com.github.glasspane.mesh.api.util.LazyReference;
 import com.google.gson.annotations.SerializedName;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
