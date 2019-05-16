@@ -17,7 +17,7 @@
  */
 package com.github.glasspane.mesh.util;
 
-import com.github.glasspane.mesh.impl.serialization.IdentifierAdapter;
+import com.github.glasspane.mesh.impl.serialization.IdentifierJsonSerializer;
 import com.github.glasspane.mesh.impl.serialization.IngredientJsonSerializer;
 import com.github.glasspane.mesh.impl.serialization.ItemStackJsonSerializer;
 import com.google.gson.Gson;
@@ -31,13 +31,13 @@ public class JsonUtil {
     public static final Gson GSON;
 
     static {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        builder.disableHtmlEscaping();
-        builder.registerTypeAdapter(Identifier.class, new IdentifierAdapter());
-        builder.registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer());
-        builder.registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer());
         //TODO register type adapters here
-        GSON = builder.create();
+        GSON = new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer())
+                .registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer())
+                .registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer())
+                .create();
     }
 }

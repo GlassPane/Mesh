@@ -29,6 +29,6 @@ public class VirtualResourcePackCreator implements ResourcePackCreator {
     private static final String PACK_NAME = Mesh.MODID + "_virtual";
     @Override
     public <T extends ResourcePackContainer> void registerContainer(Map<String, T> map, ResourcePackContainer.Factory<T> factory) {
-        Optional.ofNullable(ResourcePackContainer.of(PACK_NAME, false, CraftingVirtualResourcePack::getInstance, factory, ResourcePackContainer.SortingDirection.TOP)).ifPresent(t -> map.put(PACK_NAME, t));
+        Optional.ofNullable(ResourcePackContainer.of(PACK_NAME, false, CraftingVirtualResourcePack::getInstance, factory, ResourcePackContainer.InsertionPosition.TOP)).ifPresent(t -> map.put(PACK_NAME, t));
     }
 }

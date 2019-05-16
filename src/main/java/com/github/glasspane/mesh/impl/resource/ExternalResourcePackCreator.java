@@ -55,7 +55,7 @@ public class ExternalResourcePackCreator implements ResourcePackCreator {
                     Mesh.getLogger().error("unable to create external resource meta file", e);
                 }
             }
-            Optional.ofNullable(ResourcePackContainer.of(PACK_NAME, false, () -> new DirectoryResourcePack(packDir), factory, ResourcePackContainer.SortingDirection.TOP)).ifPresent(t -> map.put(PACK_NAME, t));
+            Optional.ofNullable(ResourcePackContainer.of(PACK_NAME, false, () -> new DirectoryResourcePack(packDir), factory, ResourcePackContainer.InsertionPosition.TOP)).ifPresent(t -> map.put(PACK_NAME, t));
         }
     }
 }

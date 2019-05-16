@@ -128,7 +128,7 @@ public class RecipeFactoryImpl implements RecipeFactory {
     }
 
     private RecipeFactory save(Identifier name, String path, JsonElement json) {
-        CraftingVirtualResourcePack.getInstance().addResource(ResourceType.DATA, new Identifier(name.getNamespace(), path + "/" + name.getPath() + ".json"), json);
+        CraftingVirtualResourcePack.getInstance().addResource(ResourceType.SERVER_DATA, new Identifier(name.getNamespace(), path + "/" + name.getPath() + ".json"), json);
         if(Mesh.isDebugMode()) {
             File outputFile = new File(Mesh.getOutputDir(), "virtual_resource_pack_dump/data/" + name.getNamespace() + "/" + path + "/" + name.getPath() + ".json");
             outputFile.getParentFile().mkdirs();

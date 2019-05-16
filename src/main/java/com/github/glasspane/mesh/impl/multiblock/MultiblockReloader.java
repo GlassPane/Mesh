@@ -51,7 +51,7 @@ public class MultiblockReloader implements SimpleSynchronousResourceReloadListen
 
     public static void init() {
         Mesh.getLogger().debug("enabling multiblock reloader");
-        ResourceManagerHelper.get(ResourceType.DATA).registerReloadListener(new MultiblockReloader());
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new MultiblockReloader());
     }
 
     @Override

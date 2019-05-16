@@ -25,9 +25,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class MultiblockArgumentType implements ArgumentType<MultiblockTemplate<?>> {
 
-    private static final DynamicCommandExceptionType INVALID_MULTIBLOCK_TYPE = new DynamicCommandExceptionType((obj) -> new TranslatableTextComponent("command.mesh.argument.multiblock.invalid", obj));
+    private static final DynamicCommandExceptionType INVALID_MULTIBLOCK_TYPE = new DynamicCommandExceptionType((obj) -> new TranslatableComponent("command.mesh.argument.multiblock.invalid", obj));
     private static final Collection<String> EXAMPLES = Lists.newArrayList("test:test_multiblock", "modid:multiblock_furnace");
 
     /**
@@ -62,7 +62,7 @@ public class MultiblockArgumentType implements ArgumentType<MultiblockTemplate<?
 
     @Override
     public MultiblockTemplate<?> parse(StringReader reader) throws CommandSyntaxException {
-        Identifier id = Identifier.parse(reader);
+        Identifier id = Identifier.fromCommandInput(reader);
         return MultiblockManager.getInstance().getRegistry().getOrEmpty(id).orElseThrow(() -> INVALID_MULTIBLOCK_TYPE.create(id));
     }
 

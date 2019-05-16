@@ -19,7 +19,7 @@ package com.github.glasspane.mesh.util;
 
 import com.google.gson.JsonElement;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemProvider;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.ItemTags;
@@ -31,8 +31,8 @@ public class RecipeHelper {
         if(object instanceof Ingredient) {
             return (Ingredient) object;
         }
-        else if(object instanceof ItemProvider) {
-            return Ingredient.ofItems((ItemProvider) object);
+        else if(object instanceof ItemConvertible) {
+            return Ingredient.ofItems((ItemConvertible) object);
         }
         else if(object instanceof ItemStack) {
             return Ingredient.ofStacks((ItemStack) object);
