@@ -23,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.resource.AbstractFilenameResourcePack;
+import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
@@ -56,7 +56,7 @@ public class CraftingVirtualResourcePack implements ResourcePack {
     }
 
     public void addResource(ResourceType resourceType, Identifier name, JsonElement data) {
-        if(resourceType == ResourceType.DATA) {
+        if(resourceType == ResourceType.SERVER_DATA) {
             if(DATA_CACHE.containsKey(name)) {
                 Mesh.getLogger().trace("Recipe {} already exists in datapack<. overwriting!", name);
             }
@@ -76,7 +76,7 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     @Override
     public InputStream open(ResourceType type, Identifier name) throws IOException {
-        if(type == ResourceType.DATA) {
+        if(type == ResourceType.SERVER_DATA) {
             if(DATA_CACHE.containsKey(name)) {
                 return new ByteArrayInputStream(JsonUtil.GSON.toJson(DATA_CACHE.get(name)).getBytes(StandardCharsets.UTF_8));
             }
@@ -86,7 +86,7 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     @Override
     public Collection<Identifier> findResources(ResourceType type, String var2, int var3, Predicate<String> predicate) {
-        if(type == ResourceType.DATA) {
+        if(type == ResourceType.SERVER_DATA) {
             return DATA_CACHE.keySet();
         }
         else {
@@ -96,12 +96,12 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     @Override
     public boolean contains(ResourceType type, Identifier key) {
-        return type == ResourceType.DATA && DATA_CACHE.containsKey(key);
+        return type == ResourceType.SERVER_DATA && DATA_CACHE.containsKey(key);
     }
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
-        if(type == ResourceType.DATA) {
+        if(type == ResourceType.SERVER_DATA) {
             return DATA_NAMESPACES;
         }
         return null;
@@ -116,7 +116,7 @@ public class CraftingVirtualResourcePack implements ResourcePack {
         pack.addProperty("pack_format", 4);
         meta.add("pack", pack);
         try(InputStream inputStream = new ByteArrayInputStream(JsonUtil.GSON.toJson(meta).getBytes(StandardCharsets.UTF_8))) {
-            return AbstractFilenameResourcePack.parseMetadata(reader, inputStream);
+            return AbstractFileResourcePack.parseMetadata(reader, inputStream);
         }
     }
 

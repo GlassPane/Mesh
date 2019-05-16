@@ -89,13 +89,13 @@ public class MultiblockTemplate<T extends BlockEntity> {
             default:
                 Mesh.getLogger().warn("invalid direction, only horizontals allowed!", new IllegalStateException("invalid horizontal direction: " + direction.name()));
             case NORTH:
-                return BlockRotation.ROT_0;
+                return BlockRotation.NONE;
             case EAST:
-                return BlockRotation.ROT_90;
+                return BlockRotation.CLOCKWISE_90;
             case SOUTH:
-                return BlockRotation.ROT_180;
+                return BlockRotation.CLOCKWISE_180;
             case WEST:
-                return BlockRotation.ROT_270;
+                return BlockRotation.COUNTERCLOCKWISE_90;
         }
     }
 

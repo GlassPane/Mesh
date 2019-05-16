@@ -35,7 +35,7 @@ dependencies {
     modCompile "net.fabricmc:fabric-loader:${loader_version}"
 
     //optional dependency!
-    modCompile "net.fabricmc:fabric:${fabric_version}"
+    modCompile "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
