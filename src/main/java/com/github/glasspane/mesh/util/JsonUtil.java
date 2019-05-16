@@ -28,16 +28,12 @@ import net.minecraft.util.Identifier;
 
 public class JsonUtil {
 
-    public static final Gson GSON;
-
-    static {
-        //TODO register type adapters here
-        GSON = new GsonBuilder()
-                .setPrettyPrinting()
-                .disableHtmlEscaping()
-                .registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer())
-                .registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer())
-                .registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer())
-                .create();
-    }
+    //TODO register type adapters here
+    public static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .disableHtmlEscaping()
+            .registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer())
+            .registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer())
+            .registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer())
+            .create();
 }
