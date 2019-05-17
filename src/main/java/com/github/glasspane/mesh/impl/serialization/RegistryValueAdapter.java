@@ -17,26 +17,33 @@
  */
 package com.github.glasspane.mesh.impl.serialization;
 
-import com.google.gson.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.ShapedRecipe;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
+import java.util.Objects;
 
-public class ItemStackJsonSerializer implements JsonSerializer<ItemStack>, JsonDeserializer<ItemStack> {
-    @Override
-    public ItemStack deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return ShapedRecipe.getItemStack(json.getAsJsonObject());
+/**
+ * A generic {@link TypeAdapter} for values of a registry
+ * @param <T> the type of the registry
+ */
+public class RegistryValueAdapter<T> extends TypeAdapter<T> {
+    private final Registry<T> registry;
+
+    public RegistryValueAdapter(Registry<T> registry) {
+        this.registry = registry;
     }
 
     @Override
-    public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject ret = new JsonObject();
-        ret.addProperty("item", Registry.ITEM.getId(src.getItem()).toString());
-        if(src.getAmount() > 1) {
-            ret.addProperty("count", src.getAmount());
-        }
-        return ret;
+    public void write(JsonWriter out, T value) throws IOException {
+        out.value(Objects.requireNonNull(registry.getId(value)).toString());
+    }
+
+    @Override
+    public T read(JsonReader in) throws IOException {
+        return registry.get(Identifier.ofNullable(in.nextString()));
     }
 }

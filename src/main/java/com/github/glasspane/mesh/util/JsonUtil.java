@@ -17,14 +17,14 @@
  */
 package com.github.glasspane.mesh.util;
 
-import com.github.glasspane.mesh.impl.serialization.IdentifierJsonSerializer;
-import com.github.glasspane.mesh.impl.serialization.IngredientJsonSerializer;
-import com.github.glasspane.mesh.impl.serialization.ItemStackJsonSerializer;
+import com.github.glasspane.mesh.impl.serialization.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class JsonUtil {
 
@@ -32,7 +32,8 @@ public class JsonUtil {
     public static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
-            .registerTypeAdapter(Identifier.class, new IdentifierJsonSerializer())
+            .registerTypeAdapter(Identifier.class, new IdentifierAdapter())
+            .registerTypeAdapter(Item.class, new RegistryValueAdapter<>(Registry.ITEM))
             .registerTypeAdapter(ItemStack.class, new ItemStackJsonSerializer())
             .registerTypeAdapter(Ingredient.class, new IngredientJsonSerializer())
             .create();

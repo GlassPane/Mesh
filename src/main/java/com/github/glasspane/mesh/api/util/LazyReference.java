@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package com.github.glasspane.mesh.api.objects;
+package com.github.glasspane.mesh.api.util;
 
+import net.minecraft.util.Lazy;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class LazyReference<T> implements Supplier<T> {
-
-    private Supplier<T> getter;
-    private T object = null;
+/**
+ * An improved {@link Lazy} that doubles as a {@link Supplier}
+ * @param <T> the type of value held by this reference
+ */
+public class LazyReference<T> extends Lazy<T> implements Supplier<T> {
 
     public LazyReference(Supplier<T> getter) {
-        this.getter = Validate.notNull(getter, "Supplier must not be NULL");
+        super(Validate.notNull(getter, "Supplier must not be NULL"));
     }
 
     @Override
@@ -40,16 +42,14 @@ public class LazyReference<T> implements Supplier<T> {
     @Nullable
     @Override
     public T get() {
-        if(this.getter != null) {
-            this.object = getter.get();
-            this.getter = null;
-        }
-        return this.object;
+        // Override to work with obfuscation
+        return super.get();
     }
 
     public void ifPresent(Consumer<T> action) {
-        if(this.get() != null) {
-            action.accept(this.object);
+        T value = this.get();
+        if(value != null) {
+            action.accept(value);
         }
     }
 }
