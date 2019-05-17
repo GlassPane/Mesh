@@ -36,6 +36,7 @@ dependencies {
 
     //optional dependency!
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    testCompile "org.junit.jupiter:junit-jupiter-api:5.5.0-M1"
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
