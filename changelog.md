@@ -1,11 +1,10 @@
 ------------------------------------------------------
-Version 1.0.0-SNAPSHOT
+Version 1.0.0
 ------------------------------------------------------
-Additions
-- None
-
-Changes
-- None
-
-Bug Fixes
-- None
+- Initial Release
+- added dimension teleport command
+- added hand command
+- added recipe dump command
+- added utility item group
+- added auto-registration
+- added multiblock API

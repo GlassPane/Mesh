@@ -18,6 +18,7 @@
 package com.github.glasspane.mesh.util.command;
 
 import com.github.glasspane.mesh.util.command.mesh.DebugCommand;
+import com.github.glasspane.mesh.util.command.mesh.DumpRecipesCommand;
 import com.github.glasspane.mesh.util.command.mesh.HandCommand;
 import com.github.glasspane.mesh.util.command.mesh.MultiblockCommand;
 import com.github.glasspane.mesh.util.command.mesh.TpDimCommand;
@@ -35,6 +36,7 @@ public class MeshCommand {
             builder = HandCommand.append(builder);
             builder = DebugCommand.append(builder);
             builder = MultiblockCommand.append(builder);
+            builder = DumpRecipesCommand.append(builder);
             server.getCommandManager().getDispatcher().register(builder);
         });
     }
