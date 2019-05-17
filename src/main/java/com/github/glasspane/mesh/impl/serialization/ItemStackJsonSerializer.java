@@ -19,7 +19,7 @@ package com.github.glasspane.mesh.impl.serialization;
 
 import com.google.gson.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.crafting.ShapedRecipe;
+import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.util.registry.Registry;
 
 import java.lang.reflect.Type;
