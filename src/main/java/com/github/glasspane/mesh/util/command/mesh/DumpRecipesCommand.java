@@ -19,6 +19,7 @@ package com.github.glasspane.mesh.util.command.mesh;
 
 import com.github.glasspane.mesh.Mesh;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.MinecraftServer;
@@ -34,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -47,7 +49,8 @@ public class DumpRecipesCommand {
             File outDir = new File(Mesh.getOutputDir(), "recipe_dump");
             MinecraftServer server = context.getSource().getMinecraftServer();
             Map<RecipeType<?>, Set<Recipe<?>>> recipes = new IdentityHashMap<>();
-            server.getRecipeManager().values().forEach(recipe -> recipes.computeIfAbsent(recipe.getType(), type -> new HashSet<>()).add(recipe));
+            Collection<Recipe<?>> recipeMap = server.getRecipeManager().values();
+            recipeMap.forEach(recipe -> recipes.computeIfAbsent(recipe.getType(), type -> new HashSet<>()).add(recipe));
             recipes.keySet().forEach(type -> {
                 Identifier typeID = Registry.RECIPE_TYPE.getId(type);
                 File outputFile = new File(outDir, typeID.getNamespace() + "/" + typeID.getPath() + ".csv");
@@ -66,10 +69,11 @@ public class DumpRecipesCommand {
                 recipes.get(type).forEach(id -> {
                 });
             });
-            if(context.getSource().getMinecraftServer().isSinglePlayer()) {
+            if(server.isSinglePlayer()) {
                 SystemUtil.getOperatingSystem().open(outDir);
             }
-            return recipes.values().size();
+            context.getSource().sendFeedback(new TranslatableComponent("command.mesh.debug.recipe_dump", recipeMap.size()), true);
+            return recipeMap.size();
         }));
     }
 }
