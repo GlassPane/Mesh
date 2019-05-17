@@ -20,7 +20,6 @@ package com.github.glasspane.mesh.impl.serialization;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -45,6 +44,6 @@ public class RegistryValueAdapter<T> extends TypeAdapter<T> {
 
     @Override
     public T read(JsonReader in) throws IOException {
-        return registry.get(Identifier.create(in.nextString()));
+        return registry.get(Identifier.ofNullable(in.nextString()));
     }
 }
