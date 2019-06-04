@@ -18,6 +18,8 @@
 package com.github.glasspane.mesh.client.render;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GameRenderer;
@@ -32,6 +34,7 @@ import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
+@Environment(EnvType.CLIENT)
 public class EndTextureRenderer {
 
     private static final Identifier SKY_TEX = new Identifier("textures/environment/end_sky.png");

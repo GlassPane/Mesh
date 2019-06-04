@@ -40,9 +40,9 @@ import java.util.Random;
 
 public abstract class MultiblockBlockEntity<T extends BlockEntity> extends LockableContainerBlockEntity implements SidedInventory, Tickable, BlockEntityClientSerializable {
 
-    protected static final Random RANDOM = new Random();
+    protected final Random random = new Random();
     private static final String MULTIBLOCK_NBT_KEY = Mesh.MODID + "_multiblock";
-    protected final int randomTickOffset = RANDOM.nextInt(20);
+    protected final int randomTickOffset = random.nextInt(20);
     protected final MultiblockTemplate<T> multiblockTemplate;
     protected Multiblock<T> multiblock = null;
     protected CompoundTag multiblockData = null;

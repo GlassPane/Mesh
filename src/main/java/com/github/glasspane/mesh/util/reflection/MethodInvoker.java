@@ -20,6 +20,8 @@ package com.github.glasspane.mesh.util.reflection;
 import com.github.glasspane.mesh.Mesh;
 import org.apache.commons.lang3.Validate;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -28,9 +30,22 @@ import java.util.Arrays;
 public class MethodInvoker<T> {
 
     private final Method method;
+    private MethodHandle methodHandle;
 
     public MethodInvoker(Method method) {
         this.method = method;
+    }
+
+    public MethodHandle getHandle() {
+        if(methodHandle == null) {
+            try {
+                methodHandle = MethodHandles.lookup().unreflect(method);
+            }
+            catch (IllegalAccessException e) {
+                throw new IllegalStateException("reflection error: method", e);
+            }
+        }
+        return methodHandle;
     }
 
     public <V> V invokeStatic(Object... params) {
