@@ -3,9 +3,10 @@ package com.github.glasspane.mesh.util;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JsonUtilTest {
+
     @Test
     void identifiersSerialize() {
         assertEquals("\"mesh:test\"", JsonUtil.GSON.toJson(new Identifier("mesh", "test")));

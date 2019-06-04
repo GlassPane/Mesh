@@ -1,14 +1,15 @@
 import com.google.gson.*
-import net.fabricmc.loom.task.RemapJar
+import net.fabricmc.loom.task.RemapJarTask
 
 import java.nio.charset.StandardCharsets
 import java.time.Year
 
 plugins {
-    id "fabric-loom" version "0.2.2-SNAPSHOT"
+    id "fabric-loom" version "0.2.4-SNAPSHOT"
     id "net.minecrell.licenser" version "0.2.1"
     id "com.matthewprenger.cursegradle" version "1.2.0"
     id "maven-publish"
+    id "java-library"
     //id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 
@@ -34,9 +35,19 @@ dependencies {
     mappings "net.fabricmc:yarn:${minecraft_version}+build.${yarn_mappings}"
     modCompile "net.fabricmc:fabric-loader:${loader_version}"
 
+    api "javax.vecmath:vecmath:${project.vecmath_version}"
+    include "javax.vecmath:vecmath:${project.vecmath_version}"
+
     //optional dependency!
     modCompile "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    testCompile "org.junit.jupiter:junit-jupiter-api:5.5.0-M1"
+
+    //testing
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.0-M1"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.5.0-M1"
+}
+
+test {
+    useJUnitPlatform()
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
@@ -59,11 +70,11 @@ task apiJar(type: Jar, dependsOn: classes) {
     classifier = "api"
 }
 
-task remapApiJar(type: RemapJar, dependsOn: apiJar) {
+task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
     onlyIf {
         project.hasProperty("api_package")
     }
-    jar = apiJar.archiveFile.get().asFile
+    input = apiJar.archiveFile.get().asFile
 }
 
 if(project.hasProperty("api_package")) {
