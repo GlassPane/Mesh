@@ -31,15 +31,16 @@ import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+import java.awt.*;
 
 /**
  * utility class for batch-rendering geometric shapes
  */
 @Environment(EnvType.CLIENT)
 public final class ShapeRenderer {
+    private final float[] color;
     private Tessellator tessellator;
     private BufferBuilder vertexBuffer;
-    private final float[] color;
     private Identifier texture = TextureManager.MISSING_IDENTIFIER;
     private Matrix4f model = new Matrix4f();
     private Vector3f pos = new Vector3f();
@@ -51,7 +52,6 @@ public final class ShapeRenderer {
         GlStateManager.disableCull();
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
-
         this.tessellator = Tessellator.getInstance();
         this.vertexBuffer = this.tessellator.getBufferBuilder();
         this.vertexBuffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV_COLOR);
@@ -65,6 +65,11 @@ public final class ShapeRenderer {
 
     public ShapeRenderer color(float[] color) {
         System.arraycopy(color, 0, this.color, 0, 4);
+        return this;
+    }
+
+    public ShapeRenderer color(int argb) {
+        new Color(argb, true).getComponents(this.color);
         return this;
     }
 
@@ -96,25 +101,21 @@ public final class ShapeRenderer {
 
     public ShapeRenderer quad(Vector3f relativePos, Vector3f orientation, float rotation, float scale) {
         //TODO implement scale!
-
         this.model.rotY((float) (rotation * MathUtil.TAU));
         relativePos.add(this.pos);
         this.vertexBuffer.setOffset(relativePos.x, relativePos.y, relativePos.z);
-
-        Vector3f pos1 = new Vector3f(1.0F, 0.0005F, -1.0F);
-        Vector3f pos2 = new Vector3f(-1.0F, 0.0005F, -1.0F);
-        Vector3f pos3 = new Vector3f(-1.0F, 0.0005F, 1.0F);
-        Vector3f pos4 = new Vector3f(1.0F, 0.0005F, 1.0F);
+        Vector3f pos1 = new Vector3f(scale * 1.0F, 0.0005F, scale * -1.0F);
+        Vector3f pos2 = new Vector3f(scale * -1.0F, 0.0005F, scale * -1.0F);
+        Vector3f pos3 = new Vector3f(scale * -1.0F, 0.0005F, scale * 1.0F);
+        Vector3f pos4 = new Vector3f(scale * 1.0F, 0.0005F, scale * 1.0F);
         this.model.transform(pos1);
         this.model.transform(pos2);
         this.model.transform(pos3);
         this.model.transform(pos4);
-
         this.vertexBuffer.vertex(pos1.x, pos1.y, pos1.z).texture(1.0D, 0.0D).color(this.color[0], this.color[1], this.color[2], this.color[3]).next();
         this.vertexBuffer.vertex(pos2.x, pos2.y, pos2.z).texture(0.0D, 0.0D).color(this.color[0], this.color[1], this.color[2], this.color[3]).next();
         this.vertexBuffer.vertex(pos3.x, pos3.y, pos3.z).texture(0.0D, 1.0D).color(this.color[0], this.color[1], this.color[2], this.color[3]).next();
         this.vertexBuffer.vertex(pos4.x, pos4.y, pos4.z).texture(1.0D, 1.0D).color(this.color[0], this.color[1], this.color[2], this.color[3]).next();
-
         this.vertexBuffer.setOffset(0.0D, 0.D, 0.0D);
         return this;
     }
