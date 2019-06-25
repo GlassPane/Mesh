@@ -19,12 +19,12 @@ package com.github.glasspane.mesh.util.command.mesh;
 
 import com.github.glasspane.mesh.Mesh;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
 import net.minecraft.util.registry.Registry;
@@ -72,7 +72,7 @@ public class DumpRecipesCommand {
             if(server.isSinglePlayer()) {
                 SystemUtil.getOperatingSystem().open(outDir);
             }
-            context.getSource().sendFeedback(new TranslatableComponent("command.mesh.debug.recipe_dump", recipeMap.size()), true);
+            context.getSource().sendFeedback(new TranslatableText("command.mesh.debug.recipe_dump", recipeMap.size()), true);
             return recipeMap.size();
         }));
     }

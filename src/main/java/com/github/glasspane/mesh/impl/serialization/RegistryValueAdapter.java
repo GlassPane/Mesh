@@ -44,6 +44,6 @@ public class RegistryValueAdapter<T> extends TypeAdapter<T> {
 
     @Override
     public T read(JsonReader in) throws IOException {
-        return registry.get(Identifier.ofNullable(in.nextString()));
+        return registry.get(Identifier.tryParse(in.nextString()));
     }
 }

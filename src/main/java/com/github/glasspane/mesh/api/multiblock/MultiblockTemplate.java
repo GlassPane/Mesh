@@ -29,7 +29,7 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 
 import java.util.Collections;
@@ -110,8 +110,8 @@ public class MultiblockTemplate<T extends BlockEntity> {
         return Collections.singletonList(this.getControllerOffset());
     }
 
-    public BoundingBox getSize() {
-        return new BoundingBox(BlockPos.ORIGIN, this.size);
+    public Box getSize() {
+        return new Box(BlockPos.ORIGIN, this.size);
     }
 
     public void setSize(BlockPos size) {

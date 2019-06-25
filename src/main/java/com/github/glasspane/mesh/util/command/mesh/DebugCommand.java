@@ -18,15 +18,15 @@
 package com.github.glasspane.mesh.util.command.mesh;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.LiteralText;
 
 public class DebugCommand {
 
     public static LiteralArgumentBuilder<ServerCommandSource> append(LiteralArgumentBuilder<ServerCommandSource> $) {
         return $.then(CommandManager.literal("debug").executes(context -> {
-            context.getSource().sendFeedback(new TextComponent("Hello there!"), false); //boolean: broadcast to OPs
+            context.getSource().sendFeedback(new LiteralText("Hello there!"), false); //boolean: broadcast to OPs
             return 0;
         }));
     }

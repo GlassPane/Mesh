@@ -33,6 +33,6 @@ public class IdentifierAdapter extends TypeAdapter<Identifier> {
 
     @Override
     public Identifier read(JsonReader in) throws IOException {
-        return Identifier.ofNullable(in.nextString());
+        return Identifier.tryParse(in.nextString());
     }
 }
