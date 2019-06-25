@@ -27,7 +27,7 @@ public class InventoryHelper {
 
     public static void giveOrDrop(ServerPlayerEntity player, ItemStack stack) {
         if(player.inventory.insertStack(stack) && stack.isEmpty()) {
-            stack.setAmount(1);
+            stack.setCount(1);
             ItemEntity entity = player.dropItem(stack, false);
             if(entity != null) {
                 entity.method_6987();

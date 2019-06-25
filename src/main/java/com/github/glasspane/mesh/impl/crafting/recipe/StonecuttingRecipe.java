@@ -59,7 +59,7 @@ public class StonecuttingRecipe extends Recipe {
             }
             json.add("ingredient", context.serialize(src.getInput()));
             json.add("result", context.serialize(Registry.ITEM.getId(src.getOutput().getItem())));
-            json.addProperty("count", src.getOutput().getAmount());
+            json.addProperty("count", src.getOutput().getCount());
             return json;
         }
     }

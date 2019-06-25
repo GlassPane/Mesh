@@ -45,9 +45,9 @@ public class HandCommand {
     private static int getItemInHand(CommandContext<ServerCommandSource> context, Hand hand) throws CommandSyntaxException {
         ItemStack stack = context.getSource().getPlayer().getStackInHand(hand);
         if(!stack.isEmpty()) {
-            Component result = new TranslatableComponent("command.mesh.debug.helditem_name", stack.getDisplayName());
+            Component result = new TranslatableComponent("command.mesh.debug.helditem_name", stack.getCustomName());
             result = result.append("\n").append(new TranslatableComponent("command.mesh.debug.helditem_id", Registry.ITEM.getId(stack.getItem())));
-            result = result.append("\n").append(new TranslatableComponent("command.mesh.debug.helditem_count", stack.getAmount()));
+            result = result.append("\n").append(new TranslatableComponent("command.mesh.debug.helditem_count", stack.getCount()));
             if(stack.hasTag()) {
                 result = result.append("\n")
                         .append(new TranslatableComponent("command.mesh.debug.helditem_nbt", stack.getTag().toTextComponent()).setStyle(new Style()
