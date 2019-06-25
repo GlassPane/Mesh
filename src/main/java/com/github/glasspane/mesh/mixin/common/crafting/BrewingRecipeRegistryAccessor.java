@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @SuppressWarnings("PublicStaticMixinMember")
 @Mixin(BrewingRecipeRegistry.class)
-public interface BrewingRecipeRegistryAcessor {
+public interface BrewingRecipeRegistryAccessor {
 
     @Invoker("registerPotionType")
     static void registerPotionType(Item item) {}

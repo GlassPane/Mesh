@@ -25,7 +25,7 @@ import com.github.glasspane.mesh.impl.crafting.recipe.ShapelessRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.SmeltingRecipe;
 import com.github.glasspane.mesh.impl.crafting.recipe.StonecuttingRecipe;
 import com.github.glasspane.mesh.impl.resource.CraftingVirtualResourcePack;
-import com.github.glasspane.mesh.mixin.common.crafting.BrewingRecipeRegistryAcessor;
+import com.github.glasspane.mesh.mixin.common.crafting.BrewingRecipeRegistryAccessor;
 import com.github.glasspane.mesh.util.JsonUtil;
 import com.github.glasspane.mesh.util.RecipeHelper;
 import com.google.gson.JsonElement;
@@ -53,19 +53,19 @@ public class RecipeFactoryImpl implements RecipeFactory {
 
     @Override
     public RecipeFactory addPotionType(Item item) {
-        BrewingRecipeRegistryAcessor.registerPotionType(item);
+        BrewingRecipeRegistryAccessor.registerPotionType(item);
         return this;
     }
 
     @Override
     public RecipeFactory addPotionItemRecipe(Item potionItem, Item modifier, Item resultPotionItem) {
-        BrewingRecipeRegistryAcessor.registerItemRecipe(potionItem, modifier, resultPotionItem);
+        BrewingRecipeRegistryAccessor.registerItemRecipe(potionItem, modifier, resultPotionItem);
         return this;
     }
 
     @Override
     public RecipeFactory addPotionRecipe(Potion input, Item modifier, Potion output) {
-        BrewingRecipeRegistryAcessor.registerPotionRecipe(input, modifier, output);
+        BrewingRecipeRegistryAccessor.registerPotionRecipe(input, modifier, output);
         return this;
     }
 
