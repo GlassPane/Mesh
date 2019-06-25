@@ -17,6 +17,8 @@
  */
 package com.github.glasspane.mesh.api.annotation;
 
+import net.minecraft.client.resource.language.I18n;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -33,7 +35,7 @@ import java.lang.annotation.Target;
  *         }
  *     </code></pre>
  * </p>
- * @see net.minecraft.client.resource.language.I18n
+ * @see I18n
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE_USE})

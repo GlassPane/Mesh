@@ -21,21 +21,28 @@ import com.github.glasspane.mesh.Mesh;
 import com.github.glasspane.mesh.api.crafting.RecipeCreator;
 import com.github.glasspane.mesh.api.crafting.RecipeFactory;
 import com.github.glasspane.mesh.impl.crafting.RecipeFactoryImpl;
+import com.google.gson.JsonObject;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Map;
+
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-    @Inject(method = "apply", at = @At(value = "HEAD"))
-    private void createMeshRecipes(ResourceManager resourceManager, CallbackInfo ci) {
+    @Inject(method = "method_20705", at = @At(value = "HEAD"))
+    private void createMeshRecipes(Map<Identifier, JsonObject> recipeMap, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         Mesh.getLogger().trace("reloading recipe registration...");
-        RecipeFactory factory = new RecipeFactoryImpl();
+        profiler.push(Mesh.MODID + ":recipes");
+        RecipeFactory factory = new RecipeFactoryImpl(recipeMap);
         FabricLoader.INSTANCE.getEntrypoints(Mesh.MODID + "/recipes", RecipeCreator.class).forEach(creator -> creator.createRecipes(factory));
+        profiler.pop();
     }
 }

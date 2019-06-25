@@ -43,6 +43,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 import java.util.function.Function;
 
 public class RecipeFactoryImpl implements RecipeFactory {
@@ -50,6 +51,11 @@ public class RecipeFactoryImpl implements RecipeFactory {
     private static final Identifier TYPE_FURNACE = new Identifier("smelting");
     private static final Identifier TYPE_BLAST_FURNACE = new Identifier("blasting");
     private static final Identifier TYPE_SMOKER = new Identifier("smoking");
+    private final Map<Identifier, JsonObject> recipeMap;
+
+    public RecipeFactoryImpl(Map<Identifier, JsonObject> recipeMap) {
+        this.recipeMap = recipeMap;
+    }
 
     @Override
     public RecipeFactory addPotionType(Item item) {
@@ -96,7 +102,14 @@ public class RecipeFactoryImpl implements RecipeFactory {
 
     @Override
     public <T extends net.minecraft.recipe.Recipe<?>> RecipeFactory addCustomRecipe(T recipe) {
-        return this.save(recipe.getId(), "recipes", JsonUtil.GSON.toJsonTree(recipe));
+        JsonElement element = JsonUtil.GSON.toJsonTree(recipe);
+        if(element.isJsonObject()) {
+            this.recipeMap.putIfAbsent(recipe.getId(), element.getAsJsonObject());
+        }
+        else {
+            Mesh.getLogger().error("unable to serialize recipe: {}", recipe::getId);
+        }
+        return this;
     }
 
     @Override
@@ -123,11 +136,8 @@ public class RecipeFactoryImpl implements RecipeFactory {
         return saveRecipe(new StonecuttingRecipe(output, name, group, RecipeHelper.toIngredient(input)));
     }
 
-    private RecipeFactory saveRecipe(Recipe recipe) {
-        return this.save(recipe.getName(), "recipes", JsonUtil.GSON.toJsonTree(recipe));
-    }
-
-    private RecipeFactory save(Identifier name, String path, JsonElement json) {
+    @Deprecated
+    private RecipeFactory save(Identifier name, String path, JsonObject json) {
         CraftingVirtualResourcePack.getInstance().addResource(ResourceType.SERVER_DATA, new Identifier(name.getNamespace(), path + "/" + name.getPath() + ".json"), json);
         if(Mesh.isDebugMode()) {
             File outputFile = new File(Mesh.getOutputDir(), "virtual_resource_pack_dump/data/" + name.getNamespace() + "/" + path + "/" + name.getPath() + ".json");
@@ -138,6 +148,17 @@ public class RecipeFactoryImpl implements RecipeFactory {
             catch (IOException e) {
                 Mesh.getLogger().debug("unable to write recipe", e);
             }
+        }
+        return this;
+    }
+
+    private RecipeFactory saveRecipe(Recipe recipe) {
+        JsonElement element = JsonUtil.GSON.toJsonTree(recipe);
+        if(element.isJsonObject()) {
+            this.recipeMap.putIfAbsent(recipe.getName(), element.getAsJsonObject());
+        }
+        else {
+            Mesh.getLogger().error("unable to serialize recipe: {}", recipe::getName);
         }
         return this;
     }
