@@ -5,7 +5,7 @@
     "package": "com.github.glasspane.mesh.mixin.impl",
     "plugin": "com.github.glasspane.mesh.mixin.MeshMixinConfig",
     "mixins": [
-        "crafting.MixinBrewingStandSlot",
+      "crafting.MixinPotionSlot",
         "crafting.MixinRecipeManager",
         "resources.MixinMinecraftServer"
     ],

@@ -17,21 +17,20 @@
  */
 package com.github.glasspane.mesh.mixin.impl.crafting;
 
+import com.github.glasspane.mesh.api.crafting.MeshBrewingRecipeRegistry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.BrewingRecipeRegistry;
+import net.minecraft.screen.BrewingStandScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(targets = "net/minecraft/container/BrewingStandContainer$SlotPotion")
-public class MixinBrewingStandSlot {
+@Mixin(BrewingStandScreenHandler.PotionSlot.class)
+public class MixinPotionSlot {
 
-    //make the MC dev plugin shut up, because if we don't do this the compiler will log a warning
-    @SuppressWarnings({"UnnecessaryQualifiedMemberReference"})
-    @Inject(method = "Lnet/minecraft/container/BrewingStandContainer$SlotPotion;matches(Lnet/minecraft/item/ItemStack;)Z", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "matches", at = @At("RETURN"), cancellable = true)
     private static void matches(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if(!cir.getReturnValueZ() && BrewingRecipeRegistry.POTION_TYPES.stream().anyMatch(ingredient -> ingredient.test(stack))) {
+        if(!cir.getReturnValueZ() && MeshBrewingRecipeRegistry.getPotionTypes().stream().anyMatch(ingredient -> ingredient.test(stack))) {
             cir.setReturnValue(true);
         }
     }
