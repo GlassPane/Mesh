@@ -1,0 +1,12 @@
+{
+    "schemaVersion": 1,
+    "environment": "*",
+    "id": "mesh_api",
+    "name": "Mesh API",
+    "description": "API for the Mesh Modding Library",
+    "version": "${version}",
+    "custom": {
+        "modmenu:api": true,
+        "modmenu:parent": "mesh"
+    }
+}

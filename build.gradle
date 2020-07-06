@@ -1,0 +1,223 @@
+import net.fabricmc.loom.task.RemapJarTask
+
+import com.google.gson.*;
+
+import java.nio.charset.StandardCharsets
+import java.time.Year
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.google.code.gson:gson:2.8.6"
+    }
+}
+
+plugins {
+    id "fabric-loom" version "0.4-SNAPSHOT"
+    id "net.minecrell.licenser" version "0.4.1"
+    id "maven-publish"
+    id "java-library"
+}
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+group = "com.github.GlassPane"
+archivesBaseName = "Mesh"
+version = System.getenv("TRAVIS_TAG") ?: project.mod_version
+
+def ENV = System.getenv()
+def buildNumber = "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "custom")
+def buildMeta = (!ENV.TAG || ENV.TAG.endsWith("-beta") || ENV.TAG.endsWith("-alpha")) ? buildNumber : ""
+def modVersion = (ENV.TAG ?: version)
+version = "${modVersion}${buildMeta}-1.15"
+
+minecraft {
+    accessWidener = file("src/main/resources/mesh.accesswidener")
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    maven {
+        name = "FabricMC"
+        url = "https://maven.fabricmc.net"
+    }
+    maven {
+        name = "Ladysnake Libs"
+        url = "https://dl.bintray.com/ladysnake/libs"
+    }
+    maven {
+        name = "SonaType SNAPSHOTS"
+        url = "http://oss.sonatype.org/content/repositories/snapshots"
+    }
+    maven {
+        name = "JitPack"
+        url = "https://jitpack.io"
+    }
+}
+
+def apiModules = [
+        "fabric-api-base",
+        "fabric-command-api-v1",
+        "fabric-crash-report-info-v1",
+        "fabric-lifecycle-events-v1",
+        "fabric-networking-blockentity-v0",
+        "fabric-networking-v0", // TODO: Use networking v1 when released
+        "fabric-registry-sync-v0",
+        "fabric-resource-loader-v0"
+]
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings "net.fabricmc:yarn:${minecraft_version}+build.${yarn_mappings}:v2"
+    //needed to get nullability checks for MC source, otherwise using jetbrains annotations
+    compileOnly "org.jetbrains:annotations:19.0.0"
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+    apiModules.each { module -> modApi include(fabricApi.module(module, project.fabric_version)) }
+
+    modApi("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
+
+    modImplementation "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
+    include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
+
+    //testing
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0-M1"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.7.0-M1"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task apiJar(type: Jar, dependsOn: classes) {
+    onlyIf {
+        project.hasProperty("api_package")
+    }
+    //TODO waiting on Loom to fix this
+    from(sourceSets.main.output) {
+        //from(sourceSets.main.allJava) {
+        include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
+    }
+    from "LICENSE.md"
+    manifest.mainAttributes(
+            "Implementation-Title": project.archivesBaseName + "-api",
+            "Implementation-Version": project.version,
+            "Maven-Artifact": "${project.group}:${project.name}:${project.version}:api".toLowerCase(Locale.ROOT),
+            "Built-On-Minecraft": project.minecraft_version,
+            "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+    )
+    classifier = "api"
+}
+
+task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
+    onlyIf {
+        project.hasProperty("api_package")
+    }
+    input = apiJar.archiveFile.get().asFile
+}
+
+if (project.hasProperty("api_package")) {
+    def apiJarTask = project.tasks.getByName("apiJar")
+    apiJarTask.with {
+        include "api.fabric.mod.json"
+        rename "api\\.fabric\\.mod\\.json", "fabric.mod.json"
+    }
+}
+
+jar {
+    if (project.hasProperty("api_package")) {
+        def apiJarTask = project.tasks.getByName("apiJar")
+        dependsOn apiJarTask
+
+        from(apiJarTask.archiveFile) {
+            into "META-INF/libraries"
+        }
+
+        exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
+        exclude "api.fabric.mod.json"
+    }
+}
+
+processResources {
+    // this will ensure that this task is redone when there's a change
+    inputs.property "version", project.version
+
+    // replace stuff in fabric.mod.json, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include "fabric.mod.json"
+        include "api.fabric.mod.json"
+
+        // add mod metadata
+        expand "version": project.version
+    }
+
+    // copy everything else, that's not the fabric.mod.json
+    from(sourceSets.main.resources.srcDirs) {
+        include "**/*.mcmeta"
+        include "**/*.json"
+        exclude "fabric.mod.json"
+        exclude "api.fabric.mod.json"
+    }
+
+    doLast {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create()
+
+        // Minify json resources
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each { File file ->
+            def element = gson.fromJson(file.text, JsonElement.class) //verify json integrity
+            if (file.name == "fabric.mod.json") {
+                def obj = element.getAsJsonObject()
+                //TODO do this for every module
+                if (obj.has("recommends")) {
+                    obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
+                }
+                if (project.hasProperty("api_package")) {
+                    def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
+                    depends.addProperty("mesh_api", "^${project.version}")
+                    apiModules.each {
+                        depends.addProperty(it, "^${project.fabric_version}")
+                    }
+                    if (!depends.keySet().isEmpty()) {
+                        obj.add("depends", depends)
+                    }
+                    def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
+                    def apiJarObject = new JsonObject()
+                    def apiJarTask = project.tasks.getByName("apiJar")
+                    //noinspection GroovyAssignabilityCheck
+                    apiJarObject.addProperty("file", "META-INF/libraries/" + apiJarTask.archivePath.name)
+                    jarsArray.add(apiJarObject)
+                    obj.add("jars", jarsArray)
+                }
+            }
+            file.text = gson.toJson(element)
+        }
+    }
+
+    rename '(.+).accesswidener', 'META-INF/$1.aww'
+}
+
+license {
+    header = file("code_quality/${project.license_header}_HEADER.txt")
+    // Apply licenses only to main source set
+    sourceSets = [sourceSets.main]
+    include "**/*.java"
+    charset = StandardCharsets.UTF_8.name()
+
+    //FIXME style block is broken
+    //see https://github.com/Minecrell/licenser/issues/10
+    //style {
+    //    java = "BLOCK_COMMENT"
+    //}
+    newLine = false // remove the empty line between header and package name
+    //ignoreFailures = true //Ignore failures and only print a warning on license violations
+
+    //export variables
+    ext {
+        year = Year.now()
+        projectDisplayName = project.archivesBaseName
+    }
+}
