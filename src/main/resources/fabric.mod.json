@@ -32,9 +32,6 @@
         "mesh:registry": [
             "com.github.glasspane.mesh.impl.vanity.RegisteredVanityFeatures",
             "com.github.glasspane.mesh.impl.registry.MeshRegistries"
-        ],
-        "mm:early_risers": [
-            "com.github.glasspane.mesh.impl.asm.MeshEarlyRiser"
         ]
     },
     "depends": {

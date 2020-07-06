@@ -17,20 +17,9 @@
  */
 package com.github.glasspane.mesh.impl.asm;
 
-import com.chocohead.mm.api.ClassTinkerers;
 import com.github.glasspane.mesh.api.util.MeshAsmHooks;
-import net.minecraft.text.ClickEvent;
 
 public class AsmHooksImpl implements MeshAsmHooks {
 
-    private static ClickEvent.Action copyToClipboardAction;
-
     public static final MeshAsmHooks INSTANCE = new AsmHooksImpl();
-
-    public ClickEvent.Action getCopyToClipboardAction() {
-        if(copyToClipboardAction == null) {
-            copyToClipboardAction = ClassTinkerers.getEnum(ClickEvent.Action.class, MeshEarlyRiser.COPY_CLIPBOARD_NAME);
-        }
-        return copyToClipboardAction;
-    }
 }

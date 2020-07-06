@@ -19,7 +19,6 @@ package com.github.glasspane.mesh.api.util;
 
 import com.github.glasspane.mesh.impl.asm.AsmHooksImpl;
 import com.google.common.annotations.Beta;
-import net.minecraft.text.ClickEvent;
 
 /**
  * utility class for accessing internal ASM injections
@@ -30,6 +29,4 @@ public interface MeshAsmHooks {
     static MeshAsmHooks getInstance() {
         return AsmHooksImpl.INSTANCE;
     }
-
-    ClickEvent.Action getCopyToClipboardAction();
 }

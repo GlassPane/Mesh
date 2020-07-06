@@ -22,20 +22,25 @@ import net.minecraft.potion.Potion;
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import net.minecraft.recipe.Ingredient;
 
+import java.util.Collections;
 import java.util.List;
 
-/**
- * @deprecated use {@link BrewingRecipeRegistry}
- */
-@Deprecated
 public class MeshBrewingRecipeRegistry {
 
-    public static void registerPotionType(Item item) {
-        BrewingRecipeRegistry.registerPotionType(item);
+    public static void registerPotionType(Ingredient type) {
+        BrewingRecipeRegistry.POTION_TYPES.add(type);
     }
 
-    public static void registerItemRecipe(Item potionItem, Item modifier, Item resultPotionItem) {
-        BrewingRecipeRegistry.registerItemRecipe(potionItem, modifier, resultPotionItem);
+    public static void registerPotionType(Item item) {
+        registerPotionType(Ingredient.ofItems(item));
+    }
+
+    public static void registerItemRecipe(Item inputItem, Ingredient modifier, Item resultItem) {
+        BrewingRecipeRegistry.ITEM_RECIPES.add(new BrewingRecipeRegistry.Recipe<>(inputItem, modifier, resultItem));
+    }
+
+    public static void registerItemRecipe(Item inputItem, Item modifier, Item resultItem) {
+        registerItemRecipe(inputItem, Ingredient.ofItems(modifier), resultItem);
     }
 
     public static void registerPotionRecipe(Potion input, Item modifier, Potion output) {
@@ -43,6 +48,6 @@ public class MeshBrewingRecipeRegistry {
     }
 
     public static List<Ingredient> getPotionTypes() {
-        return BrewingRecipeRegistry.POTION_TYPES;
+        return Collections.unmodifiableList(BrewingRecipeRegistry.POTION_TYPES);
     }
 }
