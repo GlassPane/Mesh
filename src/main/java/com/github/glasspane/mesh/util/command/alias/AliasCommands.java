@@ -18,18 +18,16 @@
 package com.github.glasspane.mesh.util.command.alias;
 
 import com.google.common.collect.Lists;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class AliasCommands {
 
     public static void init() {
-        ServerStartCallback.EVENT.register(minecraftServer -> {
-            if(true) { //TODO config check
-                CommandDispatcher<ServerCommandSource> dispatcher = minecraftServer.getCommandManager().getDispatcher();
+        CommandRegistrationCallback.EVENT.register((dispatcher, dedicatedServer) -> {
+            if (true) { //TODO config check
                 CommandNode<ServerCommandSource> day = dispatcher.findNode(Lists.newArrayList("time", "set", "day"));
                 dispatcher.register(CommandManager.literal("day").redirect(day));
             }

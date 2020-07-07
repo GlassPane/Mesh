@@ -39,7 +39,6 @@ public class ReflectionHelper {
         return new MethodInvoker<>(getMethod(clazz, obfName, yarnName, parameters));
     }
 
-    @Nullable
     public static <T> Method getMethod(Class<T> clazz, String obfName, @Nullable String yarnName, Class<?>... parameters) {
         Method method = null;
         try {

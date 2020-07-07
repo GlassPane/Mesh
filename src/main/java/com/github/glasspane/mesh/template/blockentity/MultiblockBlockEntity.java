@@ -121,10 +121,10 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     }
 
     @Override
-    public void fromTag(CompoundTag compoundTag_1) {
-        super.fromTag(compoundTag_1);
-        if(compoundTag_1.contains(MULTIBLOCK_NBT_KEY, NbtType.COMPOUND)) {
-            this.multiblockData = compoundTag_1.getCompound(MULTIBLOCK_NBT_KEY);
+    public void fromTag(BlockState state, CompoundTag compoundTag) {
+        super.fromTag(state, compoundTag);
+        if(compoundTag.contains(MULTIBLOCK_NBT_KEY, NbtType.COMPOUND)) {
+            this.multiblockData = compoundTag.getCompound(MULTIBLOCK_NBT_KEY);
         }
         this.firstTick = true;
     }

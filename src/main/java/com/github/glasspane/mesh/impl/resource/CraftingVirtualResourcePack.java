@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class CraftingVirtualResourcePack implements ResourcePack {
 
     private static final Set<String> DATA_NAMESPACES = new HashSet<>();
-    private static CraftingVirtualResourcePack INSTANCE = new CraftingVirtualResourcePack(); //FIXME get rid of this field!
+    private static final CraftingVirtualResourcePack INSTANCE = new CraftingVirtualResourcePack(); //FIXME get rid of this field!
     private final Map<Identifier, JsonElement> DATA_CACHE = new HashMap<>();
 
     private CraftingVirtualResourcePack() {

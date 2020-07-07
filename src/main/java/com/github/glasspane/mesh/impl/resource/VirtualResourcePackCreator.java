@@ -20,16 +20,17 @@ package com.github.glasspane.mesh.impl.resource;
 import com.github.glasspane.mesh.Mesh;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourcePackSource;
 
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class VirtualResourcePackCreator implements ResourcePackProvider {
 
     private static final String PACK_NAME = Mesh.MODID + "_virtual";
 
     @Override
-    public <T extends ResourcePackProfile> void register(Map<String, T> registry, ResourcePackProfile.Factory<T> factory) {
-        Optional.ofNullable(ResourcePackProfile.of(PACK_NAME, false, CraftingVirtualResourcePack::getInstance, factory, ResourcePackProfile.InsertionPosition.TOP)).ifPresent(t -> registry.put(PACK_NAME, t));
+    public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+        Optional.ofNullable(ResourcePackProfile.of(PACK_NAME, false, CraftingVirtualResourcePack::getInstance, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN)).ifPresent(consumer);
     }
 }

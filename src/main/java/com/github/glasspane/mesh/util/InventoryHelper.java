@@ -37,7 +37,7 @@ public class InventoryHelper {
                 entity.setDespawnImmediately();
             }
             player.world.playSoundFromEntity(null, player, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-            player.playerContainer.sendContentUpdates();
+            player.playerScreenHandler.sendContentUpdates();
         }
         else {
             ItemEntity entity = player.dropItem(stack, false);

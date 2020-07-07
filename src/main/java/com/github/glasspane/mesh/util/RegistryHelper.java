@@ -17,13 +17,16 @@
  */
 package com.github.glasspane.mesh.util;
 
+import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class RegistryHelper {
@@ -43,15 +46,15 @@ public class RegistryHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T> void visitRegistry(Identifier registryName, BiConsumer<Identifier, T> visitor) {
-        Registry<T> registry = (Registry<T>) (RegistryHelper.ID_REGISTRIES.equals(registryName) ? Registry.REGISTRIES : Registry.REGISTRIES.get(registryName));
-        visitRegistry(registry, visitor);
+        Optional<Registry<T>> optional = RegistryHelper.ID_REGISTRIES.equals(registryName) ? Optional.of((Registry<T>) Registry.REGISTRIES) : (Optional<Registry<T>>) Registry.REGISTRIES.getOrEmpty(registryName);
+        optional.ifPresent(registry -> visitRegistry(registry, visitor));
     }
 
     /**
      * simple factory method that takes an {@link Identifier} instead of a String, for convenience
      */
-    public static <T> DefaultedRegistry<T> newDefaultedRegistry(Identifier defaultValue) {
-        return new DefaultedRegistry<T>(defaultValue.toString());
+    public static <T> DefaultedRegistry<T> newDefaultedRegistry(Identifier defaultValue, RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
+        return new DefaultedRegistry<T>(defaultValue.toString(), registryKey, lifecycle);
     }
 
     /**

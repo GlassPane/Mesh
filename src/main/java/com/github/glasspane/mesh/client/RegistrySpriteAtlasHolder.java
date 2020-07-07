@@ -42,7 +42,6 @@ public class RegistrySpriteAtlasHolder<T> extends SpriteAtlasHolder implements I
         return this.registry.getIds().stream();
     }
 
-    @SuppressWarnings("ConstantConditions")
     public Sprite getSprite(T t) {
         return this.getSprite(this.registry.getId(t));
     }

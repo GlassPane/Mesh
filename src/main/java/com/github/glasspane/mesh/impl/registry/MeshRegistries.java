@@ -23,22 +23,35 @@ import com.github.glasspane.mesh.api.multiblock.MultiblockManager;
 import com.github.glasspane.mesh.api.multiblock.MultiblockTemplate;
 import com.github.glasspane.mesh.api.util.vanity.VanityFeature;
 import com.github.glasspane.mesh.api.util.vanity.VanityManager;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.Lifecycle;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+import org.jetbrains.annotations.ApiStatus;
 
 @AutoRegistry(value = Registry.class, modid = Mesh.MODID, registry = "registries")
 public class MeshRegistries {
 
+    private static final RegistryKey<Registry<MultiblockTemplate<?>>> MULTIBLOCK_REGISTRY_KEY = RegistryKey.ofRegistry(new Identifier(Mesh.MODID, "multiblocks"));
     /**
-     * @deprecated use {@link MultiblockManager#getRegistry()} instead!
+     * use {@link MultiblockManager#getRegistry()} instead!
      */
-    @Deprecated
-    public static final MutableRegistry<MultiblockTemplate<?>> MULTIBLOCKS = new SimpleRegistry<>();
+    @ApiStatus.Internal
+    public static final MutableRegistry<MultiblockTemplate<?>> MULTIBLOCKS = createRegistry(new SimpleRegistry<>(MULTIBLOCK_REGISTRY_KEY, Lifecycle.experimental()), RegistryAttribute.PERSISTED, RegistryAttribute.SYNCED);
+    private static final RegistryKey<Registry<VanityFeature<?>>> VANITY_FEATURES_REGISTRY_KEY = RegistryKey.ofRegistry(new Identifier(Mesh.MODID, "vanity_features"));
+    /**
+     * use {@link VanityManager#getRegistry()} instead!
+     */
+    @ApiStatus.Internal
+    public static final MutableRegistry<VanityFeature<?>> VANITY_FEATURES = createRegistry(new SimpleRegistry<>(VANITY_FEATURES_REGISTRY_KEY, Lifecycle.experimental()), RegistryAttribute.SYNCED);
 
-    /**
-     * @deprecated use {@link VanityManager#getRegistry()} instead!
-     */
-    @Deprecated
-    public static final MutableRegistry<VanityFeature<?>> VANITY_FEATURES = new SimpleRegistry<>();
+    private static <V, T extends Registry<V>> T createRegistry(T registry, RegistryAttribute... attributes) {
+        ((FabricRegistry) registry).build(ImmutableSet.copyOf(attributes));
+        return registry;
+    }
 }

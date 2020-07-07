@@ -28,8 +28,9 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
-import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Matrix4f;
 
 public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
 
@@ -47,7 +48,7 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
             TitleFeature.TitleConfig config = VanityManager.getInstance().getFeatureConfig(RegisteredVanityFeatures.TITLE, player.getUuid());
             TitleFeature.Title currentTitle = config.getCurrentTitle();
             if(currentTitle != null) {
-                String title = config.getCurrentTitle().getTitle().asFormattedString();
+                Text title = config.getCurrentTitle().getTitle();
                 TextRenderer textRenderer = renderDispatcher.getTextRenderer();
                 boolean textVisible = !player.isSneaky();
                 float height = player.getHeight() + 0.7F;
@@ -57,7 +58,7 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
                 matrices.scale(-0.025F, -0.025F, 0.025F);
                 Matrix4f modelView = matrices.peek().getModel();
                 int bgColor = (int) (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
-                float xOffset = (float) (-textRenderer.getStringWidth(title) / 2);
+                float xOffset = -textRenderer.getWidth(title) / 2.0F;
                 float yOffset = "deadmau5".equals(player.getEntityName()) ? -10.0F : 0.0F;
                 textRenderer.draw(title, xOffset, yOffset, 0x20FFFFFF, false, modelView, vertexConsumers, textVisible, bgColor, light);
                 if(textVisible) {

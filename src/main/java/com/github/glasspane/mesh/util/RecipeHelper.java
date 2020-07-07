@@ -38,20 +38,20 @@ public class RecipeHelper {
         else if(object instanceof ItemStack) {
             return Ingredient.ofStacks((ItemStack) object);
         }
-        else if(object instanceof Tag) {
+        else if(object instanceof Tag.Identified) {
             try {
                 //noinspection unchecked
                 return Ingredient.fromTag((Tag<Item>) object);
             }
             catch (ClassCastException e) {
-                throw new IllegalArgumentException(String.format("provided tag (%s) is not an item tag!", ((Tag) object).getId()));
+                throw new IllegalArgumentException(String.format("provided tag (%s) is not an item tag!", ((Tag.Identified<?>) object).getId()));
             }
         }
         else if(object instanceof String) {
-            return Ingredient.fromTag(ItemTags.getContainer().get(new Identifier((String) object)));
+            return Ingredient.fromTag(ItemTags.getContainer().method_30210(new Identifier((String) object)));
         }
         else if(object instanceof Identifier) {
-            return Ingredient.fromTag(ItemTags.getContainer().get((Identifier) object));
+            return Ingredient.fromTag(ItemTags.getContainer().method_30210((Identifier) object));
         }
         else if(object instanceof JsonElement) {
             return Ingredient.fromJson((JsonElement) object);

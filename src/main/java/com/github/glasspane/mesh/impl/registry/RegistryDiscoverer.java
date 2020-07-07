@@ -90,7 +90,7 @@ public class RegistryDiscoverer {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void registerEntries(Identifier registryName, Map<Class<?>, Pair<String, Class<?>>> entries, AtomicInteger counter) {
-        MutableRegistry registry = RegistryHelper.ID_REGISTRIES.equals(registryName) ? Registry.REGISTRIES : Registry.REGISTRIES.get(registryName);
+        MutableRegistry registry = RegistryHelper.ID_REGISTRIES.equals(registryName) ? (MutableRegistry) Registry.REGISTRIES : (MutableRegistry) Registry.REGISTRIES.get(registryName);
         if(registry != null) {
             entries.forEach((clazz, pair) -> {
                 String modid = pair.getLeft();
