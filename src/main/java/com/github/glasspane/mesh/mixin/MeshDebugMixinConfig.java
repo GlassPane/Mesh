@@ -54,7 +54,7 @@ public class MeshDebugMixinConfig implements IMixinConfigPlugin {
                 case "com.github.glasspane.mesh.mixin.debug.client.MixinMinecraftClient":
                 case "com.github.glasspane.mesh.mixin.debug.server.MixinMinecraftDedicatedServer":
                     return MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP;
-                case "com.github.glasspane.mesh.mixin.debug.client.MixinContainerScreen":
+                case "com.github.glasspane.mesh.mixin.debug.client.MixinHandledScreen":
                     return MeshApiOptions.RENDER_SLOT_NUMBERS;
             }
             return DEBUG_MODE;

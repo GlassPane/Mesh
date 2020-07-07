@@ -3,7 +3,7 @@ accessWidener v1 named
 accessible class net/minecraft/screen/BrewingStandScreenHandler$PotionSlot
 
 accessible class net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeSlot
-accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeSlot slot Lnet/minecraft/container/Slot;
+accessible field net/minecraft/client/gui/screen/ingame/CreativeInventoryScreen$CreativeSlot slot Lnet/minecraft/screen/slot/Slot;
 
 accessible class net/minecraft/recipe/BrewingRecipeRegistry$Recipe
 accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionRecipe (Lnet/minecraft/potion/Potion;Lnet/minecraft/item/Item;Lnet/minecraft/potion/Potion;)V

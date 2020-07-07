@@ -36,9 +36,9 @@ import java.io.File;
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
 
-    @Shadow @Final private ResourcePackManager<ResourcePackProfile> dataPackManager;
+    @Shadow @Final private ResourcePackManager dataPackManager;
 
-    @Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;registerProvider(Lnet/minecraft/resource/ResourcePackProvider;)V", ordinal = 0, shift = At.Shift.AFTER))
+    @Inject(method = "loadWorldResourcePack", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;registerProvider(Lnet/minecraft/resource/ResourcePackProvider;)V", ordinal = 0, shift = At.Shift.AFTER))
     private void createResourcepackContainers(File file, LevelProperties properties, CallbackInfo ci) {
         Mesh.getLogger().trace("registering external data pack");
         this.dataPackManager.registerProvider(new ExternalResourcePackCreator());

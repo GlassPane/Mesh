@@ -8,7 +8,7 @@
     ],
     "client": [
         "client.MixinMinecraftClient",
-        "client.MixinContainerScreen"
+        "client.MixinHandledScreen"
     ],
     "server": [
         "server.MixinMinecraftDedicatedServer"
