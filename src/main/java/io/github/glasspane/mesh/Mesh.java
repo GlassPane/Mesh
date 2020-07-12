@@ -86,7 +86,7 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
     public void onInitialize() {
         MeshItemGroup.init();
         MultiblockReloader.init();
-        RegistryDiscoverer.bootstrapRegistries();
+        RegistryDiscoverer.register();
         VanityManager.getInstance().parseRemoteConfig(VanityManager.VANITY_URL).thenRun(() -> VanityManager.getLogger().debug("successfully updated vanity info!", Mesh.NO_LOGGER_PARAMS));
         MeshCommand.init();
         AliasCommands.init();

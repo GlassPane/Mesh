@@ -35,36 +35,41 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes(MeshAnnotationProcessor.AUTOREGISTRY_REGISTER_CLASS)
 public class MeshAnnotationProcessor extends AbstractProcessor {
 
     public static final String AUTOREGISTRY_REGISTER_CLASS = "io.github.glasspane.mesh.api.annotation.AutoRegistry.Register";
+    public static final String AUTOREGISTRY_IGNORE_CLASS = "io.github.glasspane.mesh.api.annotation.AutoRegistry.Ignore";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "Collecting Mesh annotations");
-        TypeElement annotationTypeElement = processingEnv.getElementUtils().getTypeElement(AUTOREGISTRY_REGISTER_CLASS);
-        Collection<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(annotationTypeElement);
-        TypeMirror annotationTypeMirror = annotationTypeElement.asType();
-        JsonObject json = new JsonObject();
+        TypeElement registerTypeElement = processingEnv.getElementUtils().getTypeElement(AUTOREGISTRY_REGISTER_CLASS);
+        TypeMirror registerTypeMirror = registerTypeElement.asType();
+        TypeElement ignoreTypeElement = processingEnv.getElementUtils().getTypeElement(AUTOREGISTRY_IGNORE_CLASS);
+        TypeMirror ignoreTypeMirror = ignoreTypeElement.asType();
+        Collection<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(registerTypeElement);
+        JsonObject root = new JsonObject();
+
+        JsonArray registry = new JsonArray();
+
         for (TypeElement clazz : ElementFilter.typesIn(annotated)) {
             for (AnnotationMirror annotationMirror : clazz.getAnnotationMirrors()) {
-                if (annotationMirror.getAnnotationType().equals(annotationTypeMirror)) {
+                if (annotationMirror.getAnnotationType().equals(registerTypeMirror)) {
                     String className = clazz.getQualifiedName().toString();
                     JsonObject obj = new JsonObject();
+                    obj.addProperty("owner", className);
+                    TypeMirror temp = null;
                     for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet()) {
                         ExecutableElement key = entry.getKey();
                         AnnotationValue annValue = entry.getValue();
                         switch (key.getSimpleName().toString()) {
                             case "value":
-                                obj.addProperty("type", annValue.getValue().toString()); // value is class
+                                temp = (TypeMirror) annValue.getValue(); // value is class
                                 break;
                             case "registry":
                                 obj.addProperty("registry", annValue.getValue().toString()); // value is string
@@ -82,15 +87,39 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
                                 break;
                         }
                     }
-                    json.add(className, obj);
+                    TypeMirror registrySuperType = Objects.requireNonNull(temp, "no type specified");
+
+                    JsonArray fields = new JsonArray();
+                    clazz.getEnclosedElements().stream()
+                            .filter(e -> {
+                                if (e.getKind().isField() && e.getModifiers().contains(Modifier.PUBLIC) && e.getModifiers().contains(Modifier.STATIC) && e.getModifiers().contains(Modifier.FINAL)) {
+                                    for (AnnotationMirror mirror : e.getAnnotationMirrors()) {
+                                        if (mirror.getAnnotationType().equals(ignoreTypeMirror)) {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                }
+                                return false;
+                            })
+                            .forEach(e -> {
+                                TypeMirror fieldType = e.asType();
+                                if(processingEnv.getTypeUtils().isAssignable(fieldType, registrySuperType)) {
+                                    fields.add(e.getSimpleName().toString());
+                                }
+                            });
+                    obj.add("fields", fields);
+                    registry.add(obj);
                     break;
                 }
             }
         }
+        root.add("registry", registry);
+        //root.add("data_generator", new JsonArray()); //TODO process datagen annotations
         try {
             FileObject output = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "mesh_annotations.json");
             try (Writer writer = output.openWriter()) {
-                GSON.toJson(json, writer);
+                GSON.toJson(root, writer);
             }
         } catch (IOException e) {
             e.printStackTrace();

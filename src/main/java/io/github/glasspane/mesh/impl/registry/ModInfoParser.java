@@ -18,16 +18,20 @@
 package io.github.glasspane.mesh.impl.registry;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonSyntaxException;
 import io.github.glasspane.mesh.api.util.MeshModInfo;
-import io.github.glasspane.mesh.impl.ModInfoImpl;
+import io.github.glasspane.mesh.impl.annotation.SerializedModInfo;
+import io.github.glasspane.mesh.util.JsonUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModMetadata;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
 
 public class ModInfoParser {
 
@@ -39,22 +43,21 @@ public class ModInfoParser {
 
     public static void setup() {
         ImmutableMap.Builder<String, MeshModInfo> builder = ImmutableMap.builder();
-        List<ModMetadata> metadata = FabricLoader.getInstance().getAllMods().stream().map(ModContainer::getMetadata).collect(Collectors.toList());
-        metadata.forEach(meta -> {
-            Set<String> registryClasses = extractValues(meta, "mesh:registry");
-            Set<String> dataGenerators = extractValues(meta, "mesh:data_generator");
-            builder.put(meta.getId(), new ModInfoImpl(registryClasses, dataGenerators));
+        Collection<ModContainer> mods = FabricLoader.getInstance().getAllMods();
+        mods.forEach(modContainer -> {
+            Path meshMetaData = modContainer.getPath("mesh_annotations.json");
+            try (Reader reader = Files.newBufferedReader(meshMetaData)) {
+                MeshModInfo modInfo = JsonUtil.GSON.fromJson(reader, SerializedModInfo.class);
+                builder.put(modContainer.getMetadata().getId(), modInfo);
+            } catch (JsonSyntaxException e) {
+                throw new RuntimeException("Mod at '" + modContainer.getRootPath() + "' has an invalid mesh_annotations.json file!", e);
+            } catch (NoSuchFileException ignore) {
+                //ignore
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to open mesh_annotations.json for mod at '" + modContainer.getRootPath() + "'!", e);
+            }
+
         });
         MOD_INFO = builder.build();
-    }
-
-    private static Set<String> extractValues(ModMetadata meta, String key) {
-        return Optional.ofNullable(meta.getCustomValue(key))
-                .map(CustomValue::getAsArray)
-                .map(array -> StreamSupport.stream(array.spliterator(), false)
-                        .map(CustomValue::getAsString)
-                        .collect(Collectors.toSet())
-                )
-                .orElse(Collections.emptySet());
     }
 }

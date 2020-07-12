@@ -15,30 +15,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.api.util;
+package io.github.glasspane.mesh.impl.annotation;
 
-import io.github.glasspane.mesh.impl.annotation.DataGenInfo;
-import io.github.glasspane.mesh.impl.registry.ModInfoParser;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import org.jetbrains.annotations.ApiStatus;
 
-import java.util.List;
+@ApiStatus.Experimental
+public class DataGenInfo {
 
-public interface MeshModInfo {
-
-    static MeshModInfo get(String modid) {
-        return ModInfoParser.getModInfo().get(modid);
-    }
-
-    RegisterInfo[] getRegisterData();
-
-    DataGenInfo[] getDataGenerators();
-
-    interface RegisterInfo {
-        String getOwnerModid();
-        String getOwnerClass();
-        <T> RegistryKey<Registry<T>> getRegistry();
-        List<String> getFieldsToRegister();
-    }
-
+    //FIXME implement
 }

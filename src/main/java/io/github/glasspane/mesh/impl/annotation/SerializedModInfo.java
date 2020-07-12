@@ -15,29 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.impl;
+package io.github.glasspane.mesh.impl.annotation;
 
+import com.google.gson.annotations.SerializedName;
 import io.github.glasspane.mesh.api.util.MeshModInfo;
+import io.github.glasspane.mesh.impl.registry.RegisterInfoImpl;
 
-import java.util.Set;
+public class SerializedModInfo implements MeshModInfo {
 
-public class ModInfoImpl implements MeshModInfo {
+    @SerializedName("registry")
+    private final RegisterInfoImpl[] registerInfos = new RegisterInfoImpl[0];
 
-    private final Set<String> registryClasses;
-    private final Set<String> dataGenerators;
+    @SerializedName("data_generator")
+    private final DataGenInfo[] dataGenInfos = new DataGenInfo[0];
 
-    public ModInfoImpl(Set<String> registryClasses, Set<String> dataGenerators) {
-        this.registryClasses = registryClasses;
-        this.dataGenerators = dataGenerators;
+    @Override
+    public RegisterInfo[] getRegisterData() {
+        return registerInfos;
     }
 
     @Override
-    public Set<String> getRegistryClasses() {
-        return registryClasses;
-    }
-
-    @Override
-    public Set<String> getDataGenerators() {
-        return dataGenerators;
+    public DataGenInfo[] getDataGenerators() {
+        return dataGenInfos;
     }
 }

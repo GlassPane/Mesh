@@ -20,13 +20,7 @@
   },
   "license": "LGPL-3.0-or-later",
   "custom": {
-    "modmenu:api": true,
-    "mesh:registry": [
-      "com.github.glasspane.mesh.impl.vanity.RegisteredVanityFeatures",
-      "com.github.glasspane.mesh.impl.registry.MeshRegistries"
-    ],
-    "mesh:data_generator": [
-    ]
+    "modmenu:api": true
   },
   "entrypoints": {
     "main": [
