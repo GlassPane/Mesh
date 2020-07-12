@@ -21,6 +21,7 @@ import com.mojang.util.UUIDTypeAdapter;
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
+import io.github.glasspane.mesh.impl.client.registry.ClientRegistryProcessor;
 import io.github.glasspane.mesh.util.CollectionHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -57,5 +58,6 @@ public class MeshClient implements ClientModInitializer {
                 VanityManager.getLogger().warn("Hello {}!", name);
             }
         }
+        ClientRegistryProcessor.init();
     }
 }

@@ -18,14 +18,20 @@
 package io.github.glasspane.mesh.impl.client.registry;
 
 import io.github.glasspane.mesh.api.registry.RenderLayerProvider;
+import io.github.glasspane.mesh.util.RegistryHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.minecraft.block.Block;
+import net.minecraft.util.registry.Registry;
 
+@Environment(EnvType.CLIENT)
 public class ClientRegistryProcessor {
 
-    public static void processBlock(Block block) {
-        if (block instanceof RenderLayerProvider) {
-            BlockRenderLayerMap.INSTANCE.putBlock(block, ((RenderLayerProvider) block).getRenderLayer());
-        }
+    public static void init() {
+        RegistryHelper.visitRegistry(Registry.BLOCK, (identifier, block) -> {
+            if (block instanceof RenderLayerProvider) {
+                BlockRenderLayerMap.INSTANCE.putBlock(block, ((RenderLayerProvider) block).getRenderLayer());
+            }
+        });
     }
 }

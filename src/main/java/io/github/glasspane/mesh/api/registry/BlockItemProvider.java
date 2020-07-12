@@ -22,7 +22,7 @@ import net.minecraft.item.Item;
 import javax.annotation.Nullable;
 
 @FunctionalInterface
-public interface ItemBlockProvider {
+public interface BlockItemProvider {
 
     @Nullable
     Item createItem();
