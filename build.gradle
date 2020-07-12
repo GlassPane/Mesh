@@ -100,10 +100,6 @@ dependencies {
 
     apiModules.each { module -> modApi include(fabricApi.module(module, project.fabric_version)) }
 
-    modImplementation (include("com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}")) {
-        transitive false
-    }
-
     annotationProcessor project(path: ":", configuration: "annotations")
 
     //testing
