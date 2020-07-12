@@ -194,7 +194,7 @@ processResources {
                 def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
                 //depends.addProperty("mesh_api", "^${project.version}")
                 apiModules.each {
-                    depends.addProperty(it, "^${project.fabric_version}")
+                    depends.addProperty(it, "*")
                 }
                 if (!depends.keySet().isEmpty()) {
                     obj.add("depends", depends)
