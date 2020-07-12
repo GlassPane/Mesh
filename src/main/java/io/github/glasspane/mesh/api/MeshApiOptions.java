@@ -18,6 +18,8 @@
 package io.github.glasspane.mesh.api;
 
 import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.Level;
 
 /**
@@ -31,6 +33,13 @@ public final class MeshApiOptions {
      * @since 1.0.2
      */
     public static final boolean FABRIC_DEVELOPMENT_ENVIRONMENT = Boolean.getBoolean("fabric.development");
+
+    /**
+     * whether or not we are on a physical client
+     *
+     * @since 2.0
+     */
+    public static final boolean CLIENTSIDE_ENVIRONMENT = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
 
     /**
      * global debug flag. if this is enabled, all other debug flags will be.
