@@ -29,37 +29,28 @@ import net.minecraft.util.Identifier;
 public class RecipeHelper {
 
     public static Ingredient toIngredient(Object object) {
-        if(object instanceof Ingredient) {
+        if (object instanceof Ingredient) {
             return (Ingredient) object;
-        }
-        else if(object instanceof ItemConvertible) {
+        } else if (object instanceof ItemConvertible) {
             return Ingredient.ofItems((ItemConvertible) object);
-        }
-        else if(object instanceof ItemStack) {
+        } else if (object instanceof ItemStack) {
             return Ingredient.ofStacks((ItemStack) object);
-        }
-        else if(object instanceof Tag.Identified) {
+        } else if (object instanceof Tag.Identified) {
             try {
                 //noinspection unchecked
                 return Ingredient.fromTag((Tag<Item>) object);
-            }
-            catch (ClassCastException e) {
+            } catch (ClassCastException e) {
                 throw new IllegalArgumentException(String.format("provided tag (%s) is not an item tag!", ((Tag.Identified<?>) object).getId()));
             }
-        }
-        else if(object instanceof String) {
+        } else if (object instanceof String) {
             return Ingredient.fromTag(ItemTags.getContainer().method_30210(new Identifier((String) object)));
-        }
-        else if(object instanceof Identifier) {
+        } else if (object instanceof Identifier) {
             return Ingredient.fromTag(ItemTags.getContainer().method_30210((Identifier) object));
-        }
-        else if(object instanceof JsonElement) {
+        } else if (object instanceof JsonElement) {
             return Ingredient.fromJson((JsonElement) object);
-        }
-        else if(object == null) {
+        } else if (object == null) {
             return Ingredient.EMPTY;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Cannot convert unknown type to Ingredient: " + object);
         }
     }

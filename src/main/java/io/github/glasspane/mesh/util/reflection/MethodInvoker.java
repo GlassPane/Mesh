@@ -37,11 +37,10 @@ public class MethodInvoker<T> {
     }
 
     public MethodHandle getHandle() {
-        if(methodHandle == null) {
+        if (methodHandle == null) {
             try {
                 methodHandle = MethodHandles.lookup().unreflect(method);
-            }
-            catch (IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 throw new IllegalStateException("reflection error: method", e);
             }
         }
@@ -52,8 +51,7 @@ public class MethodInvoker<T> {
         Validate.isTrue(Arrays.equals(method.getParameterTypes(), Arrays.stream(params).map(Object::getClass).toArray(Class[]::new)), "method parameters do not match signature!");
         try {
             return (V) this.method.invoke(null, params);
-        }
-        catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             Mesh.getLogger().fatal("error invoking method handle", e);
             throw new IllegalStateException("invocation error");
         }
@@ -64,8 +62,7 @@ public class MethodInvoker<T> {
         Validate.isTrue(Arrays.equals(method.getParameterTypes(), Arrays.stream(params).map(Object::getClass).toArray(Class[]::new)), "method parameters do not match signature!");
         try {
             return (V) this.method.invoke(instance, params);
-        }
-        catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             Mesh.getLogger().fatal("error invoking method handle", e);
             throw new IllegalStateException("invocation error");
         }

@@ -17,13 +17,13 @@
  */
 package io.github.glasspane.mesh.impl.crafting;
 
-import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.api.MeshApiOptions;
-import io.github.glasspane.mesh.impl.resource.CraftingVirtualResourcePack;
-import io.github.glasspane.mesh.api.crafting.RecipeCreator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.MeshApiOptions;
+import io.github.glasspane.mesh.api.crafting.RecipeCreator;
+import io.github.glasspane.mesh.impl.resource.CraftingVirtualResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
@@ -48,23 +48,21 @@ public class MeshRecipeManager {
         Set<Identifier> generated = new HashSet<>();
         FabricLoader.getInstance().getEntrypoints(Mesh.MODID + ":recipes", RecipeCreator.class).forEach(creator -> {
             creator.createRecipes(jsonProvider -> {
-                if(map.putIfAbsent(jsonProvider.getRecipeId(), jsonProvider.toJson()) != null) {
+                if (map.putIfAbsent(jsonProvider.getRecipeId(), jsonProvider.toJson()) != null) {
                     Mesh.getLogger().debug("Ignoring duplicate recipe {} during reload. (from {})", jsonProvider.getRecipeId(), creator.getClass().getCanonicalName());
-                }
-                else {
+                } else {
                     //TODO generate advancements
                     generated.add(jsonProvider.getRecipeId());
 
-                    if(MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP) {
+                    if (MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP) {
                         Path generatedOut = Mesh.getOutputDir().resolve("generated");
                         Path recipeFile = generatedOut.resolve("data/" + jsonProvider.getRecipeId().getNamespace() + "/recipes/" + jsonProvider.getRecipeId().getPath() + ".json");
                         try {
                             Files.createDirectories(recipeFile.getParent());
-                            try(BufferedWriter writer = Files.newBufferedWriter(recipeFile)) {
+                            try (BufferedWriter writer = Files.newBufferedWriter(recipeFile)) {
                                 GSON.toJson(jsonProvider.toJson(), writer);
                             }
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                             Mesh.getLogger().error("unable to write file " + recipeFile.toString(), e);
                         }
                     }

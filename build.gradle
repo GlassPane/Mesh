@@ -1,6 +1,6 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.gson.*
 import net.fabricmc.loom.task.RemapJarTask
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 import java.nio.charset.StandardCharsets
 import java.time.Year
@@ -112,7 +112,7 @@ dependencies {
 task annotationsJar(type: ShadowJar) {
     from "LICENSE.md"
     from sourceSets.annotations.output
-    from (sourceSets.annotations.resources) {
+    from(sourceSets.annotations.resources) {
         include "META-INF/services/**"
     }
     configurations = [project.configurations.annotationsImpl]

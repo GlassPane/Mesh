@@ -18,9 +18,9 @@
 package io.github.glasspane.mesh.impl.vanity;
 
 import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.impl.vanity.feature.TitleFeature;
-import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
 import io.github.glasspane.mesh.api.annotation.AutoRegistry;
+import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
+import io.github.glasspane.mesh.impl.vanity.feature.TitleFeature;
 
 @AutoRegistry.Register(value = VanityFeature.class, modid = Mesh.MODID, registry = "mesh:vanity_features")
 public class RegisteredVanityFeatures {

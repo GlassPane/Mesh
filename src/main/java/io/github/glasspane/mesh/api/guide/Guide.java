@@ -20,4 +20,5 @@ package io.github.glasspane.mesh.api.guide;
 import com.google.common.annotations.Beta;
 
 @Beta
-public interface Guide { }
+public interface Guide {
+}

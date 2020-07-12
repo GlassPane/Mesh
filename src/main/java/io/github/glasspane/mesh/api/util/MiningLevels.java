@@ -19,13 +19,12 @@ package io.github.glasspane.mesh.api.util;
 
 public class MiningLevels {
 
-    private MiningLevels() {
-        //NO-OP
-    }
-
     public static final int WOOD = 0;
     public static final int GOLD = WOOD;
     public static final int STONE = 1;
     public static final int IRON = 2;
     public static final int DIAMOND = 3;
+    private MiningLevels() {
+        //NO-OP
+    }
 }

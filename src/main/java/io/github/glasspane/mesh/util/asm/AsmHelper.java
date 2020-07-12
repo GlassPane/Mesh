@@ -32,9 +32,9 @@ public class AsmHelper {
     public static MethodNode findMethod(ClassNode classNode, String methodOwner, String methodName, String methodDesc) {
         MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
         String remappedMethodName = mappings.mapMethodName(MappingFormats.INTERMEDIARY, methodOwner, methodName, methodDesc);
-        for(int i = 0; i < classNode.methods.size(); i++) {
+        for (int i = 0; i < classNode.methods.size(); i++) {
             MethodNode node = classNode.methods.get(i);
-            if(node.name.equals(remappedMethodName)) return node;
+            if (node.name.equals(remappedMethodName)) return node;
         }
         throw new IllegalArgumentException(String.format("Method %s does not exist in %s", remappedMethodName, classNode.name));
     }

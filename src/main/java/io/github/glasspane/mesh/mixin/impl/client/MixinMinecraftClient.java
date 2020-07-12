@@ -34,9 +34,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
 
-    @Shadow @Final private TextureManager textureManager;
+    @Shadow
+    @Final
+    private TextureManager textureManager;
 
-    @Shadow @Final private ReloadableResourceManager resourceManager;
+    @Shadow
+    @Final
+    private ReloadableResourceManager resourceManager;
 
     @Inject(method = "initializeSearchableContainers", at = @At("HEAD"))
     private void mesh_onLateInit(CallbackInfo ci) {

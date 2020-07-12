@@ -17,8 +17,8 @@
  */
 package io.github.glasspane.mesh.api.util;
 
-import io.github.glasspane.mesh.impl.asm.AsmHooksImpl;
 import com.google.common.annotations.Beta;
+import io.github.glasspane.mesh.impl.asm.AsmHooksImpl;
 
 /**
  * utility class for accessing internal ASM injections

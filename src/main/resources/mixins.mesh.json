@@ -1,20 +1,20 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "compatibilityLevel": "JAVA_8",
-    "package": "com.github.glasspane.mesh.mixin.impl",
-    "plugin": "io.github.glasspane.mesh.mixin.MeshMixinConfig",
-    "mixins": [
-      "io.github.glasspane.mesh.mesh.mixin.impl.crafting.MixinPotionSlot",
-      "io.github.glasspane.mesh.mesh.mixin.impl.crafting.MixinRecipeManager",
-      "io.github.glasspane.mesh.mesh.mixin.impl.resources.MixinMinecraftServer"
-    ],
-    "client": [
-      "io.github.glasspane.mesh.mesh.mixin.impl.client.MixinMinecraftClient"
-    ],
-    "server": [
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "package": "com.github.glasspane.mesh.mixin.impl",
+  "plugin": "io.github.glasspane.mesh.mixin.MeshMixinConfig",
+  "mixins": [
+    "io.github.glasspane.mesh.mesh.mixin.impl.crafting.MixinPotionSlot",
+    "io.github.glasspane.mesh.mesh.mixin.impl.crafting.MixinRecipeManager",
+    "io.github.glasspane.mesh.mesh.mixin.impl.resources.MixinMinecraftServer"
+  ],
+  "client": [
+    "io.github.glasspane.mesh.mesh.mixin.impl.client.MixinMinecraftClient"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

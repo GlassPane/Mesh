@@ -17,16 +17,12 @@
  */
 package io.github.glasspane.mesh.util;
 
+import com.google.gson.*;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.glasspane.mesh.impl.serialization.IdentifierAdapter;
 import io.github.glasspane.mesh.impl.serialization.IngredientJsonSerializer;
 import io.github.glasspane.mesh.impl.serialization.ItemStackJsonSerializer;
 import io.github.glasspane.mesh.impl.serialization.RegistryValueAdapter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -54,17 +50,17 @@ public class JsonUtil {
      * Convenience method for reading an "icon" {@link ItemStack}<br/>
      * This will <strong>ignore</strong> any amount, if present<br/>
      * It will also not error if a {@code data} tag is present, and will just ignore it.
+     *
      * @see AdvancementDisplay#iconFromJson(JsonObject)
      */
     @SuppressWarnings("JavadocReference") //make the javadoc not error for referencing a private method
     public static ItemStack iconFromJson(JsonObject json) throws JsonParseException {
         Item item = JsonHelper.getItem(json, "item");
         ItemStack stack = new ItemStack(item);
-        if(json.has("nbt")) {
+        if (json.has("nbt")) {
             try {
                 stack.setTag(StringNbtReader.parse(JsonHelper.getString(json, "nbt")));
-            }
-            catch (CommandSyntaxException e) {
+            } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT tag", e);
             }
         }

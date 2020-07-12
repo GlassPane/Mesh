@@ -17,13 +17,12 @@
  */
 package io.github.glasspane.mesh.impl.serialization;
 
-import com.google.gson.*;
+import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.util.Identifier;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 
 public class IdentifierAdapter extends TypeAdapter<Identifier> {
     @Override

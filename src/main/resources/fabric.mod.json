@@ -1,52 +1,51 @@
 {
-    "schemaVersion": 1,
-    "environment": "*",
-    "id": "mesh",
-    "name": "Mesh",
-    "description": "Modding Library",
-    "version": "${version}",
-    "authors": [
-        {
-            "name": "UpcraftLP",
-            "contact": {
-                "homepage": "https://twitter.com/UpcraftLP"
-            }
-        }
+  "schemaVersion": 1,
+  "environment": "*",
+  "id": "mesh",
+  "name": "Mesh",
+  "description": "Modding Library",
+  "version": "${version}",
+  "authors": [
+    {
+      "name": "UpcraftLP",
+      "contact": {
+        "homepage": "https://twitter.com/UpcraftLP"
+      }
+    }
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/mesh",
+    "issues": "https://github.com/GlassPane/Mesh/issues",
+    "sources": "https://github.com/GlassPane/Mesh"
+  },
+  "license": "LGPL-3.0-or-later",
+  "custom": {
+    "modmenu:api": true,
+    "mesh:registry": [
+      "com.github.glasspane.mesh.impl.vanity.RegisteredVanityFeatures",
+      "com.github.glasspane.mesh.impl.registry.MeshRegistries"
     ],
-    "contact": {
-        "homepage": "https://www.curseforge.com/minecraft/mc-mods/mesh",
-        "issues": "https://github.com/GlassPane/Mesh/issues",
-        "sources": "https://github.com/GlassPane/Mesh"
-    },
-    "license": "LGPL-3.0-or-later",
-    "custom": {
-        "modmenu:api": true,
-        "mesh:registry": [
-            "com.github.glasspane.mesh.impl.vanity.RegisteredVanityFeatures",
-            "com.github.glasspane.mesh.impl.registry.MeshRegistries"
-        ],
-        "mesh:data_generator": [
-
-        ]
-    },
-    "entrypoints": {
-        "main": [
-            "com.github.glasspane.mesh.Mesh"
-        ],
-        "client": [
-            "com.github.glasspane.mesh.impl.client.MeshClient"
-        ]
-    },
-    "depends": {
-        "fabricloader": ">=0.7.0"
-    },
-    "recommends": {
-        "fabric": ">=0.3.0"
-    },
-    "mixins": [
-        "mixins.mesh.json",
-        "mixins.mesh.debug.json",
-        "mixins.mesh.vanity.json"
+    "mesh:data_generator": [
+    ]
+  },
+  "entrypoints": {
+    "main": [
+      "com.github.glasspane.mesh.Mesh"
     ],
-    "accessWidener": "META-INF/mesh.aww"
+    "client": [
+      "com.github.glasspane.mesh.impl.client.MeshClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.7.0"
+  },
+  "recommends": {
+    "fabric": ">=0.3.0"
+  },
+  "mixins": [
+    "mixins.mesh.json",
+    "mixins.mesh.debug.json",
+    "mixins.mesh.vanity.json"
+  ],
+  "accessWidener": "META-INF/mesh.aww"
 }

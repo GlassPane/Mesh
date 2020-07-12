@@ -17,9 +17,9 @@
  */
 package io.github.glasspane.mesh.api.util.vanity;
 
-import io.github.glasspane.mesh.impl.vanity.VanityManagerImpl;
 import com.google.gson.JsonElement;
 import com.mojang.authlib.GameProfile;
+import io.github.glasspane.mesh.impl.vanity.VanityManagerImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.Logger;
@@ -37,11 +37,11 @@ public interface VanityManager {
         return getInstance().logger();
     }
 
-    Logger logger();
-
     static VanityManager getInstance() {
         return VanityManagerImpl.INSTANCE;
     }
+
+    Logger logger();
 
     Registry<VanityFeature<?>> getRegistry();
 

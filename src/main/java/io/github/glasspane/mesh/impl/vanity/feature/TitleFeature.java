@@ -17,12 +17,12 @@
  */
 package io.github.glasspane.mesh.impl.vanity.feature;
 
-import io.github.glasspane.mesh.api.util.vanity.VanityConfig;
-import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import io.github.glasspane.mesh.api.util.vanity.VanityConfig;
+import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -32,12 +32,7 @@ import net.minecraft.util.JsonHelper;
 import org.apache.commons.lang3.Validate;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {
 
@@ -50,13 +45,12 @@ public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {
     @Override
     public void readFeatureConfiguration(JsonObject json) {
         titles.clear();
-        for(JsonElement element : JsonHelper.getArray(json, "titles")) {
+        for (JsonElement element : JsonHelper.getArray(json, "titles")) {
             JsonObject obj = element.getAsJsonObject();
             Identifier id;
             try {
                 id = new Identifier(JsonHelper.getString(obj, "id"));
-            }
-            catch (InvalidIdentifierException e) {
+            } catch (InvalidIdentifierException e) {
                 throw new JsonParseException("invalid identifier", e);
             }
             Text text = Text.Serializer.fromJson(obj.get("title"));
@@ -78,11 +72,10 @@ public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {
         @Override
         protected void deserializeConfig(JsonArray json) throws JsonParseException {
             this.availableTitles.clear();
-            for(JsonElement element : json) {
+            for (JsonElement element : json) {
                 try {
                     availableTitles.add(new Identifier(element.getAsString()));
-                }
-                catch (InvalidIdentifierException e) {
+                } catch (InvalidIdentifierException e) {
                     throw new JsonParseException("invalid identifier", e);
                 }
             }
@@ -95,10 +88,9 @@ public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {
         }
 
         public void setCurrentTitle(@Nullable Identifier title) {
-            if(title == null) {
+            if (title == null) {
                 this.currentTitle = null;
-            }
-            else if(this.availableTitles.contains(title) && TitleFeature.titles.containsKey(title)) {
+            } else if (this.availableTitles.contains(title) && TitleFeature.titles.containsKey(title)) {
                 this.currentTitle = TitleFeature.titles.get(title);
             }
         }

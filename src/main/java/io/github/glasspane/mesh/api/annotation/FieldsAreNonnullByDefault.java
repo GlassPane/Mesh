@@ -29,10 +29,10 @@ import java.lang.annotation.*;
  * <li>a default parameter annotation applied to a more tightly nested
  * element.
  * </ul>
- *
  */
 @Documented
 @NotNull
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PACKAGE, ElementType.TYPE})
-public @interface FieldsAreNonnullByDefault {}
+public @interface FieldsAreNonnullByDefault {
+}

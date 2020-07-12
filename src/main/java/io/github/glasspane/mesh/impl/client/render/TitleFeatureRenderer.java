@@ -17,9 +17,9 @@
  */
 package io.github.glasspane.mesh.impl.client.render;
 
+import io.github.glasspane.mesh.api.util.vanity.VanityManager;
 import io.github.glasspane.mesh.impl.vanity.RegisteredVanityFeatures;
 import io.github.glasspane.mesh.impl.vanity.feature.TitleFeature;
-import io.github.glasspane.mesh.api.util.vanity.VanityManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -44,10 +44,10 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, float limbAngle, float limbDistance, float tickDelta, float customAngle, float headYaw, float headPitch) {
         EntityRenderDispatcher renderDispatcher = MinecraftClient.getInstance().getEntityRenderManager();
         double distance = renderDispatcher.getSquaredDistanceToCamera(player);
-        if(distance <= MAX_RENDERING_DISTANCE) {
+        if (distance <= MAX_RENDERING_DISTANCE) {
             TitleFeature.TitleConfig config = VanityManager.getInstance().getFeatureConfig(RegisteredVanityFeatures.TITLE, player.getUuid());
             TitleFeature.Title currentTitle = config.getCurrentTitle();
-            if(currentTitle != null) {
+            if (currentTitle != null) {
                 Text title = config.getCurrentTitle().getTitle();
                 TextRenderer textRenderer = renderDispatcher.getTextRenderer();
                 boolean textVisible = !player.isSneaky();
@@ -61,7 +61,7 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
                 float xOffset = -textRenderer.getWidth(title) / 2.0F;
                 float yOffset = "deadmau5".equals(player.getEntityName()) ? -10.0F : 0.0F;
                 textRenderer.draw(title, xOffset, yOffset, 0x20FFFFFF, false, modelView, vertexConsumers, textVisible, bgColor, light);
-                if(textVisible) {
+                if (textVisible) {
                     textRenderer.draw(title, xOffset, yOffset, -1, false, modelView, vertexConsumers, false, 0x000000, light);
                 }
                 matrices.pop();

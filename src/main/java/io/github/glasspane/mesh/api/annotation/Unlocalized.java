@@ -27,14 +27,15 @@ import java.lang.annotation.Target;
 /**
  * Indicates that a String should be used as a translation key
  * <p>
- *     Example:
- *     <pre><code>
+ * Example:
+ * <pre><code>
  *         List&lt;@Unlocalized String&gt lines = obj.getLines();
  *         for (@Unlocalized String line : lines) {
  *             font.drawString(I18n.translate(line), 0, 0, 0xFFFFFF);
  *         }
  *     </code></pre>
  * </p>
+ *
  * @see I18n
  */
 @Retention(RetentionPolicy.SOURCE)

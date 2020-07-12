@@ -30,18 +30,17 @@ public class InventoryHelper {
     }
 
     public static void giveOrDrop(ServerPlayerEntity player, ItemStack stack) {
-        if(player.inventory.insertStack(stack) && stack.isEmpty()) {
+        if (player.inventory.insertStack(stack) && stack.isEmpty()) {
             stack.setCount(1);
             ItemEntity entity = player.dropItem(stack, false);
-            if(entity != null) {
+            if (entity != null) {
                 entity.setDespawnImmediately();
             }
             player.world.playSoundFromEntity(null, player, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             player.playerScreenHandler.sendContentUpdates();
-        }
-        else {
+        } else {
             ItemEntity entity = player.dropItem(stack, false);
-            if(entity != null) {
+            if (entity != null) {
                 entity.resetPickupDelay();
                 entity.setOwner(player.getUuid());
             }

@@ -17,9 +17,9 @@
  */
 package io.github.glasspane.mesh.impl.registry;
 
+import com.google.common.collect.ImmutableMap;
 import io.github.glasspane.mesh.api.util.MeshModInfo;
 import io.github.glasspane.mesh.impl.ModInfoImpl;
-import com.google.common.collect.ImmutableMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;

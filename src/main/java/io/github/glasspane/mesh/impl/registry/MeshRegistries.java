@@ -17,14 +17,14 @@
  */
 package io.github.glasspane.mesh.impl.registry;
 
+import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.Lifecycle;
 import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.annotation.AutoRegistry;
 import io.github.glasspane.mesh.api.multiblock.MultiblockManager;
 import io.github.glasspane.mesh.api.multiblock.MultiblockTemplate;
 import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
-import com.google.common.collect.ImmutableSet;
-import com.mojang.serialization.Lifecycle;
-import io.github.glasspane.mesh.api.annotation.AutoRegistry;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 import net.minecraft.util.Identifier;

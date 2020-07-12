@@ -24,7 +24,7 @@ import net.minecraft.block.Block;
 public class ClientRegistryProcessor {
 
     public static void processBlock(Block block) {
-        if(block instanceof RenderLayerProvider) {
+        if (block instanceof RenderLayerProvider) {
             BlockRenderLayerMap.INSTANCE.putBlock(block, ((RenderLayerProvider) block).getRenderLayer());
         }
     }

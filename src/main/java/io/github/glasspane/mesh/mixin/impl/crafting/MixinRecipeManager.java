@@ -17,8 +17,8 @@
  */
 package io.github.glasspane.mesh.mixin.impl.crafting;
 
-import io.github.glasspane.mesh.impl.crafting.MeshRecipeManager;
 import com.google.gson.JsonObject;
+import io.github.glasspane.mesh.impl.crafting.MeshRecipeManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;

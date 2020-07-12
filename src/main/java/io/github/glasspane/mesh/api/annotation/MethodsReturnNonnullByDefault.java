@@ -31,11 +31,12 @@ import java.lang.annotation.*;
  * <li> there is a default parameter annotation applied to a more tightly nested
  * element.
  * </ul>
- *
  */
 @Documented
 @Nonnull
-@TypeQualifierDefault(ElementType.METHOD) // Note: This is a copy of javax.annotation.ParametersAreNonnullByDefault with target changed to METHOD
+@TypeQualifierDefault(ElementType.METHOD)
+// Note: This is a copy of javax.annotation.ParametersAreNonnullByDefault with target changed to METHOD
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PACKAGE, ElementType.TYPE})
-public @interface MethodsReturnNonnullByDefault {}
+public @interface MethodsReturnNonnullByDefault {
+}

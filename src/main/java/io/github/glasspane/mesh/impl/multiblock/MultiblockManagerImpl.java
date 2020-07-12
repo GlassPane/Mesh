@@ -44,7 +44,7 @@ public class MultiblockManagerImpl implements MultiblockManager {
     @Nullable
     @Override
     public <T extends BlockEntity> Multiblock<T> tryCreateMultiblock(MultiblockTemplate<T> template, ServerWorld world, BlockPos pos, Direction direction, ServerPlayerEntity player, Hand hand) {
-        if(template.isValidMultiblock(world, pos, direction)) {
+        if (template.isValidMultiblock(world, pos, direction)) {
             Multiblock<T> multiblock = template.newInstance(world, pos, direction);
             multiblock.onMultiblockCreated(player, hand);
             Mesh.getLogger().debug("Multiblock created at {}, type {}", () -> pos, () -> getRegistry().getId(template));

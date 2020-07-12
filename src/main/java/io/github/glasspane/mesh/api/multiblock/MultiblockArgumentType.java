@@ -46,6 +46,14 @@ public class MultiblockArgumentType implements ArgumentType<MultiblockTemplate<?
         //NO-OP
     }
 
+    public static MultiblockTemplate<?> getMultiblockArgument(CommandContext<ServerCommandSource> context, String name) {
+        return (MultiblockTemplate<?>) context.getArgument(name, MultiblockTemplate.class);
+    }
+
+    public static MultiblockArgumentType create() {
+        return new MultiblockArgumentType();
+    }
+
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         Registry<MultiblockTemplate<?>> registry = MultiblockManager.getInstance().getRegistry();
         return CommandSource.suggestIdentifiers(registry.stream().map(registry::getId), builder);
@@ -56,17 +64,9 @@ public class MultiblockArgumentType implements ArgumentType<MultiblockTemplate<?
         return EXAMPLES;
     }
 
-    public static MultiblockTemplate<?> getMultiblockArgument(CommandContext<ServerCommandSource> context, String name) {
-        return (MultiblockTemplate<?>) context.getArgument(name, MultiblockTemplate.class);
-    }
-
     @Override
     public MultiblockTemplate<?> parse(StringReader reader) throws CommandSyntaxException {
         Identifier id = Identifier.fromCommandInput(reader);
         return MultiblockManager.getInstance().getRegistry().getOrEmpty(id).orElseThrow(() -> INVALID_MULTIBLOCK_TYPE.create(id));
-    }
-
-    public static MultiblockArgumentType create() {
-        return new MultiblockArgumentType();
     }
 }

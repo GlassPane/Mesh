@@ -18,11 +18,11 @@
 package io.github.glasspane.mesh.impl.registry;
 
 import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.annotation.AutoRegistry;
 import io.github.glasspane.mesh.api.registry.ItemBlockProvider;
 import io.github.glasspane.mesh.api.util.MeshModInfo;
 import io.github.glasspane.mesh.impl.client.registry.ClientRegistryProcessor;
 import io.github.glasspane.mesh.util.RegistryHelper;
-import io.github.glasspane.mesh.api.annotation.AutoRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
@@ -56,8 +56,6 @@ public class RegistryDiscoverer {
         }).filter(Objects::nonNull).forEachOrdered(clazz -> {
             AutoRegistry.Register ann = clazz.getAnnotation(AutoRegistry.Register.class);
             if (ann != null) {
-
-
 
 
             } else {

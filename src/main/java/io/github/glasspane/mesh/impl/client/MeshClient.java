@@ -17,11 +17,11 @@
  */
 package io.github.glasspane.mesh.impl.client;
 
+import com.mojang.util.UUIDTypeAdapter;
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
 import io.github.glasspane.mesh.util.CollectionHelper;
-import com.mojang.util.UUIDTypeAdapter;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -51,8 +51,8 @@ public class MeshClient implements ClientModInitializer {
     public void onInitializeClient() {
         currentPlayerUUID = MinecraftClient.getInstance().getSession().getProfile().getId();
         Validate.notNull(currentPlayerUUID, "current player has no UUID! this is a serious error!");
-        if(MeshApiOptions.VANITY_FEATURES_ENABLED) {
-            if(creator = CREATOR_UUID.equals(currentPlayerUUID)) {
+        if (MeshApiOptions.VANITY_FEATURES_ENABLED) {
+            if (creator = CREATOR_UUID.equals(currentPlayerUUID)) {
                 String name = CollectionHelper.getRandomElement("Creator", "Dave", "Sir", "Kami-sama", "there");
                 VanityManager.getLogger().warn("Hello {}!", name);
             }

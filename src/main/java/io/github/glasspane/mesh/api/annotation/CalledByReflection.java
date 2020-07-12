@@ -22,4 +22,5 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})
-public @interface CalledByReflection { }
+public @interface CalledByReflection {
+}

@@ -17,12 +17,12 @@
  */
 package io.github.glasspane.mesh.impl.multiblock;
 
-import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.api.MeshApiOptions;
-import io.github.glasspane.mesh.api.multiblock.MultiblockManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.serialization.JsonOps;
+import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.MeshApiOptions;
+import io.github.glasspane.mesh.api.multiblock.MultiblockManager;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.fabric.api.util.NbtType;
@@ -55,6 +55,11 @@ public class MultiblockReloader implements SimpleSynchronousResourceReloadListen
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new MultiblockReloader());
     }
 
+    private static BlockPos getPos(CompoundTag tag, String name) {
+        ListTag posTag = tag.getList(name, NbtType.INT);
+        return new BlockPos(posTag.getInt(0), posTag.getInt(1), posTag.getInt(2));
+    }
+
     @Override
     public Identifier getFabricId() {
         return new Identifier(Mesh.MODID, "multiblock_reloader");
@@ -66,56 +71,48 @@ public class MultiblockReloader implements SimpleSynchronousResourceReloadListen
         Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
         StreamSupport.stream(MultiblockManager.getInstance().getRegistry().spliterator(), true).forEach(template -> {
             Identifier path = new Identifier(template.getResourcePath().getNamespace(), "structures/" + template.getResourcePath().getPath() + ".nbt");
-            try(InputStream stream = resourceManager.getResource(path).getInputStream()) {
+            try (InputStream stream = resourceManager.getResource(path).getInputStream()) {
                 CompoundTag structureTag = NbtIo.readCompressed(stream);
                 BlockPos size = getPos(structureTag, "size").add(-1, -1, -1);
                 ListTag blockTag = structureTag.getList("blocks", NbtType.COMPOUND);
                 ListTag paletteTag = structureTag.getList("palette", NbtType.COMPOUND);
                 BlockState[] states = new BlockState[paletteTag.size()];
-                for(int i = 0; i < paletteTag.size(); i++) {
+                for (int i = 0; i < paletteTag.size(); i++) {
                     BlockState state = NbtHelper.toBlockState(paletteTag.getCompound(i));
                     //swap structure void and air, to make building easier
-                    if(!state.isAir()) {
+                    if (!state.isAir()) {
                         states[i] = state;
-                    }
-                    else {
+                    } else {
                         states[i] = null;
                     }
                 }
                 Map<BlockPos, BlockState> stateMap = new HashMap<>();
                 BlockState air = Blocks.AIR.getDefaultState();
                 BlockPos.iterate(BlockPos.ORIGIN, size).forEach(pos -> stateMap.put(pos.toImmutable(), air)); //fill the map with default values
-                for(int i = 0; i < blockTag.size(); i++) {
+                for (int i = 0; i < blockTag.size(); i++) {
                     CompoundTag tag = blockTag.getCompound(i);
                     BlockPos pos = getPos(tag, "pos");
                     BlockState state = states[tag.getInt("state")];
-                    if(state != null) {
+                    if (state != null) {
                         stateMap.put(pos, state);
-                    }
-                    else {
+                    } else {
                         stateMap.remove(pos);
                     }
                 }
                 template.setSize(size);
                 template.setStateMap(stateMap);
-                if(MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP) {
+                if (MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP) {
                     String fileName = "structures/" + template.getResourcePath().getNamespace() + "/" + template.getResourcePath().getPath() + ".json";
                     Mesh.getLogger().trace("writing structure {} to json: {}", () -> MultiblockManager.getInstance().getRegistry().getId(template), () -> fileName);
                     Path output = Mesh.getOutputDir().resolve(fileName);
                     Files.createDirectories(output.getParent());
-                    try(Writer writer = Files.newBufferedWriter(output, StandardCharsets.UTF_8)) {
+                    try (Writer writer = Files.newBufferedWriter(output, StandardCharsets.UTF_8)) {
                         gson.toJson(NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, structureTag), writer);
                     }
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 Mesh.getLogger().error("exception reloading structure", e);
             }
         });
-    }
-
-    private static BlockPos getPos(CompoundTag tag, String name) {
-        ListTag posTag = tag.getList(name, NbtType.INT);
-        return new BlockPos(posTag.getInt(0), posTag.getInt(1), posTag.getInt(2));
     }
 }

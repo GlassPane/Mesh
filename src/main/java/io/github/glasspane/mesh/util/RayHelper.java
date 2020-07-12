@@ -20,7 +20,8 @@ package io.github.glasspane.mesh.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.*;
+import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 

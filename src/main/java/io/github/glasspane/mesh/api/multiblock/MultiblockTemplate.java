@@ -44,14 +44,33 @@ public class MultiblockTemplate<T extends BlockEntity> {
     private BlockPos size;
     private Map<BlockPos, BlockState> stateMap = new HashMap<>();
 
-    public Map<BlockPos, BlockState> getStateMap() {
-        return Collections.unmodifiableMap(stateMap);
-    }
-
     public MultiblockTemplate(Identifier path, BlockPos controllerOffset, MultiblockFactory<T> factory) {
         this.path = path;
         this.controllerOffset = controllerOffset;
         this.factory = factory;
+    }
+
+    public static BlockRotation toRotation(Direction direction) {
+        switch (direction) {
+            default:
+                Mesh.getLogger().warn("invalid direction, only horizontals allowed!", new IllegalStateException("invalid horizontal direction: " + direction.name()));
+            case NORTH:
+                return BlockRotation.NONE;
+            case EAST:
+                return BlockRotation.CLOCKWISE_90;
+            case SOUTH:
+                return BlockRotation.CLOCKWISE_180;
+            case WEST:
+                return BlockRotation.COUNTERCLOCKWISE_90;
+        }
+    }
+
+    public Map<BlockPos, BlockState> getStateMap() {
+        return Collections.unmodifiableMap(stateMap);
+    }
+
+    public void setStateMap(Map<BlockPos, BlockState> stateMap) {
+        this.stateMap = stateMap;
     }
 
     public Multiblock<T> newInstance(ServerWorld world, BlockPos pos, Direction orientation) {
@@ -65,29 +84,13 @@ public class MultiblockTemplate<T extends BlockEntity> {
         return this.stateMap.entrySet().stream().allMatch(entry -> {
             BlockPos testPos = startPos.add(Structure.transformAround(entry.getKey(), BlockMirror.NONE, rot, BlockPos.ORIGIN));
             BlockState testState = world.getBlockState(testPos);
-            if(exactMatches.contains(entry.getKey())) {
+            if (exactMatches.contains(entry.getKey())) {
                 return entry.getValue().rotate(rot) == testState;
-            }
-            else {
+            } else {
                 Block block = entry.getValue().getBlock();
                 return block == Blocks.AIR ? testState.isAir() : block == testState.getBlock();
             }
         });
-    }
-
-    public static BlockRotation toRotation(Direction direction) {
-        switch(direction) {
-            default:
-                Mesh.getLogger().warn("invalid direction, only horizontals allowed!", new IllegalStateException("invalid horizontal direction: " + direction.name()));
-            case NORTH:
-                return BlockRotation.NONE;
-            case EAST:
-                return BlockRotation.CLOCKWISE_90;
-            case SOUTH:
-                return BlockRotation.CLOCKWISE_180;
-            case WEST:
-                return BlockRotation.COUNTERCLOCKWISE_90;
-        }
     }
 
     public BlockPos getControllerOffset() {
@@ -111,9 +114,5 @@ public class MultiblockTemplate<T extends BlockEntity> {
 
     public Identifier getResourcePath() {
         return path;
-    }
-
-    public void setStateMap(Map<BlockPos, BlockState> stateMap) {
-        this.stateMap = stateMap;
     }
 }

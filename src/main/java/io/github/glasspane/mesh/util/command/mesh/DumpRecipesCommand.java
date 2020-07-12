@@ -17,8 +17,8 @@
  */
 package io.github.glasspane.mesh.util.command.mesh;
 
-import io.github.glasspane.mesh.Mesh;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.glasspane.mesh.Mesh;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.MinecraftServer;
@@ -29,18 +29,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public class DumpRecipesCommand {
 
@@ -56,21 +46,20 @@ public class DumpRecipesCommand {
                 Identifier typeID = Registry.RECIPE_TYPE.getId(type);
                 File outputFile = new File(outDir, typeID.getNamespace() + "/" + typeID.getPath() + ".csv");
                 outputFile.getParentFile().mkdirs();
-                if(outputFile.exists()) {
+                if (outputFile.exists()) {
                     outputFile.delete();
                 }
-                try(PrintWriter writer = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile))))) {
+                try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile))))) {
                     writer.println("Name,Output");
                     recipes.get(type).stream().sorted(Comparator.comparing(Recipe::getId)).forEachOrdered(recipe -> writer.println(recipe.getId() + "," + Registry.ITEM.getId(recipe.getOutput().getItem())));
                     writer.flush();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     Mesh.getLogger().error("unable to write recipe dump to file: " + outputFile.getAbsolutePath(), e);
                 }
                 recipes.get(type).forEach(id -> {
                 });
             });
-            if(server.isSinglePlayer()) {
+            if (server.isSinglePlayer()) {
                 Util.getOperatingSystem().open(outDir);
             }
             context.getSource().sendFeedback(new TranslatableText("command.mesh.debug.recipe_dump", recipeMap.size()), true);

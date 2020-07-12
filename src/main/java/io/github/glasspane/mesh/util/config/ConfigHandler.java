@@ -48,7 +48,7 @@ public class ConfigHandler {
 
     @SuppressWarnings("unchecked")
     public static <T> T getConfig(Class<T> clazz) {
-        if(!CONFIG_OBJECTS.containsKey(clazz)) {
+        if (!CONFIG_OBJECTS.containsKey(clazz)) {
             throw new IllegalStateException("config not registered before accessing: " + clazz.getCanonicalName());
         }
         return (T) CONFIG_OBJECTS.get(clazz);
@@ -64,20 +64,18 @@ public class ConfigHandler {
 
     public static <T> T reloadConfig(Class<T> configClass) {
         File configFile = new File(FabricLoader.getInstance().getConfigDirectory(), CONFIG_ID_LOOKUP.get(configClass));
-        if(!configFile.exists()) {
-            try(FileWriter writer = new FileWriter(configFile)) {
+        if (!configFile.exists()) {
+            try (FileWriter writer = new FileWriter(configFile)) {
                 JsonUtil.GSON.toJson(configClass.newInstance(), writer);
-            }
-            catch (IOException | IllegalAccessException | InstantiationException e) {
+            } catch (IOException | IllegalAccessException | InstantiationException e) {
                 Mesh.getLogger().error("unable to write config file for {}", configClass::getCanonicalName);
                 Mesh.getLogger().trace("file location: " + configFile.getAbsolutePath(), e);
             }
         }
         T config;
-        try(FileReader reader = new FileReader(configFile)) {
+        try (FileReader reader = new FileReader(configFile)) {
             config = JsonUtil.GSON.fromJson(reader, configClass);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Mesh.getLogger().error("unable to read config file from " + configFile.getAbsolutePath() + ", falling back to default values!", e);
             config = ReflectionHelper.newInstance(configClass);
         }

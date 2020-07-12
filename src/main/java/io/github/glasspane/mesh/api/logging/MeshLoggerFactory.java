@@ -58,10 +58,11 @@ public class MeshLoggerFactory {
 
     /**
      * enables debug logging for each logger, if enabled
+     *
      * @see MeshApiOptions#DEBUG_LOGGING_ENABLED
      */
     public static void checkDebugLogging(String loggerName, BooleanSupplier shouldDebugLogger) {
-        if(MeshApiOptions.DEBUG_LOGGING_ENABLED || shouldDebugLogger.getAsBoolean()) {
+        if (MeshApiOptions.DEBUG_LOGGING_ENABLED || shouldDebugLogger.getAsBoolean()) {
             // configure the logger for debug mode
             // see https://logging.apache.org/log4j/2.0/faq.html#reconfig_level_from_code
             Configurator.setLevel(loggerName, MeshApiOptions.DEBUG_LOG_LEVEL);

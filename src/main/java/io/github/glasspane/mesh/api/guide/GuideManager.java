@@ -17,8 +17,8 @@
  */
 package io.github.glasspane.mesh.api.guide;
 
-import io.github.glasspane.mesh.util.reflection.ReflectionHelper;
 import com.google.common.annotations.Beta;
+import io.github.glasspane.mesh.util.reflection.ReflectionHelper;
 import net.minecraft.util.Identifier;
 
 @Beta

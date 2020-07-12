@@ -88,7 +88,7 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
             }
         }
         try {
-            FileObject output = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "","mesh_annotations.json");
+            FileObject output = processingEnv.getFiler().createResource(StandardLocation.CLASS_OUTPUT, "", "mesh_annotations.json");
             try (Writer writer = output.openWriter()) {
                 GSON.toJson(json, writer);
             }

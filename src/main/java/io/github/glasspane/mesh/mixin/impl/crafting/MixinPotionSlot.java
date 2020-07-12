@@ -30,7 +30,7 @@ public class MixinPotionSlot {
 
     @Inject(method = "matches", at = @At("RETURN"), cancellable = true)
     private static void matches(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-        if(!cir.getReturnValueZ() && MeshBrewingRecipeRegistry.getPotionTypes().stream().anyMatch(ingredient -> ingredient.test(stack))) {
+        if (!cir.getReturnValueZ() && MeshBrewingRecipeRegistry.getPotionTypes().stream().anyMatch(ingredient -> ingredient.test(stack))) {
             cir.setReturnValue(true);
         }
     }

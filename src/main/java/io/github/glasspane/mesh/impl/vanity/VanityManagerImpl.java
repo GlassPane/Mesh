@@ -17,19 +17,19 @@
  */
 package io.github.glasspane.mesh.impl.vanity;
 
-import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.api.MeshApiOptions;
-import io.github.glasspane.mesh.impl.registry.MeshRegistries;
-import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
-import io.github.glasspane.mesh.api.util.vanity.VanityConfig;
-import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
-import io.github.glasspane.mesh.api.util.vanity.VanityManager;
-import io.github.glasspane.mesh.util.JsonUtil;
-import io.github.glasspane.mesh.util.RegistryHelper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
+import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.MeshApiOptions;
+import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
+import io.github.glasspane.mesh.api.util.vanity.VanityConfig;
+import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
+import io.github.glasspane.mesh.api.util.vanity.VanityManager;
+import io.github.glasspane.mesh.impl.registry.MeshRegistries;
+import io.github.glasspane.mesh.util.JsonUtil;
+import io.github.glasspane.mesh.util.RegistryHelper;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -48,14 +48,23 @@ import java.util.stream.Collectors;
 
 public class VanityManagerImpl implements VanityManager {
 
+    public static final VanityManager INSTANCE = new VanityManagerImpl();
     /**
      * special, hidden flag to disable all vanity restrictions
      */
     private static final boolean DEBUG_NO_RESTRICTIONS = MeshApiOptions.VANITY_DEBUG && Boolean.getBoolean("mesh.debug.vanity.norestrictions");
     private static final Logger logger = MeshLoggerFactory.createPrefixLogger(Mesh.MODID + "_vanity", "Mesh Vanity", () -> MeshApiOptions.VANITY_DEBUG);
-    private static final Type GENERAL_CONFIG_TOKEN = new TypeToken<Map<Identifier, JsonObject>>() { }.getType();
-    private static final Type USER_CONFIG_TOKEN = new TypeToken<Map<UUID, Map<Identifier, JsonElement>>>() { }.getType();
-    public static final VanityManager INSTANCE = new VanityManagerImpl();
+    private static final Type GENERAL_CONFIG_TOKEN = new TypeToken<Map<Identifier, JsonObject>>() {
+    }.getType();
+    private static final Type USER_CONFIG_TOKEN = new TypeToken<Map<UUID, Map<Identifier, JsonElement>>>() {
+    }.getType();
+
+    static {
+        if (DEBUG_NO_RESTRICTIONS) {
+            VanityManager.getLogger().warn("SUCCESSFULLY REMOVED INTERNAL RESTRICTIONS", Mesh.NO_LOGGER_PARAMS);
+        }
+    }
+
     private final Map<UUID, Set<Identifier>> unlockedFeatures = new HashMap<>();
 
     @Override
@@ -82,14 +91,13 @@ public class VanityManagerImpl implements VanityManager {
     public CompletableFuture<Void> parseRemoteConfig(String url) {
         return MeshApiOptions.VANITY_FEATURES_ENABLED ? CompletableFuture.supplyAsync(() -> {
             VanityManager.getLogger().debug("updating vanity info from {}", url);
-            try(InputStreamReader input = new InputStreamReader(new URL(url).openStream())) {
+            try (InputStreamReader input = new InputStreamReader(new URL(url).openStream())) {
                 JsonObject json = JsonHelper.deserialize(JsonUtil.GSON, input, JsonObject.class);
-                if(json == null) {
+                if (json == null) {
                     throw new JsonParseException("input object was null");
                 }
                 return json;
-            }
-            catch (JsonParseException | IOException e) {
+            } catch (JsonParseException | IOException e) {
                 throw new RuntimeException("failed to parse " + url, e);
             }
         }).thenAcceptAsync(json -> {
@@ -103,17 +111,10 @@ public class VanityManagerImpl implements VanityManager {
                     map.forEach((identifier, jsonElement) -> registry.getOrEmpty(identifier).ifPresent(vanityFeature -> vanityFeature.getConfig(uuid).updateFromRemote(jsonElement)));
                     unlockedFeatures.put(uuid, map.keySet().stream().filter(registry::containsId).collect(Collectors.toSet()));
                 });
-            }
-            catch (JsonParseException e) {
+            } catch (JsonParseException e) {
                 this.logger().error("unable to parse vanity data", e);
                 unlockedFeatures.clear();
             }
         }, RegistryHelper.getMainThreadExecutor()) : CompletableFuture.runAsync(unlockedFeatures::clear, RegistryHelper.getMainThreadExecutor());
-    }
-
-    static {
-        if(DEBUG_NO_RESTRICTIONS) {
-            VanityManager.getLogger().warn("SUCCESSFULLY REMOVED INTERNAL RESTRICTIONS", Mesh.NO_LOGGER_PARAMS);
-        }
     }
 }

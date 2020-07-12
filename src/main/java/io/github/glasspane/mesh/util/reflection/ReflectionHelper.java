@@ -30,7 +30,7 @@ public class ReflectionHelper {
 
     static {
         devEnv = MappingFormats.NAMED.equals(FabricLoader.getInstance().getMappingResolver().getCurrentRuntimeNamespace());
-        if(devEnv) {
+        if (devEnv) {
             Mesh.getLogger().info("Detected NAMED mappings, we are in a development environment!");
         }
     }
@@ -42,17 +42,15 @@ public class ReflectionHelper {
     public static <T> Method getMethod(Class<T> clazz, String obfName, @Nullable String yarnName, Class<?>... parameters) {
         Method method = null;
         try {
-            if(devEnv && yarnName != null) {
+            if (devEnv && yarnName != null) {
                 method = clazz.getDeclaredMethod(yarnName, parameters);
-            }
-            else {
+            } else {
                 method = clazz.getDeclaredMethod(obfName, parameters);
             }
-        }
-        catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
             Mesh.getLogger().fatal(String.format("unable to find method %s (%s) in class %s", obfName, yarnName, clazz.getCanonicalName()), e);
         }
-        if(method != null) {
+        if (method != null) {
             method.setAccessible(true);
             return method;
         }
@@ -64,22 +62,19 @@ public class ReflectionHelper {
     public static <T> T getField(Class<T> clazz, @Nullable T instance, String obfName, @Nullable String yarnName) {
         Field f = null;
         try {
-            if(devEnv && yarnName != null) {
+            if (devEnv && yarnName != null) {
                 f = clazz.getDeclaredField(yarnName);
-            }
-            else {
+            } else {
                 f = clazz.getDeclaredField(obfName);
             }
-        }
-        catch (NoSuchFieldException e) {
+        } catch (NoSuchFieldException e) {
             Mesh.getLogger().fatal(String.format("unable to find field %s (%s) in class %s", obfName, yarnName, clazz.getCanonicalName()), e);
         }
-        if(f != null) {
+        if (f != null) {
             f.setAccessible(true);
             try {
                 return (T) f.get(instance);
-            }
-            catch (IllegalAccessException | ClassCastException e) {
+            } catch (IllegalAccessException | ClassCastException e) {
                 Mesh.getLogger().fatal(String.format("unable to access field %s in class %s", f.getName(), clazz.getCanonicalName()), e);
             }
         }
@@ -89,8 +84,7 @@ public class ReflectionHelper {
     public static <T> T newInstance(Class<T> clazz) {
         try {
             return clazz.newInstance();
-        }
-        catch (IllegalAccessException | InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             Mesh.getLogger().fatal("unable to instantiate " + clazz.getCanonicalName(), e);
             throw new IllegalStateException("reflection error: instance");
         }

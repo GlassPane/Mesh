@@ -28,6 +28,7 @@ import java.util.Objects;
 
 /**
  * A generic {@link TypeAdapter} for values of a registry
+ *
  * @param <T> the type of the registry
  */
 public class RegistryValueAdapter<T> extends TypeAdapter<T> {

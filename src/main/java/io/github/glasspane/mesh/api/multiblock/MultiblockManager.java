@@ -41,6 +41,7 @@ public interface MultiblockManager {
 
     /**
      * check if the given structure is valid for the provided {@link MultiblockTemplate} and create it
+     *
      * @return an {@link Multiblock} if successful, or {@code null}
      */
     @Nullable

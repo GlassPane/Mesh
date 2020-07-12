@@ -56,8 +56,8 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
     @Inject(method = "render", at = @At("TAIL"))
     private void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        for(Slot slot : handler.slots) {
-            if(slot != null && slot.getStack().getCount() == 0) {
+        for (Slot slot : handler.slots) {
+            if (slot != null && slot.getStack().getCount() == 0) {
                 String slotId = String.valueOf(slot instanceof CreativeInventoryScreen.CreativeSlot ? ((CreativeInventoryScreen.CreativeSlot) slot).slot.id : slot.id);
                 textRenderer.draw(matrices, (slotId), x + slot.x, y + slot.y, 0xFFFFFF);
             }

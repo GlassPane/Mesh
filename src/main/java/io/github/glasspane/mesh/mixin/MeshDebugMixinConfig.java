@@ -36,7 +36,7 @@ public class MeshDebugMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
-        if(!mixinPackage.startsWith(MIXIN_PACKAGE)) {
+        if (!mixinPackage.startsWith(MIXIN_PACKAGE)) {
             throw new IllegalArgumentException("Invalid Package: " + mixinPackage + ", expected: " + MIXIN_PACKAGE);
         }
     }
@@ -49,8 +49,8 @@ public class MeshDebugMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if(mixinClassName.startsWith(MIXIN_PACKAGE)) {
-            switch(mixinClassName) {
+        if (mixinClassName.startsWith(MIXIN_PACKAGE)) {
+            switch (mixinClassName) {
                 case "com.github.glasspane.mesh.mixin.debug.client.MixinMinecraftClient":
                 case "com.github.glasspane.mesh.mixin.debug.server.MixinMinecraftDedicatedServer":
                     return MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP;
@@ -58,8 +58,7 @@ public class MeshDebugMixinConfig implements IMixinConfigPlugin {
                     return MeshApiOptions.RENDER_SLOT_NUMBERS;
             }
             return DEBUG_MODE;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Invalid Package for Class " + mixinClassName + ", expected: " + MIXIN_PACKAGE);
         }
     }

@@ -18,10 +18,10 @@
 package io.github.glasspane.mesh;
 
 import io.github.glasspane.mesh.api.MeshApiOptions;
-import io.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
+import io.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import io.github.glasspane.mesh.impl.registry.ModInfoParser;
 import io.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
 import io.github.glasspane.mesh.util.command.MeshCommand;

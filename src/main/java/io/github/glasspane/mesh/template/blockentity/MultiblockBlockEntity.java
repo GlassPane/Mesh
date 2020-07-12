@@ -40,8 +40,8 @@ import java.util.Random;
 
 public abstract class MultiblockBlockEntity<T extends BlockEntity> extends LockableContainerBlockEntity implements SidedInventory, Tickable, BlockEntityClientSerializable {
 
-    protected final Random random = new Random();
     private static final String MULTIBLOCK_NBT_KEY = Mesh.MODID + "_multiblock";
+    protected final Random random = new Random();
     protected final int randomTickOffset = random.nextInt(20);
     protected final MultiblockTemplate<T> multiblockTemplate;
     protected Multiblock<T> multiblock = null;
@@ -49,7 +49,8 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     protected int updateCounter;
     protected boolean firstTick = true;
 
-    @Environment(EnvType.CLIENT) private boolean multiblockCreated = false;
+    @Environment(EnvType.CLIENT)
+    private boolean multiblockCreated = false;
 
     public MultiblockBlockEntity(BlockEntityType<T> type, MultiblockTemplate<T> multiblockTemplate) {
         super(type);
@@ -63,7 +64,7 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
 
     @Override
     public void fromClientTag(CompoundTag tag) {
-        if(tag.contains("mesh_multiblock_active", NbtType.BYTE)) {
+        if (tag.contains("mesh_multiblock_active", NbtType.BYTE)) {
             this.multiblockCreated = tag.getBoolean("mesh_multiblock_active");
         }
     }
@@ -76,19 +77,19 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
 
     @Override
     public void tick() {
-        if(!this.world.isClient) {
+        if (!this.world.isClient) {
             //TODO is there a better way to do this?
-            if(firstTick) {
+            if (firstTick) {
                 this.onLoad();
                 this.validateMultiblock();
                 this.multiblockData = null;
                 firstTick = false;
-                if(this.multiblock != null) {
+                if (this.multiblock != null) {
                     this.world.updateListeners(this.pos, this.getCachedState(), this.getCachedState(), 3);
                 }
             }
             //check the integrity of the multiblock every 20 ticks
-            if((MathHelper.abs(updateCounter++) % 20 == randomTickOffset)) {
+            if ((MathHelper.abs(updateCounter++) % 20 == randomTickOffset)) {
                 this.validateMultiblock();
             }
         }
@@ -99,14 +100,14 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
      */
     public void onLoad() {
         Direction orientation = this.getOrientation();
-        if(this.multiblockData != null && this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, orientation)) {
+        if (this.multiblockData != null && this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, orientation)) {
             this.multiblock = this.multiblockTemplate.newInstance((ServerWorld) this.world, this.pos, orientation);
             this.multiblock.fromTag(this.multiblockData);
         }
     }
 
     protected void validateMultiblock() {
-        if(this.multiblock != null && !this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
+        if (this.multiblock != null && !this.multiblockTemplate.isValidMultiblock((ServerWorld) this.world, this.pos, this.getOrientation())) {
             this.multiblock.invalidate();
             this.multiblock = null;
             this.markDirty();
@@ -123,7 +124,7 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     @Override
     public void fromTag(BlockState state, CompoundTag compoundTag) {
         super.fromTag(state, compoundTag);
-        if(compoundTag.contains(MULTIBLOCK_NBT_KEY, NbtType.COMPOUND)) {
+        if (compoundTag.contains(MULTIBLOCK_NBT_KEY, NbtType.COMPOUND)) {
             this.multiblockData = compoundTag.getCompound(MULTIBLOCK_NBT_KEY);
         }
         this.firstTick = true;
@@ -133,7 +134,7 @@ public abstract class MultiblockBlockEntity<T extends BlockEntity> extends Locka
     public CompoundTag toTag(CompoundTag compoundTag_1) {
         compoundTag_1 = super.toTag(compoundTag_1);
         this.validateMultiblock();
-        if(this.multiblock != null) {
+        if (this.multiblock != null) {
             compoundTag_1.put(MULTIBLOCK_NBT_KEY, this.multiblock.toTag(new CompoundTag()));
         }
         return compoundTag_1;

@@ -35,8 +35,7 @@ public abstract class VanityConfig<T extends JsonElement> {
     public final void updateFromRemote(JsonElement jsonElement) throws JsonParseException {
         try {
             deserializeConfig((T) jsonElement);
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             throw new JsonSyntaxException("encountered wrong element type!", e);
         }
     }

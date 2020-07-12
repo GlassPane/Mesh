@@ -17,10 +17,10 @@
  */
 package io.github.glasspane.mesh.util.command.mesh;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.glasspane.mesh.api.multiblock.MultiblockArgumentType;
 import io.github.glasspane.mesh.api.multiblock.MultiblockManager;
 import io.github.glasspane.mesh.api.multiblock.MultiblockTemplate;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.server.command.CommandManager;

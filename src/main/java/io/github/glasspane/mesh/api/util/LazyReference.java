@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 
 /**
  * An improved {@link Lazy} that doubles as a {@link Supplier}
+ *
  * @param <T> the type of value held by this reference
  */
 public class LazyReference<T> extends Lazy<T> implements Supplier<T> {
@@ -48,7 +49,7 @@ public class LazyReference<T> extends Lazy<T> implements Supplier<T> {
 
     public void ifPresent(Consumer<T> action) {
         T value = this.get();
-        if(value != null) {
+        if (value != null) {
             action.accept(value);
         }
     }

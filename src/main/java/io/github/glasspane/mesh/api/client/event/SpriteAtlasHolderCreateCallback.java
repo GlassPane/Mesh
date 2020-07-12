@@ -28,7 +28,7 @@ import java.util.function.BiConsumer;
 public interface SpriteAtlasHolderCreateCallback extends BiConsumer<ReloadableResourceManager, TextureManager> {
 
     Event<SpriteAtlasHolderCreateCallback> EVENT = EventFactory.createArrayBacked(SpriteAtlasHolderCreateCallback.class, callbacks -> (resourcemanager, textureManager) -> {
-        for(SpriteAtlasHolderCreateCallback callback : callbacks) {
+        for (SpriteAtlasHolderCreateCallback callback : callbacks) {
             callback.accept(resourcemanager, textureManager);
         }
     });

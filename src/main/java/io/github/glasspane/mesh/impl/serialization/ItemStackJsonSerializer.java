@@ -34,7 +34,7 @@ public class ItemStackJsonSerializer implements JsonSerializer<ItemStack>, JsonD
     public JsonElement serialize(ItemStack src, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject ret = new JsonObject();
         ret.addProperty("item", Registry.ITEM.getId(src.getItem()).toString());
-        if(src.getCount() > 1) {
+        if (src.getCount() > 1) {
             ret.addProperty("count", src.getCount());
         }
         return ret;

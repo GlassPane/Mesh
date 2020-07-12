@@ -33,7 +33,7 @@ public class MeshVanityMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
-        if(!mixinPackage.startsWith(MIXIN_PACKAGE)) {
+        if (!mixinPackage.startsWith(MIXIN_PACKAGE)) {
             throw new IllegalArgumentException("Invalid Package: " + mixinPackage + ", expected: " + MIXIN_PACKAGE);
         }
     }
@@ -46,10 +46,9 @@ public class MeshVanityMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if(mixinClassName.startsWith(MIXIN_PACKAGE)) {
+        if (mixinClassName.startsWith(MIXIN_PACKAGE)) {
             return MeshApiOptions.VANITY_FEATURES_ENABLED;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Invalid Package for Class " + mixinClassName + ", expected: " + MIXIN_PACKAGE);
         }
     }

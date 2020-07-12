@@ -17,10 +17,10 @@
  */
 package io.github.glasspane.mesh.impl.resource;
 
-import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.util.JsonUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.util.JsonUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resource.AbstractFileResourcePack;
@@ -34,12 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -58,14 +53,13 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     public void addResource(ResourceType resourceType, Identifier name, JsonElement data) {
         System.err.println("adding resource " + name);
-        if(resourceType == ResourceType.SERVER_DATA) {
-            if(DATA_CACHE.containsKey(name)) {
+        if (resourceType == ResourceType.SERVER_DATA) {
+            if (DATA_CACHE.containsKey(name)) {
                 Mesh.getLogger().trace("Recipe {} already exists in datapack. overwriting!", name);
             }
             DATA_CACHE.put(name, data);
             DATA_NAMESPACES.add(name.getNamespace());
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Resource type " + resourceType.getDirectory() + " not implemented!");
         }
     }
@@ -78,8 +72,8 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     @Override
     public InputStream open(ResourceType type, Identifier name) throws IOException {
-        if(type == ResourceType.SERVER_DATA) {
-            if(DATA_CACHE.containsKey(name)) {
+        if (type == ResourceType.SERVER_DATA) {
+            if (DATA_CACHE.containsKey(name)) {
                 return new ByteArrayInputStream(JsonUtil.GSON.toJson(DATA_CACHE.get(name)).getBytes(StandardCharsets.UTF_8));
             }
         }
@@ -88,10 +82,9 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     @Override
     public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
-        if(type == ResourceType.SERVER_DATA) {
+        if (type == ResourceType.SERVER_DATA) {
             return DATA_CACHE.keySet().stream().filter(identifier -> identifier.getNamespace().equals(namespace) && identifier.getPath().startsWith(prefix) && pathFilter.test(identifier.getPath())).collect(Collectors.toSet());
-        }
-        else {
+        } else {
             return Collections.emptySet();
         }
     }
@@ -103,7 +96,7 @@ public class CraftingVirtualResourcePack implements ResourcePack {
 
     @Override
     public Set<String> getNamespaces(ResourceType type) {
-        if(type == ResourceType.SERVER_DATA) {
+        if (type == ResourceType.SERVER_DATA) {
             return DATA_NAMESPACES;
         }
         return Collections.emptySet();
@@ -117,7 +110,7 @@ public class CraftingVirtualResourcePack implements ResourcePack {
         pack.addProperty("description", "Mesh extra resources");
         pack.addProperty("pack_format", 4);
         meta.add("pack", pack);
-        try(InputStream inputStream = new ByteArrayInputStream(JsonUtil.GSON.toJson(meta).getBytes(StandardCharsets.UTF_8))) {
+        try (InputStream inputStream = new ByteArrayInputStream(JsonUtil.GSON.toJson(meta).getBytes(StandardCharsets.UTF_8))) {
             return AbstractFileResourcePack.parseMetadata(reader, inputStream);
         }
     }

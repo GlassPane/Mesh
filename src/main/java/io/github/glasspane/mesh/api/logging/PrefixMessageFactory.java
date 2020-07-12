@@ -17,7 +17,9 @@
  */
 package io.github.glasspane.mesh.api.logging;
 
-import org.apache.logging.log4j.message.*;
+import org.apache.logging.log4j.message.AbstractMessageFactory;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.ParameterizedMessage;
 
 public class PrefixMessageFactory extends AbstractMessageFactory {
 

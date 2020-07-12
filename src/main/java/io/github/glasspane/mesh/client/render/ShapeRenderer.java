@@ -108,7 +108,7 @@ public final class ShapeRenderer {
         Vector3f pos3 = new Vector3f(scale * -1.0F, 0.0005F, scale * 1.0F);
         Vector3f pos4 = new Vector3f(scale * 1.0F, 0.0005F, scale * 1.0F);
         //TODO use VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL
-        if(true) throw new UnsupportedOperationException("not fully implemented!");
+        if (true) throw new UnsupportedOperationException("not fully implemented!");
         this.vertexConsumer.vertex(modelView, pos1.getX(), pos1.getY(), pos1.getZ()).color(this.color[0], this.color[1], this.color[2], this.color[3]).texture(1.0F, 0.0F).overlay(OverlayTexture.DEFAULT_UV).next();
         this.vertexConsumer.vertex(modelView, pos2.getX(), pos2.getY(), pos2.getZ()).color(this.color[0], this.color[1], this.color[2], this.color[3]).texture(0.0F, 0.0F).overlay(OverlayTexture.DEFAULT_UV).next();
         this.vertexConsumer.vertex(modelView, pos3.getX(), pos3.getY(), pos3.getZ()).color(this.color[0], this.color[1], this.color[2], this.color[3]).texture(0.0F, 1.0F).overlay(OverlayTexture.DEFAULT_UV).next();
