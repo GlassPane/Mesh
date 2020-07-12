@@ -39,6 +39,7 @@ public interface MeshModInfo {
         String getOwnerClass();
         <T> RegistryKey<Registry<T>> getRegistry();
         List<String> getFieldsToRegister();
+        List<String> getRequiredMods();
     }
 
 }

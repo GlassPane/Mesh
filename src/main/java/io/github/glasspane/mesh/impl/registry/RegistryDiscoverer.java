@@ -21,12 +21,16 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.api.util.MeshModInfo;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 //FIXME cleanup old code
 public class RegistryDiscoverer {
@@ -54,22 +58,32 @@ public class RegistryDiscoverer {
     @SuppressWarnings("unchecked")
     private static <T> void registerEntries(Registry<?> registry, List<MeshModInfo.RegisterInfo> infos) {
         for (MeshModInfo.RegisterInfo info : infos) {
-            try {
-                String modid = info.getOwnerModid();
-                Class<?> owner = Class.forName(info.getOwnerClass());
-                info.getFieldsToRegister().forEach(fieldName -> {
-                    try {
-                        Field f = owner.getDeclaredField(fieldName);
-                        Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
-                        Registry.register((Registry<? super T>) registry, name, (T) f.get(null));
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        throw new RuntimeException("mod " + modid + " errored during registration", e);
-                    }
-                });
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            String modid = info.getOwnerModid();
+            if (info.getRequiredMods().stream().allMatch(FabricLoader.getInstance()::isModLoaded)) {
+                try {
+                    Class<?> owner = Class.forName(info.getOwnerClass());
+                    info.getFieldsToRegister().forEach(fieldName -> {
+                        try {
+                            Field f = owner.getDeclaredField(fieldName);
+                            Identifier name = new Identifier(modid, f.getName().toLowerCase(Locale.ROOT));
+                            Registry.register((Registry<? super T>) registry, name, (T) f.get(null));
+                        } catch (NoSuchFieldException | IllegalAccessException e) {
+                            throw new RuntimeException("mod " + modid + " errored during registration", e);
+                        }
+                    });
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            else {
+                Mesh.getLogger().debug("skipping loading of class {} ({}) due to missing dependencies", getSimpleClassName(info.getOwnerClass()), modid);
             }
         }
+    }
+
+    private static String getSimpleClassName(String fqcn) {
+        String[] split = fqcn.split("\\.");
+        return split[split.length - 1];
     }
 
 

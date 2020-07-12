@@ -41,6 +41,9 @@ public class RegisterInfoImpl implements MeshModInfo.RegisterInfo {
     @SerializedName("fields")
     private final List<String> fieldsToRegister = Collections.emptyList();
 
+    @SerializedName("required_mods")
+    private final List<String> requiredModIDs = Collections.emptyList();
+
     @Override
     public String getOwnerModid() {
         return modid;
@@ -59,5 +62,10 @@ public class RegisterInfoImpl implements MeshModInfo.RegisterInfo {
     @Override
     public List<String> getFieldsToRegister() {
         return fieldsToRegister;
+    }
+
+    @Override
+    public List<String> getRequiredMods() {
+        return requiredModIDs;
     }
 }
