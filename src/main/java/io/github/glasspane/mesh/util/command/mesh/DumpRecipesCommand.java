@@ -19,6 +19,7 @@ package io.github.glasspane.mesh.util.command.mesh;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.MeshApiOptions;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.server.MinecraftServer;
@@ -30,37 +31,39 @@ import net.minecraft.util.Util;
 import net.minecraft.util.registry.Registry;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class DumpRecipesCommand {
 
     public static LiteralArgumentBuilder<ServerCommandSource> append(LiteralArgumentBuilder<ServerCommandSource> $) {
         return $.then(CommandManager.literal("dump_recipes").executes(context -> {
-            //FIXME use paths
-            File outDir = new File(Mesh.getOutputDir().toFile(), "recipe_dump");
+            Path outDir = Mesh.getOutputDir().resolve("recipe_dump");
             MinecraftServer server = context.getSource().getMinecraftServer();
             Map<RecipeType<?>, Set<Recipe<?>>> recipes = new IdentityHashMap<>();
             Collection<Recipe<?>> recipeMap = server.getRecipeManager().values();
             recipeMap.forEach(recipe -> recipes.computeIfAbsent(recipe.getType(), type -> new HashSet<>()).add(recipe));
-            recipes.keySet().forEach(type -> {
+            recipes.forEach((type, values) -> {
                 Identifier typeID = Registry.RECIPE_TYPE.getId(type);
-                File outputFile = new File(outDir, typeID.getNamespace() + "/" + typeID.getPath() + ".csv");
-                outputFile.getParentFile().mkdirs();
-                if (outputFile.exists()) {
-                    outputFile.delete();
+                Path outputFile = outDir.resolve(typeID.getNamespace()).resolve(typeID.getPath() + ".csv");
+                try {
+                    Files.createDirectories(outputFile.getParent());
+                    Files.deleteIfExists(outputFile);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-                try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(outputFile))))) {
+                try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(outputFile))) {
                     writer.println("Name,Output");
-                    recipes.get(type).stream().sorted(Comparator.comparing(Recipe::getId)).forEachOrdered(recipe -> writer.println(recipe.getId() + "," + Registry.ITEM.getId(recipe.getOutput().getItem())));
+                    values.stream().sorted(Comparator.comparing(Recipe::getId)).forEachOrdered(recipe -> writer.println(recipe.getId() + "," + Registry.ITEM.getId(recipe.getOutput().getItem())));
+                    writer.println();
                     writer.flush();
                 } catch (IOException e) {
-                    Mesh.getLogger().error("unable to write recipe dump to file: " + outputFile.getAbsolutePath(), e);
+                    Mesh.getLogger().error("unable to write recipe dump to file: " + outputFile.toAbsolutePath(), e);
                 }
-                recipes.get(type).forEach(id -> {
-                });
             });
-            if (server.isSinglePlayer()) {
-                Util.getOperatingSystem().open(outDir);
+            if (server.isSinglePlayer() && MeshApiOptions.CLIENTSIDE_ENVIRONMENT) {
+                Util.getOperatingSystem().open(outDir.toUri());
             }
             context.getSource().sendFeedback(new TranslatableText("command.mesh.debug.recipe_dump", recipeMap.size()), true);
             return recipeMap.size();

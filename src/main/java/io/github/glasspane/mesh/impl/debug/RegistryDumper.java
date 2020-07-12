@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class RegistryDumper {
 
-    //FIXME use paths
     public static void dumpRegistries() {
         Mesh.getLogger().debug("dumping registry data...");
         Path outputDir = Mesh.getOutputDir().resolve("registry_dump");
