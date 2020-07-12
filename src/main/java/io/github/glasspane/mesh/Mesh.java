@@ -20,7 +20,9 @@ package io.github.glasspane.mesh;
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
+import io.github.glasspane.mesh.api.util.config.ConfigHandler;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
+import io.github.glasspane.mesh.impl.config.MeshConfig;
 import io.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import io.github.glasspane.mesh.impl.registry.ModInfoParser;
 import io.github.glasspane.mesh.impl.registry.RegistryDiscoverer;
@@ -49,6 +51,10 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
 
     public static Logger getLogger() {
         return LOGGER;
+    }
+
+    public static MeshConfig getConfig() {
+        return ConfigHandler.getConfig(MeshConfig.class);
     }
 
     /**
@@ -98,6 +104,7 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
     public void onPreLaunch() {
         LOGGER.info("Send Reinforcements!", Mesh.NO_LOGGER_PARAMS);
         ConfigReloader.init();
+        ConfigHandler.registerConfig(MODID, MeshConfig.class);
         ModInfoParser.setup();
     }
 }

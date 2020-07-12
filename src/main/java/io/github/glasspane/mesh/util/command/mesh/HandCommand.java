@@ -51,7 +51,7 @@ public class HandCommand {
                 //noinspection ConstantConditions
                 result = result.append("\n")
                         .append(new TranslatableText("command.mesh.debug.helditem_nbt", stack.getTag().toText()).styled(style -> style
-                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("command.mesh.debug.helditem_copy_nbt")))
+                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("command.mesh.debug.helditem_copy_nbt")))
                                 .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, stack.getTag().asString()))));
             }
             context.getSource().sendFeedback(result, false);

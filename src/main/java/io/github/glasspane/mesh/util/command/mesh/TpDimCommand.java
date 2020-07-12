@@ -19,8 +19,6 @@ package io.github.glasspane.mesh.util.command.mesh;
 
 import com.google.common.annotations.Beta;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.command.arguments.DimensionArgumentType;
 import net.minecraft.command.arguments.EntityArgumentType;
 import net.minecraft.entity.Entity;
@@ -29,7 +27,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.Collection;
 
@@ -54,6 +51,7 @@ public class TpDimCommand {
     }
 
     private static void teleport(Entity toTeleport, ServerWorld targetDimension) {
-        FabricDimensions.teleport(toTeleport, targetDimension, (teleported, destination, portalDir, horizontalOffset, verticalOffset) -> new BlockPattern.TeleportTarget(teleported.getPos(), Vec3d.ZERO, teleported.getHorizontalFacing().getHorizontal() * 90));
+        toTeleport.moveToWorld(targetDimension);
+        //FabricDimensions.teleport(toTeleport, targetDimension, (teleported, destination, portalDir, horizontalOffset, verticalOffset) -> new BlockPattern.TeleportTarget(teleported.getPos(), Vec3d.ZERO, teleported.getHorizontalFacing().getHorizontal() * 90));
     }
 }

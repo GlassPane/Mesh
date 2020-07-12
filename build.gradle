@@ -81,12 +81,12 @@ def apiModules = [
         "fabric-blockrenderlayer-v1",
         "fabric-command-api-v1",
         "fabric-crash-report-info-v1",
-        "fabric-dimensions-v1",
+        //"fabric-dimensions-v1", //FIXME currently broken
         "fabric-item-groups-v0",
         "fabric-lifecycle-events-v1",
         "fabric-networking-blockentity-v0",
         "fabric-networking-v0", // TODO: Use networking v1 when released
-        "fabric-registry-sync-v0",
+        "fabric-registry-sync-v0", //FIXME currently broken
         "fabric-resource-loader-v0"
 ]
 
@@ -99,6 +99,16 @@ dependencies {
     compileOnly "org.jetbrains:annotations:19.0.0"
 
     apiModules.each { module -> modApi include(fabricApi.module(module, project.fabric_version)) }
+    implementation include("me.zeroeightsix:fiber:${project.fiber_version}")
+    modImplementation(include("me.shedaniel.cloth:config-2:${project.cloth_version}")) {
+        transitive false
+    }
+    modImplementation(include("me.shedaniel.cloth:fiber2cloth:${project.fiber2cloth_version}")) {
+        transitive false
+    }
+    modImplementation("io.github.prospector:modmenu:${project.modmenu_version}") {
+        transitive false
+    }
 
     annotationProcessor project(path: ":", configuration: "annotations")
 

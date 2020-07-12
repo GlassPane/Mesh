@@ -22,6 +22,7 @@ import net.fabricmc.loader.api.FabricLoader;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ReflectionHelper {
@@ -83,8 +84,8 @@ public class ReflectionHelper {
 
     public static <T> T newInstance(Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (IllegalAccessException | InstantiationException e) {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             Mesh.getLogger().fatal("unable to instantiate " + clazz.getCanonicalName(), e);
             throw new IllegalStateException("reflection error: instance");
         }

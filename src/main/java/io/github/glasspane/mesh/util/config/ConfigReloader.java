@@ -18,13 +18,13 @@
 package io.github.glasspane.mesh.util.config;
 
 import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.util.config.ConfigHandler;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
-@Deprecated
 public class ConfigReloader implements SimpleSynchronousResourceReloadListener {
 
     private static final Identifier ID = new Identifier(Mesh.MODID, "config_reloader");
@@ -42,6 +42,6 @@ public class ConfigReloader implements SimpleSynchronousResourceReloadListener {
     @Override
     public void apply(ResourceManager var1) {
         Mesh.getLogger().debug("reloading configs");
-        ConfigHandler.getRegisteredConfigs().forEach(ConfigHandler::reloadConfig);
+        ConfigHandler.reloadAll();
     }
 }

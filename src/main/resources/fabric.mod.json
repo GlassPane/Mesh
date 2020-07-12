@@ -31,6 +31,9 @@
     ],
     "preLaunch": [
       "io.github.glasspane.mesh.Mesh"
+    ],
+    "modmenu": [
+      "io.github.glasspane.mesh.impl.client.compat.MeshModmenuCompat"
     ]
   },
   "depends": {

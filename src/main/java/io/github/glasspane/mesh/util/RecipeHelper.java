@@ -43,9 +43,9 @@ public class RecipeHelper {
                 throw new IllegalArgumentException(String.format("provided tag (%s) is not an item tag!", ((Tag.Identified<?>) object).getId()));
             }
         } else if (object instanceof String) {
-            return Ingredient.fromTag(ItemTags.getContainer().method_30210(new Identifier((String) object)));
+            return Ingredient.fromTag(ItemTags.getTagGroup().getTag(new Identifier((String) object)));
         } else if (object instanceof Identifier) {
-            return Ingredient.fromTag(ItemTags.getContainer().method_30210((Identifier) object));
+            return Ingredient.fromTag(ItemTags.getTagGroup().getTag((Identifier) object));
         } else if (object instanceof JsonElement) {
             return Ingredient.fromJson((JsonElement) object);
         } else if (object == null) {
