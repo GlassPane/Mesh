@@ -121,6 +121,7 @@ task annotationsJar(type: ShadowJar) {
         include "META-INF/services/**"
     }
     configurations = [project.configurations.annotationsInclude]
+    classifier "annotations"
 }
 
 artifacts {
