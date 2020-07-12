@@ -1,6 +1,6 @@
+import com.google.gson.*
 import net.fabricmc.loom.task.RemapJarTask
-
-import com.google.gson.*;
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 import java.nio.charset.StandardCharsets
 import java.time.Year
@@ -20,6 +20,8 @@ plugins {
     id "net.minecrell.licenser" version "0.4.1"
     id "maven-publish"
     id "java-library"
+    id "org.inferred.processors" version "3.3.0"
+    id "com.github.johnrengelman.shadow" version "6.0.0"
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
@@ -36,6 +38,20 @@ version = "${modVersion}${buildMeta}-1.15"
 
 minecraft {
     accessWidener = file("src/main/resources/mesh.accesswidener")
+}
+
+configurations {
+    annotations
+    annotationsImpl
+}
+
+sourceSets {
+    annotations {
+        java {
+            compileClasspath += configurations.annotationsImpl
+            runtimeClasspath += configurations.annotationsImpl
+        }
+    }
 }
 
 repositories {
@@ -84,25 +100,39 @@ dependencies {
     modImplementation "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
     include "com.github.Chocohead:Fabric-ASM:${project.fabric_asm_version}"
 
+    annotationProcessor project(path: ':', configuration: 'annotations')
+
     //testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0-M1"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.7.0-M1"
+
+    annotationsImpl "com.google.code.gson:gson:2.8.6"
 }
 
-test {
-    useJUnitPlatform()
+task annotationsJar(type: ShadowJar) {
+    from "LICENSE.md"
+    from sourceSets.annotations.output
+    from (sourceSets.annotations.resources) {
+        include "META-INF/services/**"
+    }
+    configurations = [project.configurations.annotationsImpl]
+}
+
+artifacts {
+    annotations annotationsJar
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
-    onlyIf {
-        project.hasProperty("api_package")
-    }
     //TODO waiting on Loom to fix this
     from(sourceSets.main.output) {
         //from(sourceSets.main.allJava) {
         include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     }
     from "LICENSE.md"
+    from(sourceSets.main.resources) {
+        include "api/**"
+        into "/"
+    }
     manifest.mainAttributes(
             "Implementation-Title": project.archivesBaseName + "-api",
             "Implementation-Version": project.version,
@@ -114,32 +144,18 @@ task apiJar(type: Jar, dependsOn: classes) {
 }
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
-    onlyIf {
-        project.hasProperty("api_package")
-    }
     input = apiJar.archiveFile.get().asFile
 }
 
-if (project.hasProperty("api_package")) {
-    def apiJarTask = project.tasks.getByName("apiJar")
-    apiJarTask.with {
-        include "api.fabric.mod.json"
-        rename "api\\.fabric\\.mod\\.json", "fabric.mod.json"
-    }
-}
-
 jar {
-    if (project.hasProperty("api_package")) {
-        def apiJarTask = project.tasks.getByName("apiJar")
-        dependsOn apiJarTask
-
-        from(apiJarTask.archiveFile) {
-            into "META-INF/libraries"
-        }
-
-        exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
-        exclude "api.fabric.mod.json"
+    dependsOn apiJar
+    from(apiJar.archiveFile) {
+        into "META-INF/libraries"
     }
+    exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
+    exclude "api/**"
+
+    from "LICENSE.md"
 }
 
 processResources {
@@ -149,7 +165,7 @@ processResources {
     // replace stuff in fabric.mod.json, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include "fabric.mod.json"
-        include "api.fabric.mod.json"
+        include "api/fabric.mod.json"
 
         // add mod metadata
         expand "version": project.version
@@ -160,11 +176,11 @@ processResources {
         include "**/*.mcmeta"
         include "**/*.json"
         exclude "fabric.mod.json"
-        exclude "api.fabric.mod.json"
+        exclude "api/fabric.mod.json"
     }
 
     doLast {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create()
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create()
 
         // Minify json resources
         fileTree(dir: outputs.files.asPath, include: "**/*.json").each { File file ->
@@ -175,23 +191,21 @@ processResources {
                 if (obj.has("recommends")) {
                     obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
-                if (project.hasProperty("api_package")) {
-                    def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
-                    depends.addProperty("mesh_api", "^${project.version}")
-                    apiModules.each {
-                        depends.addProperty(it, "^${project.fabric_version}")
-                    }
-                    if (!depends.keySet().isEmpty()) {
-                        obj.add("depends", depends)
-                    }
-                    def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
-                    def apiJarObject = new JsonObject()
-                    def apiJarTask = project.tasks.getByName("apiJar")
-                    //noinspection GroovyAssignabilityCheck
-                    apiJarObject.addProperty("file", "META-INF/libraries/" + apiJarTask.archivePath.name)
-                    jarsArray.add(apiJarObject)
-                    obj.add("jars", jarsArray)
+                def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
+                depends.addProperty("mesh_api", "^${project.version}")
+                apiModules.each {
+                    depends.addProperty(it, "^${project.fabric_version}")
                 }
+                if (!depends.keySet().isEmpty()) {
+                    obj.add("depends", depends)
+                }
+                def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
+                def apiJarObject = new JsonObject()
+                def apiJarTask = project.tasks.getByName("apiJar")
+                //noinspection GroovyAssignabilityCheck
+                apiJarObject.addProperty("file", "META-INF/libraries/" + apiJarTask.archivePath.name)
+                jarsArray.add(apiJarObject)
+                obj.add("jars", jarsArray)
             }
             file.text = gson.toJson(element)
         }
@@ -220,4 +234,8 @@ license {
         year = Year.now()
         projectDisplayName = project.archivesBaseName
     }
+}
+
+test {
+    useJUnitPlatform()
 }

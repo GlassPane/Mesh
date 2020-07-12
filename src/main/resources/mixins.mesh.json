@@ -3,14 +3,14 @@
     "minVersion": "0.8",
     "compatibilityLevel": "JAVA_8",
     "package": "com.github.glasspane.mesh.mixin.impl",
-    "plugin": "com.github.glasspane.mesh.mixin.MeshMixinConfig",
+    "plugin": "io.github.glasspane.mesh.mixin.MeshMixinConfig",
     "mixins": [
-      "crafting.MixinPotionSlot",
-        "crafting.MixinRecipeManager",
-        "resources.MixinMinecraftServer"
+      "io.github.glasspane.mesh.mesh.mixin.impl.crafting.MixinPotionSlot",
+      "io.github.glasspane.mesh.mesh.mixin.impl.crafting.MixinRecipeManager",
+      "io.github.glasspane.mesh.mesh.mixin.impl.resources.MixinMinecraftServer"
     ],
     "client": [
-        "client.MixinMinecraftClient"
+      "io.github.glasspane.mesh.mesh.mixin.impl.client.MixinMinecraftClient"
     ],
     "server": [
     ],

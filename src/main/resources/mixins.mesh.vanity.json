@@ -3,11 +3,11 @@
     "minVersion": "0.7.11",
     "compatibilityLevel": "JAVA_8",
     "package": "com.github.glasspane.mesh.mixin.vanity",
-    "plugin": "com.github.glasspane.mesh.mixin.MeshVanityMixinConfig",
+    "plugin": "io.github.glasspane.mesh.mixin.MeshVanityMixinConfig",
     "mixins": [
     ],
     "client": [
-        "client.render.MixinPlayerEntityRenderer"
+      "io.github.glasspane.mesh.mesh.mixin.vanity.client.render.MixinPlayerEntityRenderer"
     ],
     "server": [
     ],

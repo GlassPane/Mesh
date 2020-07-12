@@ -3,15 +3,15 @@
     "minVersion": "0.8",
     "compatibilityLevel": "JAVA_8",
     "package": "com.github.glasspane.mesh.mixin.debug",
-    "plugin": "com.github.glasspane.mesh.mixin.MeshDebugMixinConfig",
+    "plugin": "io.github.glasspane.mesh.mixin.MeshDebugMixinConfig",
     "mixins": [
     ],
     "client": [
-        "client.MixinMinecraftClient",
-        "client.MixinHandledScreen"
+      "io.github.glasspane.mesh.mesh.mixin.debug.client.MixinMinecraftClient",
+      "io.github.glasspane.mesh.mesh.mixin.debug.client.MixinHandledScreen"
     ],
     "server": [
-        "server.MixinMinecraftDedicatedServer"
+      "io.github.glasspane.mesh.mesh.mixin.debug.server.MixinMinecraftDedicatedServer"
     ],
     "injectors": {
         "defaultRequire": 0
