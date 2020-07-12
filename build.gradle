@@ -187,7 +187,6 @@ processResources {
             def element = gson.fromJson(file.text, JsonElement.class) //verify json integrity
             if (file.name == "fabric.mod.json") {
                 def obj = element.getAsJsonObject()
-                //TODO do this for every module
                 if (obj.has("recommends")) {
                     obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
