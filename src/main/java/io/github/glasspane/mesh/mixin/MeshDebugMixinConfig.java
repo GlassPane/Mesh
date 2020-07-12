@@ -30,7 +30,7 @@ import java.util.Set;
 
 @CalledByReflection
 public class MeshDebugMixinConfig implements IMixinConfigPlugin {
-    private static final String MIXIN_PACKAGE = "com.github.glasspane.mesh.mixin.debug";
+    private static final String MIXIN_PACKAGE = "io.github.glasspane.mesh.mixin.debug";
     private static final boolean DEBUG_MODE = MeshApiOptions.DEBUG_MODE;
     private static final boolean DEVELOPMENT = MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
 

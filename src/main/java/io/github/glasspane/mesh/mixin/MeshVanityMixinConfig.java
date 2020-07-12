@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MeshVanityMixinConfig implements IMixinConfigPlugin {
-    private static final String MIXIN_PACKAGE = "com.github.glasspane.mesh.mixin.vanity";
+    private static final String MIXIN_PACKAGE = "io.github.glasspane.mesh.mixin.vanity";
     private static final boolean DEBUG_MODE = MeshApiOptions.DEBUG_MODE;
     private static final boolean DEVELOPMENT = MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
 

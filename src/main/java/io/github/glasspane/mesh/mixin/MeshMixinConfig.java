@@ -29,7 +29,7 @@ import java.util.Set;
 
 @CalledByReflection
 public class MeshMixinConfig implements IMixinConfigPlugin {
-    private static final String MIXIN_PACKAGE = "com.github.glasspane.mesh.mixin.impl";
+    private static final String MIXIN_PACKAGE = "io.github.glasspane.mesh.mixin.impl";
     private static final boolean DEBUG_MODE = MeshApiOptions.DEBUG_MODE;
     private static final boolean DEVELOPMENT = MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
 

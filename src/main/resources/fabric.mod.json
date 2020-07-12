@@ -24,10 +24,13 @@
   },
   "entrypoints": {
     "main": [
-      "com.github.glasspane.mesh.Mesh"
+      "io.github.glasspane.mesh.Mesh"
     ],
     "client": [
-      "com.github.glasspane.mesh.impl.client.MeshClient"
+      "io.github.glasspane.mesh.impl.client.MeshClient"
+    ],
+    "preLaunch": [
+      "io.github.glasspane.mesh.Mesh"
     ]
   },
   "depends": {
