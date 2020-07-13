@@ -136,9 +136,16 @@ task apiJar(type: Jar, dependsOn: classes) {
     }
     from "LICENSE.md"
     from(sourceSets.main.resources) {
+        inputs.property "version", project.version
         include 'api/**'
-        into '.'
+        expand "version": project.version
     }
+    eachFile {
+        if(it.path.startsWith("api/")) {
+            it.path = it.path.substring(4)
+        }
+    }
+    includeEmptyDirs false
     manifest.mainAttributes(
             "Implementation-Title": project.archivesBaseName + "-API",
             "Implementation-Version": project.version,
@@ -151,7 +158,7 @@ task apiJar(type: Jar, dependsOn: classes) {
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
     input = apiJar.archiveFile.get().asFile
-    addNestedDependencies = false
+    addNestedDependencies = true
 }
 
 jar {
@@ -182,7 +189,6 @@ processResources {
     // replace stuff in fabric.mod.json, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include "fabric.mod.json"
-        include "api/fabric.mod.json"
 
         // add mod metadata
         expand "version": project.version
@@ -193,7 +199,6 @@ processResources {
         include "**/*.mcmeta"
         include "**/*.json"
         exclude "fabric.mod.json"
-        exclude "api/fabric.mod.json"
     }
 
     doLast {
