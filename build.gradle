@@ -212,21 +212,22 @@ processResources {
                 if (obj.has("recommends")) {
                     obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
-                def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
-                depends.addProperty("mesh_api", "${project.version}")
-                apiModules.each {
-                    depends.addProperty(it, "*")
+                if(gradle.taskGraph.hasTask(remapApiJar as Task)) {
+                    def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
+                    depends.addProperty("mesh_api", "${project.version}")
+                    apiModules.each {
+                        depends.addProperty(it, "*")
+                    }
+                    if (!depends.keySet().isEmpty()) {
+                        obj.add("depends", depends)
+                    }
+
+                    def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
+                    def apiJarObject = new JsonObject()
+                    apiJarObject.addProperty("file", "META-INF/jars/${apiJar.archiveFileName.get()}")
+                    jarsArray.add(apiJarObject)
+                    obj.add("jars", jarsArray)
                 }
-                if (!depends.keySet().isEmpty()) {
-                    obj.add("depends", depends)
-                }
-                def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
-                def apiJarObject = new JsonObject()
-                def apiJarTask = project.tasks.getByName("apiJar")
-                //noinspection GroovyAssignabilityCheck
-                apiJarObject.addProperty("file", "META-INF/jars/" + apiJarTask.archivePath.name)
-                jarsArray.add(apiJarObject)
-                obj.add("jars", jarsArray)
             }
             file.text = gson.toJson(element)
         }
