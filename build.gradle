@@ -130,23 +130,19 @@ task annotationsJar(type: ShadowJar) {
     classifier "annotations"
 }
 
-artifacts {
-    annotations annotationsJar
-}
-
 task apiJar(type: Jar, dependsOn: classes) {
     from(sourceSets.main.output) {
         include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     }
     from "LICENSE.md"
     from(sourceSets.main.resources) {
-        include "api/**"
-        into "/"
+        include 'api/**'
+        into '.'
     }
     manifest.mainAttributes(
-            "Implementation-Title": project.archivesBaseName + "-api",
+            "Implementation-Title": project.archivesBaseName + "-API",
             "Implementation-Version": project.version,
-            "Maven-Artifact": "${project.group}:${project.name}:${project.version}:api".toLowerCase(Locale.ROOT),
+            "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:api".toLowerCase(Locale.ROOT),
             "Built-On-Minecraft": project.minecraft_version,
             "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
     )
@@ -155,17 +151,28 @@ task apiJar(type: Jar, dependsOn: classes) {
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
     input = apiJar.archiveFile.get().asFile
+    addNestedDependencies = false
 }
 
 jar {
-    dependsOn apiJar
-    from(apiJar.archiveFile) {
-        into "META-INF/libraries"
+    dependsOn remapApiJar
+    afterEvaluate {
+        from(apiJar.archiveFile) {
+            into "META-INF/jars"
+        }
     }
     exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     exclude "api/**"
 
     from "LICENSE.md"
+
+    manifest.mainAttributes(
+            "Implementation-Title": project.archivesBaseName,
+            "Implementation-Version": project.version,
+            "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}".toLowerCase(Locale.ROOT),
+            "Built-On-Minecraft": project.minecraft_version,
+            "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+    )
 }
 
 processResources {
@@ -201,7 +208,7 @@ processResources {
                     obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
                 }
                 def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
-                //depends.addProperty("mesh_api", "^${project.version}")
+                depends.addProperty("mesh_api", "${project.version}")
                 apiModules.each {
                     depends.addProperty(it, "*")
                 }
@@ -212,8 +219,8 @@ processResources {
                 def apiJarObject = new JsonObject()
                 def apiJarTask = project.tasks.getByName("apiJar")
                 //noinspection GroovyAssignabilityCheck
-                apiJarObject.addProperty("file", "META-INF/libraries/" + apiJarTask.archivePath.name)
-                //jarsArray.add(apiJarObject)
+                apiJarObject.addProperty("file", "META-INF/jars/" + apiJarTask.archivePath.name)
+                jarsArray.add(apiJarObject)
                 obj.add("jars", jarsArray)
             }
             file.text = gson.toJson(element)
@@ -242,6 +249,31 @@ license {
     ext {
         year = Year.now()
         projectDisplayName = project.archivesBaseName
+    }
+}
+
+artifacts {
+    archives (jar) {
+        builtBy remapJar
+    }
+    archives (apiJar) {
+        builtBy remapApiJar
+    }
+    archives annotationsJar
+    annotations annotationsJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact(remapJar)
+            artifact(remapApiJar)
+            artifact(annotationsJar)
+        }
+    }
+
+    repositories {
+
     }
 }
 
