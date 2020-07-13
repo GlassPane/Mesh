@@ -17,6 +17,8 @@
  */
 package io.github.glasspane.mesh.util.config;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import io.github.fablabsmc.fablabs.api.fiber.v1.exception.ValueDeserializationException;
 import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.FiberSerialization;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
@@ -32,9 +34,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * used to load and store config objects.<br/>
@@ -48,7 +50,8 @@ public class ConfigHandlerImpl implements ConfigHandler {
 
     private static final Map<Class<?>, Object> CONFIG_OBJECTS = new HashMap<>();
     private static final Map<Class<?>, ConfigBranch> CONFIG_BRANCHES = new HashMap<>();
-    private static final Map<Class<?>, String> CONFIG_ID_LOOKUP = new HashMap<>();
+    private static final Map<Class<?>, Path> CONFIG_PATHS = new HashMap<>();
+    private static final BiMap<String, Class<?>> CONFIG_ID_LOOKUP = HashBiMap.create(5);
 
     @SuppressWarnings("unchecked")
     public static <T> T getConfig(Class<T> clazz) {
@@ -66,11 +69,13 @@ public class ConfigHandlerImpl implements ConfigHandler {
     }
 
     /**
-     * @param configName the filename of the config (without .json extension)
+     * @param modid the mod ID for which to register the config. there can only be one config per mod ID.
+     * @param configPath the filename of the config (without .json5 extension)
      */
-    public static <T> void registerConfig(String configName, Class<T> configClass) {
+    public static void registerConfig(String modid, String configPath, Class<?> configClass) {
         refreshConfigObjects(configClass);
-        CONFIG_ID_LOOKUP.put(configClass, configName + ".json5");
+        CONFIG_ID_LOOKUP.put(modid, configClass);
+        CONFIG_PATHS.put(configClass, FabricLoader.getInstance().getConfigDirectory().toPath().resolve(configPath + ".json5"));
         reloadConfig(configClass);
     }
 
@@ -82,7 +87,7 @@ public class ConfigHandlerImpl implements ConfigHandler {
     }
 
     public static void saveConfig(Class<?> configClass, ConfigBranch configBranch) {
-        Path configFile = FabricLoader.getInstance().getConfigDirectory().toPath().resolve(CONFIG_ID_LOOKUP.get(configClass));
+        Path configFile = CONFIG_PATHS.get(configClass);
         try {
             Files.createDirectories(configFile.getParent());
             Files.deleteIfExists(configFile);
@@ -90,13 +95,13 @@ public class ConfigHandlerImpl implements ConfigHandler {
                 FiberSerialization.serialize(configBranch, stream, SERIALIZER);
             }
         } catch (IOException e) {
-            Mesh.getLogger().error("unable to write config file for {} ({})", configClass.getCanonicalName(), CONFIG_ID_LOOKUP.get(configClass));
+            Mesh.getLogger().error("unable to write config file for {} ({})", configClass.getCanonicalName(), CONFIG_ID_LOOKUP.inverse().get(configClass));
             Mesh.getLogger().trace("file location: " + configFile.toAbsolutePath(), e);
         }
     }
 
     public static <T> void reloadConfig(Class<T> configClass) {
-        Path configFile = FabricLoader.getInstance().getConfigDirectory().toPath().resolve(CONFIG_ID_LOOKUP.get(configClass));
+        Path configFile = FabricLoader.getInstance().getConfigDirectory().toPath().resolve(CONFIG_PATHS.get(configClass));
         if (!Files.exists(configFile)) {
             ConfigHandler.saveConfig(configClass);
         }
@@ -104,16 +109,16 @@ public class ConfigHandlerImpl implements ConfigHandler {
         try (InputStream stream = Files.newInputStream(configFile)) {
             FiberSerialization.deserialize(getConfigBranch(configClass), stream, SERIALIZER);
         } catch (IOException | ValueDeserializationException e) {
-            Mesh.getLogger().error("unable to read config file " + CONFIG_ID_LOOKUP.get(configClass), e);
+            Mesh.getLogger().error("unable to read config file " + CONFIG_PATHS.get(configClass).toAbsolutePath(), e);
             refreshConfigObjects(configClass); //fall back to default values
         }
     }
 
     public static void reloadAll() {
-        ConfigHandler.getRegisteredConfigs().forEach(ConfigHandler::reloadConfig);
+        ConfigHandler.getRegisteredConfigs().values().forEach(ConfigHandler::reloadConfig);
     }
 
-    public static Set<Class<?>> getRegisteredConfigs() {
-        return CONFIG_ID_LOOKUP.keySet();
+    public static Map<String, Class<?>> getRegisteredConfigs() {
+        return Collections.unmodifiableMap(CONFIG_ID_LOOKUP);
     }
 }

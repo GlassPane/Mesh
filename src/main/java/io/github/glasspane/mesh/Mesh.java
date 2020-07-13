@@ -93,6 +93,7 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
     public void onInitialize() {
         MeshItemGroup.init();
         RegistryProcessor.init();
+        ConfigReloader.init();
         MultiblockReloader.init();
         RegistryDiscoverer.register();
         VanityManager.getInstance().parseRemoteConfig(VanityManager.VANITY_URL).thenRun(() -> VanityManager.getLogger().debug("successfully updated vanity info!", Mesh.NO_LOGGER_PARAMS));
@@ -103,7 +104,6 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
     @Override
     public void onPreLaunch() {
         LOGGER.info("Send Reinforcements!", Mesh.NO_LOGGER_PARAMS);
-        ConfigReloader.init();
         ConfigHandler.registerConfig(MODID, MeshConfig.class);
         ModInfoParser.setup();
     }

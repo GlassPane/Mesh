@@ -27,9 +27,18 @@ public class MeshModmenuCompat implements ModMenuApi {
                 .getScreen();
     }
 
-    //TODO provide config screen factories for every mod handled
     @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {
-        return ImmutableMap.of();
+        ImmutableMap.Builder<String, ConfigScreenFactory<?>> builder = ImmutableMap.builder();
+        ConfigHandler.getRegisteredConfigs().forEach((modid, configClass) -> {
+            if (!modid.equals(Mesh.MODID)) {
+                builder.put(modid, parent -> Fiber2Cloth
+                        .create(parent, modid, ConfigHandler.getConfigBranch(configClass), new TranslatableText(String.format("config.%s.title", modid)))
+                        .setSaveRunnable(() -> ConfigHandler.saveConfig(configClass))
+                        .build()
+                        .getScreen());
+            }
+        });
+        return builder.build();
     }
 }

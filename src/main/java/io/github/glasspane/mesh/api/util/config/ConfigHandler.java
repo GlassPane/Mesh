@@ -6,7 +6,7 @@ import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.JanksonValueSerial
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
 import io.github.glasspane.mesh.util.config.ConfigHandlerImpl;
 
-import java.util.Set;
+import java.util.Map;
 
 public interface ConfigHandler {
 
@@ -22,10 +22,18 @@ public interface ConfigHandler {
     }
 
     /**
-     * @param configName the filename of the config (without .json extension)
+     * @param modid      the mod ID for which to register the config. there can only be one config per mod ID.
+     * @param configPath the filename of the config (without .json5 extension)
      */
-    static <T> void registerConfig(String configName, Class<T> configClass) {
-        ConfigHandlerImpl.registerConfig(configName, configClass);
+    static void registerConfig(String modid, String configPath, Class<?> configClass) {
+        ConfigHandlerImpl.registerConfig(modid, configPath, configClass);
+    }
+
+    /**
+     * @param modid      the mod ID for which to register the config. there can only be one config per mod ID.
+     */
+    static void registerConfig(String modid, Class<?> configClass) {
+        registerConfig(modid, modid, configClass);
     }
 
     static void saveConfig(Class<?> configClass) {
@@ -40,7 +48,7 @@ public interface ConfigHandler {
         ConfigHandlerImpl.reloadConfig(configClass);
     }
 
-    static Set<Class<?>> getRegisteredConfigs() {
+    static Map<String, Class<?>> getRegisteredConfigs() {
         return ConfigHandlerImpl.getRegisteredConfigs();
     }
 

@@ -99,7 +99,7 @@ dependencies {
     compileOnly "org.jetbrains:annotations:19.0.0"
 
     apiModules.each { module -> modApi include(fabricApi.module(module, project.fabric_version)) }
-    implementation include("me.zeroeightsix:fiber:${project.fiber_version}")
+    api include("me.zeroeightsix:fiber:${project.fiber_version}")
     modImplementation(include("me.shedaniel.cloth:config-2:${project.cloth_version}")) {
         transitive false
     }
