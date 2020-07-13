@@ -86,7 +86,7 @@ def apiModules = [
         "fabric-lifecycle-events-v1",
         "fabric-networking-blockentity-v0",
         "fabric-networking-v0", // TODO: Use networking v1 when released
-        "fabric-registry-sync-v0", //FIXME currently broken
+        "fabric-registry-sync-v0",
         "fabric-resource-loader-v0"
 ]
 
