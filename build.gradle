@@ -95,10 +95,12 @@ dependencies {
     mappings "net.fabricmc:yarn:${minecraft_version}+build.${yarn_mappings}:v2"
     //needed to get nullability checks for MC source, otherwise using jetbrains annotations
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-
     compileOnly "org.jetbrains:annotations:19.0.0"
+    modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    apiModules.each { module -> modApi include(fabricApi.module(module, project.fabric_version)) }
+    apiModules.each {
+        modApi include(fabricApi.module(it, project.fabric_version))
+    }
     api include("me.zeroeightsix:fiber:${project.fiber_version}")
     modImplementation(include("me.shedaniel.cloth:config-2:${project.cloth_version}")) {
         transitive false
@@ -118,6 +120,11 @@ dependencies {
 
     // dependencies for the annotation processor submodule
     annotationsDependency annotationsInclude("com.google.code.gson:gson:2.8.6")
+
+    // speed up loading of the dev client by disabling DFU
+    /*modRuntime("com.github.SuperCoder7979:databreaker:master-SNAPSHOT") {
+        exclude module: "fabric-loader"
+    }*/
 }
 
 task annotationsJar(type: ShadowJar) {

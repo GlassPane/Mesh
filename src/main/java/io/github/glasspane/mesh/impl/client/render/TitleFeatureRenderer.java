@@ -42,7 +42,7 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
 
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity player, float limbAngle, float limbDistance, float tickDelta, float customAngle, float headYaw, float headPitch) {
-        EntityRenderDispatcher renderDispatcher = MinecraftClient.getInstance().getEntityRenderManager();
+        EntityRenderDispatcher renderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         double distance = renderDispatcher.getSquaredDistanceToCamera(player);
         if (distance <= MAX_RENDERING_DISTANCE) {
             TitleFeature.TitleConfig config = VanityManager.getInstance().getFeatureConfig(RegisteredVanityFeatures.TITLE, player.getUuid());
@@ -60,9 +60,9 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
                 int bgColor = (int) (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
                 float xOffset = -textRenderer.getWidth(title) / 2.0F;
                 float yOffset = "deadmau5".equals(player.getEntityName()) ? -10.0F : 0.0F;
-                textRenderer.draw(title, xOffset, yOffset, 0x20FFFFFF, false, modelView, vertexConsumers, textVisible, bgColor, light);
+                textRenderer.method_30882(title, xOffset, yOffset, 0x20FFFFFF, false, modelView, vertexConsumers, textVisible, bgColor, light);
                 if (textVisible) {
-                    textRenderer.draw(title, xOffset, yOffset, -1, false, modelView, vertexConsumers, false, 0x000000, light);
+                    textRenderer.method_30882(title, xOffset, yOffset, -1, false, modelView, vertexConsumers, false, 0x000000, light);
                 }
                 matrices.pop();
             }

@@ -31,7 +31,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface VanityManager {
 
-    String VANITY_URL = System.getProperty("mesh.debug.vanity.url", "https://upcraft.dev/mods/vanity/mesh_v1.json"); //TODO copy to webserver!
+    String VANITY_URL = System.getProperty("mesh.debug.vanity.url", "https://static.upcraft.dev/minecraft/mods/vanity/mesh/v1.json"); //TODO copy to webserver!
 
     static Logger getLogger() {
         return getInstance().logger();
