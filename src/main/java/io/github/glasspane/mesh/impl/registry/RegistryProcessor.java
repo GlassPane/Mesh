@@ -19,7 +19,7 @@ package io.github.glasspane.mesh.impl.registry;
 
 import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.api.registry.BlockItemProvider;
-import io.github.glasspane.mesh.util.RegistryHelper;
+import io.github.glasspane.mesh.util.collections.RegistryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 

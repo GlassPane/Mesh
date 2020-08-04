@@ -22,7 +22,7 @@ import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
 import io.github.glasspane.mesh.impl.client.registry.ClientRegistryProcessor;
-import io.github.glasspane.mesh.util.CollectionHelper;
+import io.github.glasspane.mesh.util.collections.CollectionHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

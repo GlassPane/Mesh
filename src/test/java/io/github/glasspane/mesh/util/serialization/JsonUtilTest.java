@@ -1,4 +1,4 @@
-package io.github.glasspane.mesh.util;
+package io.github.glasspane.mesh.util.serialization;
 
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;

@@ -19,7 +19,7 @@ package io.github.glasspane.mesh.impl.resource;
 
 import com.google.gson.JsonObject;
 import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.util.JsonUtil;
+import io.github.glasspane.mesh.util.serialization.JsonUtil;
 import net.minecraft.resource.DirectoryResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;

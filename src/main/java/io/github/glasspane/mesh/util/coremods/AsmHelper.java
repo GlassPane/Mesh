@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.util.asm;
+package io.github.glasspane.mesh.util.coremods;
 
-import io.github.glasspane.mesh.util.reflection.MappingFormats;
+import io.github.glasspane.mesh.util.coremods.MappingFormats;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import org.objectweb.asm.tree.ClassNode;

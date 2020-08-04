@@ -22,7 +22,7 @@ import io.github.glasspane.mesh.api.multiblock.MultiblockArgumentType;
 import io.github.glasspane.mesh.api.multiblock.MultiblockManager;
 import io.github.glasspane.mesh.api.multiblock.MultiblockTemplate;
 import net.minecraft.block.BlockState;
-import net.minecraft.command.arguments.BlockPosArgumentType;
+import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;

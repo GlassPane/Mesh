@@ -19,8 +19,8 @@ package io.github.glasspane.mesh.util.command.mesh;
 
 import com.google.common.annotations.Beta;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.command.arguments.DimensionArgumentType;
-import net.minecraft.command.arguments.EntityArgumentType;
+import net.minecraft.command.argument.DimensionArgumentType;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;

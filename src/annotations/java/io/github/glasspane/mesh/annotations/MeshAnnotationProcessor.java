@@ -38,7 +38,7 @@ import java.io.Writer;
 import java.util.*;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedAnnotationTypes(MeshAnnotationProcessor.AUTOREGISTRY_REGISTER_CLASS)
+@SupportedAnnotationTypes({MeshAnnotationProcessor.AUTOREGISTRY_REGISTER_CLASS, MeshAnnotationProcessor.AUTOREGISTRY_IGNORE_CLASS})
 public class MeshAnnotationProcessor extends AbstractProcessor {
 
     public static final String AUTOREGISTRY_REGISTER_CLASS = "io.github.glasspane.mesh.api.annotation.AutoRegistry.Register";

@@ -25,7 +25,7 @@ import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigTree;
 import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.api.util.config.ConfigHandler;
-import io.github.glasspane.mesh.util.reflection.ReflectionHelper;
+import io.github.glasspane.mesh.util.coremods.ReflectionHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 

@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.impl.serialization;
+package io.github.glasspane.mesh.util.serialization.gson;
 
-import com.google.gson.*;
-import net.minecraft.recipe.Ingredient;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import net.minecraft.util.Identifier;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 
-public class IngredientJsonSerializer implements JsonSerializer<Ingredient>, JsonDeserializer<Ingredient> {
+public class IdentifierAdapter extends TypeAdapter<Identifier> {
     @Override
-    public Ingredient deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        return Ingredient.fromJson(json);
+    public void write(JsonWriter out, Identifier value) throws IOException {
+        out.value(value.toString());
     }
 
     @Override
-    public JsonElement serialize(Ingredient src, Type typeOfSrc, JsonSerializationContext context) {
-        return src.toJson();
+    public Identifier read(JsonReader in) throws IOException {
+        return Identifier.tryParse(in.nextString());
     }
 }

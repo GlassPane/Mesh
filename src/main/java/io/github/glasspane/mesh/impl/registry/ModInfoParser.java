@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonSyntaxException;
 import io.github.glasspane.mesh.api.util.MeshModInfo;
 import io.github.glasspane.mesh.impl.annotation.SerializedModInfo;
-import io.github.glasspane.mesh.util.JsonUtil;
+import io.github.glasspane.mesh.util.serialization.JsonUtil;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 

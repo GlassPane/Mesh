@@ -18,7 +18,7 @@
 package io.github.glasspane.mesh.impl.client.registry;
 
 import io.github.glasspane.mesh.api.registry.RenderLayerProvider;
-import io.github.glasspane.mesh.util.RegistryHelper;
+import io.github.glasspane.mesh.util.collections.RegistryHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;

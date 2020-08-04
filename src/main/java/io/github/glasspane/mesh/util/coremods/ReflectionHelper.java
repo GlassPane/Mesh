@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.util.reflection;
+package io.github.glasspane.mesh.util.coremods;
 
 import io.github.glasspane.mesh.Mesh;
 import net.fabricmc.loader.api.FabricLoader;

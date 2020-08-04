@@ -20,7 +20,7 @@ package io.github.glasspane.mesh.impl.resource;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.github.glasspane.mesh.Mesh;
-import io.github.glasspane.mesh.util.JsonUtil;
+import io.github.glasspane.mesh.util.serialization.JsonUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resource.AbstractFileResourcePack;

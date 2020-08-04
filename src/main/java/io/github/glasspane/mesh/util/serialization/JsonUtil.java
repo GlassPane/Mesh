@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.util;
+package io.github.glasspane.mesh.util.serialization;
 
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.glasspane.mesh.impl.serialization.IdentifierAdapter;
-import io.github.glasspane.mesh.impl.serialization.IngredientJsonSerializer;
-import io.github.glasspane.mesh.impl.serialization.ItemStackJsonSerializer;
-import io.github.glasspane.mesh.impl.serialization.RegistryValueAdapter;
+import io.github.glasspane.mesh.util.serialization.gson.IdentifierAdapter;
+import io.github.glasspane.mesh.util.serialization.gson.IngredientJsonSerializer;
+import io.github.glasspane.mesh.util.serialization.gson.ItemStackJsonSerializer;
+import io.github.glasspane.mesh.util.serialization.gson.RegistryValueAdapter;
 import net.minecraft.advancement.AdvancementDisplay;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
