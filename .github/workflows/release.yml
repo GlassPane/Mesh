@@ -35,7 +35,8 @@ jobs:
         run: chmod +x gradlew
       - name: Assemble jar with Gradle
         env:
-          BUILD_NUMBER: ${{ steps.current-time.outputs.formattedTime }}
+          BUILD_TIME: ${{ steps.current-time.outputs.formattedTime }}
+          BUILD_NUMBER: ${{ github.run_id }}
         run: ./gradlew clean assemble
       - name: Upload release assets
         id: upload-release-asset
