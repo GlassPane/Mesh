@@ -60,9 +60,10 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
                 int bgColor = (int) (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
                 float xOffset = -textRenderer.getWidth(title) / 2.0F;
                 float yOffset = "deadmau5".equals(player.getEntityName()) ? -10.0F : 0.0F;
-                textRenderer.method_30882(title, xOffset, yOffset, 0x20FFFFFF, false, modelView, vertexConsumers, textVisible, bgColor, light);
+                //TODO use matrix stack instead!
+                textRenderer.draw(title, xOffset, yOffset, 0x20FFFFFF, false, modelView, vertexConsumers, textVisible, bgColor, light);
                 if (textVisible) {
-                    textRenderer.method_30882(title, xOffset, yOffset, -1, false, modelView, vertexConsumers, false, 0x000000, light);
+                    textRenderer.draw(title, xOffset, yOffset, -1, false, modelView, vertexConsumers, false, 0x000000, light);
                 }
                 matrices.pop();
             }
