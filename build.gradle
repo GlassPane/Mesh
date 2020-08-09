@@ -166,14 +166,14 @@ task apiJar(type: Jar, dependsOn: classes) {
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
     input = apiJar.archiveFile.get().asFile
-    addNestedDependencies = true
+    addNestedDependencies = false
     archiveClassifier.set("api")
 }
 
 jar {
     dependsOn remapApiJar
     afterEvaluate {
-        from(apiJar.archiveFile) {
+        from(remapApiJar.archiveFile) {
             into "META-INF/jars"
         }
     }
@@ -233,7 +233,7 @@ processResources {
 
                     def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
                     def apiJarObject = new JsonObject()
-                    apiJarObject.addProperty("file", "META-INF/jars/${apiJar.archiveFileName.get()}")
+                    apiJarObject.addProperty("file", "META-INF/jars/${remapApiJar.archiveFileName.get()}")
                     jarsArray.add(apiJarObject)
                     obj.add("jars", jarsArray)
                 }
