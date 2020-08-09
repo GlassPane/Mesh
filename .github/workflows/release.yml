@@ -36,7 +36,7 @@ jobs:
       - name: Assemble jar with Gradle
         env:
           BUILD_TIME: ${{ steps.current-time.outputs.formattedTime }}
-          BUILD_NUMBER: ${{ github.run_id }}
+          BUILD_NUMBER: ${{ github.run_number }}
         run: ./gradlew clean assemble
       - name: Upload release assets
         id: upload-release-asset
