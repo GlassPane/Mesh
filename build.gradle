@@ -29,12 +29,12 @@ sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 def ENV = System.getenv()
 def buildTime = ENV.BUILD_TIME ?: new Date().format('yyyyMMddHHmmss')
 
-group = "com.github.GlassPane"
+group = "io.github.GlassPane"
 archivesBaseName = "Mesh"
 
 def buildNumber = "+" + (ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime)
 def buildMeta = (!ENV.TAG || ENV.TAG.matches(".+-.+")) ? "${buildNumber}-${project.minecraft_version}" : ""
-def modVersion = (ENV.TAG ?: "development-SNAPSHOT")
+def modVersion = (ENV.TAG ?: "development")
 version = "${modVersion}${buildMeta}"
 
 minecraft {
@@ -161,12 +161,13 @@ task apiJar(type: Jar, dependsOn: classes) {
             "Built-On-Minecraft": project.minecraft_version,
             "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
     )
-    classifier "api"
+    archiveClassifier.set("api-dev")
 }
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
     input = apiJar.archiveFile.get().asFile
     addNestedDependencies = true
+    archiveClassifier.set("api")
 }
 
 jar {
