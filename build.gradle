@@ -16,7 +16,7 @@ buildscript {
 }
 
 plugins {
-    id "fabric-loom" version "0.4-SNAPSHOT"
+    id "fabric-loom" version "0.5-SNAPSHOT"
     id "net.minecrell.licenser" version "0.4.1"
     id "maven-publish"
     id "java-library"
@@ -28,7 +28,7 @@ sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 group = "com.github.GlassPane"
 archivesBaseName = "Mesh"
-version = System.getenv("TRAVIS_TAG") ?: project.mod_version
+version = System.getenv("TRAVIS_TAG") ?: "development"
 
 def ENV = System.getenv()
 def buildNumber = "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "custom")
