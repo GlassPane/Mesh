@@ -1,7 +1,7 @@
 # Mesh
 Minecraft Modding library
 
-[![Build Status](https://travis-ci.com/GlassPane/Mesh.svg?branch=master)](https://travis-ci.com/GlassPane/Mesh "Travis Build Status") [![Maven Repository](https://img.shields.io/maven-metadata/v/https/maven.abusedmaster.xyz/com/github/GlassPane/Mesh/maven-metadata.xml.svg)](https://maven.abusedmaster.xyz/com/github/GlassPane/Mesh "NerdHubMC Maven") [![JitPack](https://jitpack.io/v/GlassPane/Mesh.svg)](https://jitpack.io/#GlassPane/Mesh "Jitpack Build Status")
+[![Build Status](https://img.shields.io/github/workflow/status/GlassPane/Mesh/Build%20Status?label=Build%20Status&logo=GitHub&style=flat-square)](https://github.com/GlassPane/Mesh/actions?query=workflow%3A%22Build+Status%22 "GitHub Actions") [![Latest Release](https://img.shields.io/github/v/release/GlassPane/Mesh?include_prereleases&label=Latest%20Release&logo=GitHub&style=flat-square)](https://github.com/GlassPane/Mesh/releases/latest "GitHub Releases") [![JitPack](https://jitpack.io/v/GlassPane/Mesh.svg?label=Download%20from%20JitPack&style=flat-square)](https://jitpack.io/#GlassPane/Mesh "Jitpack Build Status")
 
 ---
 
@@ -22,3 +22,4 @@ Minecraft Modding library
 
 - Multiblock: allows for easy management of Multiblock BlockEntities
     ~*Note: Requires `Fabric API` to be loaded*
+
