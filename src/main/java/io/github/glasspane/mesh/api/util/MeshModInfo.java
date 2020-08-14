@@ -34,6 +34,8 @@ public interface MeshModInfo {
 
     DataGenInfo[] getDataGenerators();
 
+    String getOwnerModID();
+
     interface RegisterInfo {
         String getOwnerModid();
         String getOwnerClass();

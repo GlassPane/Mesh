@@ -43,7 +43,7 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
 
     public static final String AUTOREGISTRY_REGISTER_CLASS = "io.github.glasspane.mesh.api.annotation.AutoRegistry.Register";
     public static final String AUTOREGISTRY_IGNORE_CLASS = "io.github.glasspane.mesh.api.annotation.AutoRegistry.Ignore";
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().serializeNulls().create();
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -54,9 +54,8 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
         TypeMirror ignoreTypeMirror = ignoreTypeElement.asType();
         Collection<? extends Element> annotated = roundEnv.getElementsAnnotatedWith(registerTypeElement);
         JsonObject root = new JsonObject();
-
         JsonArray registry = new JsonArray();
-
+        String owner = null;
         for (TypeElement clazz : ElementFilter.typesIn(annotated)) {
             for (AnnotationMirror annotationMirror : clazz.getAnnotationMirrors()) {
                 if (annotationMirror.getAnnotationType().equals(registerTypeMirror)) {
@@ -75,7 +74,11 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
                                 obj.addProperty("registry", annValue.getValue().toString()); // value is string
                                 break;
                             case "modid":
-                                obj.addProperty("modid", annValue.getValue().toString()); // value is string
+                                String modid = annValue.getValue().toString(); // value is string
+                                obj.addProperty("modid", modid);
+                                if(owner == null) { // TODO find a better way to determine the owner mod of our output file?
+                                    owner = modid;
+                                }
                                 break;
                             case "modsLoaded":
                                 @SuppressWarnings("unchecked") List<? extends AnnotationValue> requiredModsList = (List<? extends AnnotationValue>) annValue.getValue();
@@ -114,6 +117,7 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
                 }
             }
         }
+        root.addProperty("id", owner);
         root.add("registry", registry);
         //root.add("data_generator", new JsonArray()); //TODO process datagen annotations
         try {

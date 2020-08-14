@@ -29,6 +29,9 @@ public class SerializedModInfo implements MeshModInfo {
     @SerializedName("data_generator")
     private final DataGenInfo[] dataGenInfos = new DataGenInfo[0];
 
+    @SerializedName("id")
+    private final String modid = "<invalid>";
+
     @Override
     public RegisterInfo[] getRegisterData() {
         return registerInfos;
@@ -37,5 +40,10 @@ public class SerializedModInfo implements MeshModInfo {
     @Override
     public DataGenInfo[] getDataGenerators() {
         return dataGenInfos;
+    }
+
+    @Override
+    public String getOwnerModID() {
+        return modid;
     }
 }
