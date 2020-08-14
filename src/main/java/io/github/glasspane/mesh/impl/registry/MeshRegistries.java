@@ -34,7 +34,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.jetbrains.annotations.ApiStatus;
 
-@AutoRegistry.Register(value = Registry.class, modid = Mesh.MODID, registry = "registries")
+@AutoRegistry.Register(value = Registry.class, modid = Mesh.MODID, registry = "root")
 public class MeshRegistries {
 
     private static final RegistryKey<Registry<MultiblockTemplate<?>>> MULTIBLOCK_REGISTRY_KEY = RegistryKey.ofRegistry(new Identifier(Mesh.MODID, "multiblocks"));
