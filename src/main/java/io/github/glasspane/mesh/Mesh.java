@@ -77,7 +77,7 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
 
     public static Path getOutputDir() {
         if (outputDir == null) {
-            outputDir = FabricLoader.getInstance().getGameDirectory().toPath().resolve("io/github/glasspane/mesh");
+            outputDir = FabricLoader.getInstance().getGameDir().resolve("mesh");
             if (!Files.exists(outputDir)) {
                 try {
                     Files.createDirectories(outputDir);
