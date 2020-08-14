@@ -60,7 +60,7 @@ public class ModInfoParser {
                     }
                     else {
                         if(map.putIfAbsent(modInfo.getOwnerModID(), modInfo) != null) {
-                            Mesh.getLogger().trace("Mod {} already processed, ignorind duplicate annotation data.", ModInfoParser::getModInfo);
+                            Mesh.getLogger().trace("Mod {} already processed, ignorind duplicate annotation data.", modInfo::getOwnerModID);
                         }
                     }
                 }
