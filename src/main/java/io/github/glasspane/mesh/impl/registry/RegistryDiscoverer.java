@@ -44,7 +44,7 @@ public class RegistryDiscoverer {
         Mesh.getLogger().debug("adding new registries...");
         List<MeshModInfo.RegisterInfo> specialSnowflakes = toRegister.removeAll(RegistryKey.ofRegistry(new Identifier("registries")));
         toRegister.putAll(ROOT_REGISTRY, specialSnowflakes);
-        registerEntries(Registry.REGISTRIES, toRegister.get(ROOT_REGISTRY));
+        registerEntries(Registry.REGISTRIES, toRegister.removeAll(ROOT_REGISTRY));
 
         Mesh.getLogger().debug("adding new registry entries...");
         //TODO special case blocks and items first
