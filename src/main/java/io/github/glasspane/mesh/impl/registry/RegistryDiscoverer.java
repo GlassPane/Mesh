@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RegistryDiscoverer {
 
@@ -43,14 +44,20 @@ public class RegistryDiscoverer {
                 .forEach(registerInfo -> toRegister.put(registerInfo.getRegistry(), registerInfo));
         Mesh.getLogger().debug("adding new registries...");
         List<MeshModInfo.RegisterInfo> specialSnowflakes = toRegister.removeAll(RegistryKey.ofRegistry(new Identifier("registries")));
+        if(!specialSnowflakes.isEmpty()) {
+            Mesh.getLogger().warn("{} registries are still using the 'minecraft:registries' key, they should be using 'minecraft:root'! Offending mods:\n\t", specialSnowflakes.stream().map(MeshModInfo.RegisterInfo::getOwnerModid).collect(Collectors.joining("\n\t")));
+        }
         toRegister.putAll(ROOT_REGISTRY, specialSnowflakes);
         registerEntries(Registry.REGISTRIES, toRegister.removeAll(ROOT_REGISTRY));
 
         Mesh.getLogger().debug("adding new registry entries...");
         //TODO special case blocks and items first
         for (RegistryKey<? extends Registry<?>> registryKey : toRegister.keySet()) {
-            Registry<?> registry = Registry.REGISTRIES.get(registryKey.getValue());
             List<MeshModInfo.RegisterInfo> infos = toRegister.get(registryKey);
+            Registry<?> registry = Registry.REGISTRIES.get(registryKey.getValue());
+            if(registry == null) {
+                Mesh.getLogger().error("Unable to register entries: Registry {} does not exist or was not registered properly! (distinct classes requesting registry: {})", registryKey, infos.size());
+            }
             registerEntries(registry, infos);
         }
     }
