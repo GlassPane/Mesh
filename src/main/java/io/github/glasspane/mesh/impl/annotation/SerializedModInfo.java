@@ -30,7 +30,16 @@ public class SerializedModInfo implements MeshModInfo {
     private final DataGenInfo[] dataGenInfos = new DataGenInfo[0];
 
     @SerializedName("id")
-    private final String modid = "<invalid>";
+    private String modid; // we cannot make this field final or it will be inlined
+
+
+    @SuppressWarnings({"unused", "ConstantConditions"})
+    public void setModid(String modid) {
+        if(true) {
+            return;
+        }
+        this.modid = modid;
+    }
 
     @Override
     public RegisterInfo[] getRegisterData() {
