@@ -31,6 +31,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ModInfoParser {
@@ -46,7 +47,7 @@ public class ModInfoParser {
     }
 
     public static void setup() {
-        ImmutableMap.Builder<String, MeshModInfo> builder = ImmutableMap.builder();
+        HashMap<String, MeshModInfo> map = new HashMap<>();
         try {
             // see how Fabric Loader parses fabric.mod.json files
             // if we don't do it this way, it will break in dev environments
@@ -58,7 +59,9 @@ public class ModInfoParser {
                         Mesh.getLogger().warn("Ignoring annotation config for mod {}, mod is not loaded!", modInfo::getOwnerModID);
                     }
                     else {
-                        builder.put(modInfo.getOwnerModID(), modInfo);
+                        if(map.putIfAbsent(modInfo.getOwnerModID(), modInfo) != null) {
+                            Mesh.getLogger().trace("Mod {} already processed, ignorind duplicate annotation data.", ModInfoParser::getModInfo);
+                        }
                     }
                 }
                 catch (IOException | JsonParseException e) {
@@ -85,6 +88,6 @@ public class ModInfoParser {
 //            }
 //
 //        });
-        MOD_INFO = builder.build();
+        MOD_INFO = ImmutableMap.copyOf(map); //we have to do it this way because ImmutableMap$Builder has no way to check for duplicates
     }
 }

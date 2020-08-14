@@ -30,16 +30,7 @@ public class SerializedModInfo implements MeshModInfo {
     private final DataGenInfo[] dataGenInfos = new DataGenInfo[0];
 
     @SerializedName("id")
-    private String modid; // we cannot make this field final or it will be inlined
-
-
-    @SuppressWarnings({"unused", "ConstantConditions"})
-    public void setModid(String modid) {
-        if(true) {
-            return;
-        }
-        this.modid = modid;
-    }
+    private final String modid = SerializedModInfo.class.getCanonicalName(); // need this so that the java compiler will not inline it
 
     @Override
     public RegisterInfo[] getRegisterData() {
