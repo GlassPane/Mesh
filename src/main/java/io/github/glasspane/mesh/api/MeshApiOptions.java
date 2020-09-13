@@ -18,6 +18,7 @@
 package io.github.glasspane.mesh.api;
 
 import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
+import io.github.glasspane.mesh.impl.config.MeshSystemProperties;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.Level;
@@ -26,6 +27,10 @@ import org.apache.logging.log4j.Level;
  * holder class for all API debug flags
  */
 public final class MeshApiOptions {
+
+    static {
+        MeshSystemProperties.load();
+    }
 
     /**
      * Fabric's flag for determining whether we are in a development environment

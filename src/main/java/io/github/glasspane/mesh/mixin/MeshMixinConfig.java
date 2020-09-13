@@ -19,6 +19,7 @@ package io.github.glasspane.mesh.mixin;
 
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
+import io.github.glasspane.mesh.impl.config.MeshSystemProperties;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -32,6 +33,10 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
     private static final String MIXIN_PACKAGE = "io.github.glasspane.mesh.mixin.impl";
     private static final boolean DEBUG_MODE = MeshApiOptions.DEBUG_MODE;
     private static final boolean DEVELOPMENT = MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
+
+    static {
+        MeshSystemProperties.load();
+    }
 
     @Override
     public void onLoad(String mixinPackage) {
