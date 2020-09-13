@@ -18,8 +18,8 @@
 package io.github.glasspane.mesh.util.collections;
 
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

@@ -24,8 +24,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 
 public interface Multiblock<T extends BlockEntity> {
 

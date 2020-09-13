@@ -19,8 +19,8 @@ package io.github.glasspane.mesh.api.util;
 
 import net.minecraft.util.Lazy;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 

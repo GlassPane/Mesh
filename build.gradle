@@ -95,8 +95,7 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}:v2"
     //needed to get nullability checks for MC source, otherwise using jetbrains annotations
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-    compileOnly "org.jetbrains:annotations:19.0.0"
+    compileOnly "org.jetbrains:annotations:20.1.0"
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
     apiModules.each {
@@ -116,16 +115,16 @@ dependencies {
     annotationProcessor project(path: ":", configuration: "annotations")
 
     //testing
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0-M1"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.7.0-M1"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0-RC1"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.7.0-RC1"
 
     // dependencies for the annotation processor submodule
     annotationsDependency annotationsInclude("com.google.code.gson:gson:2.8.6")
 
     // speed up loading of the dev client by disabling DFU
-    /*modRuntime("com.github.SuperCoder7979:databreaker:master-SNAPSHOT") {
+    modRuntime("com.github.SuperCoder7979:databreaker:${project.databreaker_version}") {
         exclude module: "fabric-loader"
-    }*/
+    }
 }
 
 task annotationsJar(type: ShadowJar) {

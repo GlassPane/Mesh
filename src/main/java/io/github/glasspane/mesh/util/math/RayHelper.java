@@ -20,10 +20,9 @@ package io.github.glasspane.mesh.util.math;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class RayHelper {
 
@@ -33,8 +32,8 @@ public class RayHelper {
      * @param shapeType     <b>COLLIDER</b> for collision raytracing, <b>OUTLINE</b> for tracing the block outline shape (render bounding box)
      * @param fluidHandling how to handle fluids
      */
-    @Nonnull
-    public static HitResult rayTraceEntity(Entity entity, double range, RayTraceContext.ShapeType shapeType, RayTraceContext.FluidHandling fluidHandling) {
+    @NotNull
+    public static HitResult rayTraceEntity(Entity entity, double range, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling) {
         return rayTraceEntity(entity, range, shapeType, fluidHandling, 1.0F);
     }
 
@@ -45,8 +44,8 @@ public class RayHelper {
      * @param fluidHandling how to handle fluids
      * @param tickDeltaTime the delta tick time (partial render tick)
      */
-    @Nonnull
-    public static HitResult rayTraceEntity(Entity entity, double range, RayTraceContext.ShapeType shapeType, RayTraceContext.FluidHandling fluidHandling, float tickDeltaTime) {
+    @NotNull
+    public static HitResult rayTraceEntity(Entity entity, double range, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling, float tickDeltaTime) {
         Vec3d startPoint = entity.getCameraPosVec(tickDeltaTime);
         Vec3d lookVec = entity.getRotationVec(tickDeltaTime);
         Vec3d endPoint = startPoint.add(lookVec.x * range, lookVec.y * range, lookVec.z * range);
@@ -61,8 +60,8 @@ public class RayHelper {
      * @param shapeType     <b>COLLIDER</b> for collision raytracing, <b>OUTLINE</b> for tracing the block outline shape (render bounding box)
      * @param fluidHandling how to handle fluids
      */
-    @Nonnull
-    public static HitResult rayTrace(World world, Entity source, Vec3d start, Vec3d end, RayTraceContext.ShapeType shapeType, RayTraceContext.FluidHandling fluidHandling) {
-        return world.rayTrace(new RayTraceContext(start, end, shapeType, fluidHandling, source));
+    @NotNull
+    public static HitResult rayTrace(World world, Entity source, Vec3d start, Vec3d end, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling) {
+        return world.raycast(new RaycastContext(start, end, shapeType, fluidHandling, source));
     }
 }

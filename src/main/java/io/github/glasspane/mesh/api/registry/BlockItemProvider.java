@@ -18,8 +18,8 @@
 package io.github.glasspane.mesh.api.registry;
 
 import net.minecraft.item.Item;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 
 @FunctionalInterface
 public interface BlockItemProvider {

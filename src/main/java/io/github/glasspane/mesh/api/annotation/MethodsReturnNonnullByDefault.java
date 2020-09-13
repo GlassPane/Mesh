@@ -17,8 +17,8 @@
  */
 package io.github.glasspane.mesh.api.annotation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.meta.TypeQualifierDefault;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.annotation.*;
 
 /**
@@ -33,8 +33,8 @@ import java.lang.annotation.*;
  * </ul>
  */
 @Documented
-@Nonnull
-@TypeQualifierDefault(ElementType.METHOD)
+@NotNull
+//@TypeQualifierDefault(ElementType.METHOD) //FIXME annotation type
 // Note: This is a copy of javax.annotation.ParametersAreNonnullByDefault with target changed to METHOD
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PACKAGE, ElementType.TYPE})

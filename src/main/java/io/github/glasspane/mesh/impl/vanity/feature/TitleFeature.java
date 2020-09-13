@@ -30,8 +30,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.JsonHelper;
 import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {

@@ -23,8 +23,8 @@ import io.github.glasspane.mesh.impl.vanity.VanityManagerImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

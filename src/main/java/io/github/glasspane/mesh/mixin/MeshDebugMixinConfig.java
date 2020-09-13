@@ -20,11 +20,11 @@ package io.github.glasspane.mesh.mixin;
 
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
+import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
 
