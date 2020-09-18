@@ -28,13 +28,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class MeshEarlyRiser implements Runnable {
 
-    private static final String MODID = "io/github/glasspane/mesh";
+    private static final String MODID = "mesh";
     private static final Logger logger = MeshLoggerFactory.createPrefixLogger(MODID + "_asm", "Mesh ASM Transformer", () -> MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT);
 
     @Override
     public void run() {
         //EnvType environment = FabricLoader.getInstance().getEnvironmentType();
-        logger.debug("disabling brewing recipe checks", new Object[0]);
+        //logger.debug("disabling brewing recipe checks", new Object[0]);
         MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
         //logger.trace("doing side-specific ASM: {}", environment::name);
         //if(environment == EnvType.CLIENT) {

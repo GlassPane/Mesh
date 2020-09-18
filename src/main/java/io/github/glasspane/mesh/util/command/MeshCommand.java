@@ -18,6 +18,7 @@
 package io.github.glasspane.mesh.util.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.util.command.mesh.*;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
@@ -27,7 +28,7 @@ public class MeshCommand {
 
     public static void init() {
         CommandRegistrationCallback.EVENT.register((commandDispatcher, dedicatedServer) -> {
-            LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal("io/github/glasspane/mesh").requires(source -> source.hasPermissionLevel(4));
+            LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal(Mesh.MODID).requires(source -> source.hasPermissionLevel(4));
             builder = TpDimCommand.append(builder);
             builder = HandCommand.append(builder);
             builder = DebugCommand.append(builder);
