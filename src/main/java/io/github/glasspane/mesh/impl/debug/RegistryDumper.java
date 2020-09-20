@@ -18,6 +18,8 @@
 package io.github.glasspane.mesh.impl.debug;
 
 import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.MeshApiOptions;
+import io.github.glasspane.mesh.mixin.debug.accessor.RequiredTagListRegistryAccessor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -31,16 +33,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RegistryDumper {
 
     public static void dumpRegistries() {
-        Mesh.getLogger().debug("dumping registry data...");
-        Path outputDir = Mesh.getOutputDir().resolve("registry_dump");
-        Mesh.getLogger().trace("dumping registries to {}", outputDir::toAbsolutePath);
-        Map<Registry<?>, AtomicInteger> registrySizes = new HashMap<>();
-        dumpRegistry(outputDir, Registry.REGISTRIES, new Identifier("registries"), registrySizes);
-        Registry.REGISTRIES.getIds().forEach(registryName -> {
-            registrySizes.computeIfAbsent(Registry.REGISTRIES, reg -> new AtomicInteger(0)).incrementAndGet();
-            Registry<?> registry = Registry.REGISTRIES.get(registryName);
-            dumpRegistry(outputDir, registry, registryName, registrySizes);
-        });
+        if(MeshApiOptions.CREATE_DATA_DUMP) { //TODO more granularity
+            Mesh.getLogger().debug("creating data export");
+            Path registryOutputDir = Mesh.getOutputDir().resolve("registry_dump");
+            Mesh.getLogger().trace("dumping registries to {}", registryOutputDir::toAbsolutePath);
+            Map<Registry<?>, AtomicInteger> registrySizes = new HashMap<>();
+            dumpRegistry(registryOutputDir, Registry.REGISTRIES, new Identifier("registries"), registrySizes);
+            Registry.REGISTRIES.getIds().forEach(registryName -> {
+                registrySizes.computeIfAbsent(Registry.REGISTRIES, reg -> new AtomicInteger(0)).incrementAndGet();
+                Registry<?> registry = Registry.REGISTRIES.get(registryName);
+                dumpRegistry(registryOutputDir, registry, registryName, registrySizes);
+            });
+
+            Path tagOutputDir = Mesh.getOutputDir().resolve("tag_export");
+            Mesh.getLogger().trace("exporting tag data to {}", tagOutputDir::toAbsolutePath);
+            RequiredTagListRegistryAccessor.getRequiredTagLists().forEach((tagType, requiredTagList) -> {
+                fix this shit
+            });
+        }
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
