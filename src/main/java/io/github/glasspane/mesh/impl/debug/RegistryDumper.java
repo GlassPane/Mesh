@@ -20,6 +20,7 @@ package io.github.glasspane.mesh.impl.debug;
 import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.mixin.debug.accessor.RequiredTagListRegistryAccessor;
+import io.github.glasspane.mesh.util.serialization.csv.CSVBuilder;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -62,31 +63,40 @@ public class RegistryDumper {
             Mesh.getLogger().catching(e);
             return;
         }
+
+        boolean rootRegistry = registry == Registry.REGISTRIES;
+
+        String[] types = new String[]{"Namespace", "Name", "Raw ID"};
+        if(rootRegistry) {
+            types = new String[]{"Namespace", "Name", "Raw ID", "Registry Size"};
+        }
+
+        CSVBuilder builder = CSVBuilder.create(types);
+        List<Identifier> idList = new LinkedList<>(registry.getIds());
+        idList.sort(Comparator.comparing(Identifier::toString));
+
+        if(rootRegistry) {
+            builder.put(registryName.getNamespace(), registryName.getPath(), -1, registrySizes.getOrDefault(Registry.REGISTRIES, new AtomicInteger(0)).get());
+        }
+
+        for (Identifier id : idList) {
+            T entry = registry.get(id);
+            AtomicInteger rawID = new AtomicInteger(registry.getRawId(entry));
+
+            CSVBuilder.Row row = builder.beginRow()
+                    .put(id.getNamespace())
+                    .put(id.getPath())
+                    .put(rawID);
+            if (rootRegistry) {
+                row.put(registrySizes.getOrDefault(entry, new AtomicInteger(0)));
+            } else {
+                registrySizes.computeIfAbsent(registry, reg -> new AtomicInteger(0)).incrementAndGet();
+            }
+            row.end();
+        }
+
         try (BufferedWriter writer = Files.newBufferedWriter(outputFile)) {
-            List<Identifier> idList = new LinkedList<>(registry.getIds());
-            idList.sort(Comparator.comparing(Identifier::toString));
-            String types = "Namespace,Name,Raw ID";
-            writer.write(types);
-            if (registry == Registry.REGISTRIES) {
-                writer.write(",Registry Size");
-                writer.newLine();
-                writer.write(String.format("%s,%s,%d,%d", registryName.getNamespace(), registryName.getPath(), -1, registrySizes.getOrDefault(Registry.REGISTRIES, new AtomicInteger(0)).get()));
-            }
-            writer.newLine();
-            for (Identifier id : idList) {
-                if (registry != Registry.REGISTRIES) {
-                    registrySizes.computeIfAbsent(registry, reg -> new AtomicInteger(0)).incrementAndGet();
-                }
-                T entry = registry.get(id);
-                AtomicInteger rawID = new AtomicInteger(registry.getRawId(entry));
-                StringBuilder builder = new StringBuilder();
-                builder.append(id.getNamespace()).append(",").append(id.getPath()).append(",").append(rawID);
-                if (registry == Registry.REGISTRIES) {
-                    builder.append(",").append(registrySizes.getOrDefault(entry, new AtomicInteger(0)));
-                }
-                writer.write(builder.toString());
-                writer.newLine();
-            }
+            builder.build(writer);
         } catch (IOException e) {
             Mesh.getLogger().debug("unable to dump registry " + registryName, e);
         }
