@@ -9,5 +9,8 @@
   "command.mesh.debug.tp_multiple": "Teleported %s entities to %s!",
   "command.mesh.debug.tp_self": "Teleported to %s!",
   "command.mesh.debug.recipe_dump": "Successfully saved %s recipe names to disk!",
-  "command.mesh.argument.multiblock.invalid": "Unknown Multiblock '%s'"
+  "command.mesh.debug.tag_export": "Successfully saved %s tags to disk!",
+  "command.mesh.argument.multiblock.invalid": "Unknown Multiblock '%s'",
+  "commands.mesh.argument.enum.invalid": "no such element in %s: %s",
+  "commands.mesh.io_error": "An IO Error occurred, check the server log for details."
 }

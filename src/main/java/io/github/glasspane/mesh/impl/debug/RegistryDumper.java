@@ -19,7 +19,6 @@ package io.github.glasspane.mesh.impl.debug;
 
 import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.api.MeshApiOptions;
-import io.github.glasspane.mesh.mixin.debug.accessor.RequiredTagListRegistryAccessor;
 import io.github.glasspane.mesh.util.serialization.csv.CSVBuilder;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -34,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RegistryDumper {
 
     public static void dumpRegistries() {
-        if(MeshApiOptions.CREATE_DATA_DUMP) { //TODO more granularity
+        if (MeshApiOptions.CREATE_DATA_DUMP) { //TODO more granularity
             Mesh.getLogger().debug("creating data export");
             Path registryOutputDir = Mesh.getOutputDir().resolve("registry_dump");
             Mesh.getLogger().trace("dumping registries to {}", registryOutputDir::toAbsolutePath);
@@ -45,18 +44,12 @@ public class RegistryDumper {
                 Registry<?> registry = Registry.REGISTRIES.get(registryName);
                 dumpRegistry(registryOutputDir, registry, registryName, registrySizes);
             });
-
-            Path tagOutputDir = Mesh.getOutputDir().resolve("tag_export");
-            Mesh.getLogger().trace("exporting tag data to {}", tagOutputDir::toAbsolutePath);
-            RequiredTagListRegistryAccessor.getRequiredTagLists().forEach((tagType, requiredTagList) -> {
-                fix this shit
-            });
         }
     }
 
     @SuppressWarnings("SuspiciousMethodCalls")
     private static <T> void dumpRegistry(Path outputDir, Registry<T> registry, Identifier registryName, Map<Registry<?>, AtomicInteger> registrySizes) {
-        Path outputFile = outputDir.resolve(registryName.getNamespace() + "/" + registryName.getPath() + ".csv");
+        Path outputFile = outputDir.resolve(String.format("%s/%s.csv", registryName.getNamespace(), registryName.getPath()));
         try {
             Files.createDirectories(outputFile.getParent());
         } catch (IOException e) {
@@ -67,7 +60,7 @@ public class RegistryDumper {
         boolean rootRegistry = registry == Registry.REGISTRIES;
 
         String[] types = new String[]{"Namespace", "Name", "Raw ID"};
-        if(rootRegistry) {
+        if (rootRegistry) {
             types = new String[]{"Namespace", "Name", "Raw ID", "Registry Size"};
         }
 
@@ -75,7 +68,7 @@ public class RegistryDumper {
         List<Identifier> idList = new LinkedList<>(registry.getIds());
         idList.sort(Comparator.comparing(Identifier::toString));
 
-        if(rootRegistry) {
+        if (rootRegistry) {
             builder.put(registryName.getNamespace(), registryName.getPath(), -1, registrySizes.getOrDefault(Registry.REGISTRIES, new AtomicInteger(0)).get());
         }
 

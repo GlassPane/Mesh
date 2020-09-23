@@ -5,7 +5,6 @@
   "package": "io.github.glasspane.mesh.mixin.debug",
   "plugin": "io.github.glasspane.mesh.mixin.MeshDebugMixinConfig",
   "mixins": [
-    "accessor.RequiredTagListRegistryAccessor"
   ],
   "client": [
     "client.MixinHandledScreen",
