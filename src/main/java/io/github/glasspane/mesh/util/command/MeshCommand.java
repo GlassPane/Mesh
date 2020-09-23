@@ -34,6 +34,7 @@ public class MeshCommand {
             builder = DebugCommand.append(builder);
             builder = MultiblockCommand.append(builder);
             builder = DumpRecipesCommand.append(builder);
+            builder = DumpTagsCommand.append(builder);
             commandDispatcher.register(builder);
         });
     }
