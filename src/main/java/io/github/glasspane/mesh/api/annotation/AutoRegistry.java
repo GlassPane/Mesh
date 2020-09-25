@@ -43,7 +43,7 @@ public final class AutoRegistry {
 
         /**
          * used to make loading conditional<br/>
-         * will only register if <strong>ALL</strong> of hte specified mod IDs are loaded
+         * will only register if <strong>ALL</strong> of the specified mod IDs are loaded
          */
         String[] modsLoaded() default {};
 
