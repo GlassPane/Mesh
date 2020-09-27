@@ -280,10 +280,16 @@ artifacts {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        mainJava(MavenPublication) {
             artifact(remapJar)
+        }
+        apiJava(MavenPublication) {
             artifact(remapApiJar)
+            artifactId = "${remapApiJar.archiveBaseName.get()}-${remapApiJar.archiveAppendix.get()}"
+        }
+        annotationsJava(MavenPublication) {
             artifact(annotationsJar)
+            artifactId = "${annotationsJar.archiveBaseName.get()}-${annotationsJar.archiveAppendix.get()}"
         }
     }
 
