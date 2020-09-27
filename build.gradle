@@ -134,7 +134,7 @@ task annotationsJar(type: ShadowJar) {
         include "META-INF/services/**"
     }
     configurations = [project.configurations.annotationsInclude]
-    classifier "annotations"
+    archiveAppendix.set("annotations")
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
@@ -160,13 +160,14 @@ task apiJar(type: Jar, dependsOn: classes) {
             "Built-On-Minecraft": project.minecraft_version,
             "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
     )
-    archiveClassifier.set("api-dev")
+    archiveAppendix.set("API")
+    archiveClassifier.set("dev")
 }
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
     input = apiJar.archiveFile.get().asFile
     addNestedDependencies = false
-    archiveClassifier.set("api")
+    archiveAppendix.set("API")
 }
 
 jar {
