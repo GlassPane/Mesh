@@ -288,7 +288,15 @@ publishing {
     }
 
     repositories {
-
+        if(ENV.MAVEN_UPLOAD_URL) {
+            maven {
+                url = ENV.MAVEN_UPLOAD_URL
+                credentials {
+                    username = ENV.MAVEN_UPLOAD_USER
+                    password = ENV.MAVEN_UPLOAD_PASSWORD
+                }
+            }
+        }
     }
 }
 
