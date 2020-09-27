@@ -32,10 +32,9 @@ def buildTime = ENV.BUILD_TIME ?: new Date().format('yyyyMMddHHmmss')
 group = "io.github.GlassPane"
 archivesBaseName = "Mesh"
 
-def buildNumber = "+" + (ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime)
-def buildMeta = (!ENV.TAG || ENV.TAG.matches(".+-.+")) ? "${buildNumber}-${project.minecraft_version}" : ""
-def modVersion = (ENV.TAG ?: "development")
-version = "${modVersion}${buildMeta}"
+def buildNumber = !ENV.TAG ? ((ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime) + "-") : ""
+def buildMeta = (!ENV.TAG || ENV.TAG.matches(".+-.+")) ? "+${buildNumber}${project.minecraft_version}" : ""
+version = "${ENV.TAG ?: "development"}${buildMeta}"
 
 minecraft {
     accessWidener = file("src/main/resources/mesh.accesswidener")
