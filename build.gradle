@@ -134,7 +134,7 @@ task annotationsJar(type: ShadowJar) {
         include "META-INF/services/**"
     }
     configurations = [project.configurations.annotationsInclude]
-    archiveAppendix.set("annotations")
+    archiveAppendix.set("Annotations")
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
