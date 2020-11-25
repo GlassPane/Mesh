@@ -23,14 +23,14 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
       - name: Setup ENV
-        run: echo ::set-env name=TAG::$(echo ${GITHUB_REF:10})
+        run: echo "TAG=${GITHUB_REF:10}" >> $GITHUB_ENV
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Assemble jar with Gradle
@@ -52,5 +52,5 @@ jobs:
         uses: AButler/upload-release-assets@v2.0
         with:
           release-tag: ${{ env.TAG }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ github.token }}
           files: 'build/libs/*[!-dev].jar'
