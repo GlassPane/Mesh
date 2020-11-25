@@ -22,13 +22,17 @@ import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.SettingNamingConventi
 import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.JanksonValueSerializer;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
 import io.github.glasspane.mesh.util.config.ConfigHandlerImpl;
+import me.shedaniel.fiber2cloth.api.DefaultTypes;
+import net.minecraft.util.Identifier;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public interface ConfigHandler {
 
     JanksonValueSerializer SERIALIZER = new JanksonValueSerializer(false);
-    AnnotatedSettings DEFAULT_CONFIG_SETTINGS = AnnotatedSettings.builder().useNamingConvention(SettingNamingConvention.SNAKE_CASE).build();
+
+    AnnotatedSettings DEFAULT_CONFIG_SETTINGS = AnnotatedSettings.builder().registerTypeMapping(Identifier.class, DefaultTypes.IDENTIFIER_TYPE).useNamingConvention(SettingNamingConvention.SNAKE_CASE).build();
 
     static <T> T getConfig(Class<T> configClass) {
         return ConfigHandlerImpl.getConfig(configClass);
@@ -39,15 +43,26 @@ public interface ConfigHandler {
     }
 
     /**
-     * @param modid      the mod ID for which to register the config. there can only be one config per mod ID.
-     * @param configPath the filename of the config (without .json5 extension)
+     * Convenience overload of {@linkplain ConfigHandler#registerConfig(String, String, Class, Supplier)}
      */
     static void registerConfig(String modid, String configPath, Class<?> configClass) {
-        ConfigHandlerImpl.registerConfig(modid, configPath, configClass);
+        registerConfig(modid, configPath, configClass, () -> DEFAULT_CONFIG_SETTINGS);
     }
 
     /**
-     * @param modid      the mod ID for which to register the config. there can only be one config per mod ID.
+     * @param modid           the mod ID for which to register the config. there can only be one config per mod ID.
+     * @param configPath      the filename of the config (without .json5 extension)
+     * @param configClass     the POJO representation of the configuration
+     * @param settingsFactory a factory for providing an instance of {@linkplain AnnotatedSettings}; if not provided {@linkplain ConfigHandler#DEFAULT_CONFIG_SETTINGS} will be used
+     * @see AnnotatedSettings.Builder
+     * @since 0.5.3
+     */
+    static void registerConfig(String modid, String configPath, Class<?> configClass, Supplier<AnnotatedSettings> settingsFactory) {
+        ConfigHandlerImpl.registerConfig(modid, configPath, configClass, settingsFactory);
+    }
+
+    /**
+     * @param modid the mod ID for which to register the config. there can only be one config per mod ID.
      */
     static void registerConfig(String modid, Class<?> configClass) {
         registerConfig(modid, modid, configClass);

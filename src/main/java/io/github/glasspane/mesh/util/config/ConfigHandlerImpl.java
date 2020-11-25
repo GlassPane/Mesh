@@ -19,6 +19,7 @@ package io.github.glasspane.mesh.util.config;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.AnnotatedSettings;
 import io.github.fablabsmc.fablabs.api.fiber.v1.exception.ValueDeserializationException;
 import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.FiberSerialization;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
@@ -37,6 +38,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * used to load and store config objects.<br/>
@@ -51,6 +53,7 @@ public class ConfigHandlerImpl implements ConfigHandler {
     private static final Map<Class<?>, Object> CONFIG_OBJECTS = new HashMap<>();
     private static final Map<Class<?>, ConfigBranch> CONFIG_BRANCHES = new HashMap<>();
     private static final Map<Class<?>, Path> CONFIG_PATHS = new HashMap<>();
+    private static final Map<Class<?>, Supplier<AnnotatedSettings>> SETTINGS_FACTORIES = new HashMap<>();
     private static final BiMap<String, Class<?>> CONFIG_ID_LOOKUP = HashBiMap.create(5);
 
     @SuppressWarnings("unchecked")
@@ -68,21 +71,18 @@ public class ConfigHandlerImpl implements ConfigHandler {
         return CONFIG_BRANCHES.get(clazz);
     }
 
-    /**
-     * @param modid the mod ID for which to register the config. there can only be one config per mod ID.
-     * @param configPath the filename of the config (without .json5 extension)
-     */
-    public static void registerConfig(String modid, String configPath, Class<?> configClass) {
+    public static void registerConfig(String modid, String configPath, Class<?> configClass, Supplier<AnnotatedSettings> settingsFactory) {
         refreshConfigObjects(configClass);
         CONFIG_ID_LOOKUP.put(modid, configClass);
-        CONFIG_PATHS.put(configClass, FabricLoader.getInstance().getConfigDirectory().toPath().resolve(configPath + ".json5"));
+        CONFIG_PATHS.put(configClass, FabricLoader.getInstance().getConfigDir().resolve(configPath + ".json5"));
+        SETTINGS_FACTORIES.put(configClass, settingsFactory);
         reloadConfig(configClass);
     }
 
     private static <T> void refreshConfigObjects(Class<T> configClass) {
         T config = ReflectionHelper.newInstance(configClass);
         CONFIG_OBJECTS.put(configClass, config);
-        ConfigBranch branch = ConfigTree.builder().applyFromPojo(config, DEFAULT_CONFIG_SETTINGS).build();
+        ConfigBranch branch = ConfigTree.builder().applyFromPojo(config, SETTINGS_FACTORIES.get(configClass).get()).build();
         CONFIG_BRANCHES.put(configClass, branch);
     }
 
@@ -101,7 +101,7 @@ public class ConfigHandlerImpl implements ConfigHandler {
     }
 
     public static <T> void reloadConfig(Class<T> configClass) {
-        Path configFile = FabricLoader.getInstance().getConfigDirectory().toPath().resolve(CONFIG_PATHS.get(configClass));
+        Path configFile = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_PATHS.get(configClass));
         if (!Files.exists(configFile)) {
             ConfigHandler.saveConfig(configClass);
         }
