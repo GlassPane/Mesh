@@ -72,10 +72,10 @@ public class ConfigHandlerImpl implements ConfigHandler {
     }
 
     public static void registerConfig(String modid, String configPath, Class<?> configClass, Supplier<AnnotatedSettings> settingsFactory) {
+        SETTINGS_FACTORIES.put(configClass, settingsFactory);
         refreshConfigObjects(configClass);
         CONFIG_ID_LOOKUP.put(modid, configClass);
         CONFIG_PATHS.put(configClass, FabricLoader.getInstance().getConfigDir().resolve(configPath + ".json5"));
-        SETTINGS_FACTORIES.put(configClass, settingsFactory);
         reloadConfig(configClass);
     }
 
