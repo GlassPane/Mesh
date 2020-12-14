@@ -35,7 +35,6 @@ public class MeshEarlyRiser implements Runnable {
     public void run() {
         //EnvType environment = FabricLoader.getInstance().getEnvironmentType();
         //logger.debug("disabling brewing recipe checks", new Object[0]);
-        MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
         //logger.trace("doing side-specific ASM: {}", environment::name);
         //if(environment == EnvType.CLIENT) {
         //}

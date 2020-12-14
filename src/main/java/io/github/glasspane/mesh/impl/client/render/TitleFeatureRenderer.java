@@ -45,7 +45,7 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
         EntityRenderDispatcher renderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
         double distance = renderDispatcher.getSquaredDistanceToCamera(player);
         if (distance <= MAX_RENDERING_DISTANCE) {
-            TitleFeature.TitleConfig config = VanityManager.getInstance().getFeatureConfig(RegisteredVanityFeatures.TITLE, player.getUuid());
+            TitleFeature.Config config = VanityManager.getInstance().getFeatureConfig(RegisteredVanityFeatures.TITLE, player.getUuid());
             TitleFeature.Title currentTitle = config.getCurrentTitle();
             if (currentTitle != null) {
                 Text title = config.getCurrentTitle().getTitle();

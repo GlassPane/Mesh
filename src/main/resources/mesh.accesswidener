@@ -12,3 +12,5 @@ accessible field net/minecraft/recipe/BrewingRecipeRegistry ITEM_RECIPES Ljava/u
 
 accessible field net/minecraft/util/registry/Registry DEFAULT_ENTRIES Ljava/util/Map;
 
+accessible field net/minecraft/client/render/block/entity/EndPortalBlockEntityRenderer field_21732 Ljava/util/List;
+accessible field net/minecraft/client/render/entity/model/PlayerEntityModel cape Lnet/minecraft/client/model/ModelPart;

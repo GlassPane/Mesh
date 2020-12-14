@@ -102,13 +102,13 @@ dependencies {
     }
     api include("me.zeroeightsix:fiber:${project.fiber_version}")
     modImplementation(include("me.shedaniel.cloth:config-2:${project.cloth_version}")) {
-        transitive false
+        exclude group: 'net.fabricmc.fabric-api'
     }
     modImplementation(include("me.shedaniel.cloth:fiber2cloth:${project.fiber2cloth_version}")) {
-        transitive false
+        exclude group: 'net.fabricmc.fabric-api'
     }
     modImplementation("io.github.prospector:modmenu:${project.modmenu_version}") {
-        transitive false
+        exclude group: 'net.fabricmc.fabric-api'
     }
 
     annotationProcessor project(path: ":", configuration: "annotations")

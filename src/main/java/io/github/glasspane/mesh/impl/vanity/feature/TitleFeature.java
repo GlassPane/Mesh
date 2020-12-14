@@ -34,12 +34,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {
+public class TitleFeature extends VanityFeature<TitleFeature.Config> {
 
     private static final Map<Identifier, Title> titles = new HashMap<>();
 
     public TitleFeature() {
-        super(TitleConfig::new);
+        super(Config::new);
     }
 
     @Override
@@ -58,14 +58,14 @@ public class TitleFeature extends VanityFeature<TitleFeature.TitleConfig> {
         }
     }
 
-    public static class TitleConfig extends VanityConfig<JsonArray> {
+    public static class Config extends VanityConfig<JsonArray> {
 
         private final Set<Identifier> availableTitles = new HashSet<>();
 
         @Nullable
         private Title currentTitle;
 
-        public TitleConfig(UUID uuid) {
+        public Config(UUID uuid) {
             super(uuid);
         }
 

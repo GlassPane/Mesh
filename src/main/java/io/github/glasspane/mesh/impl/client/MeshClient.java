@@ -20,8 +20,11 @@ package io.github.glasspane.mesh.impl.client;
 import com.mojang.util.UUIDTypeAdapter;
 import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
+import io.github.glasspane.mesh.api.client.event.PlayerFeatureRendererCallback;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
 import io.github.glasspane.mesh.impl.client.registry.ClientRegistryProcessor;
+import io.github.glasspane.mesh.impl.client.render.EnderCapeFeatureRenderer;
+import io.github.glasspane.mesh.impl.client.render.TitleFeatureRenderer;
 import io.github.glasspane.mesh.util.collections.CollectionHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -35,7 +38,7 @@ import java.util.UUID;
 @CalledByReflection
 public class MeshClient implements ClientModInitializer {
 
-    private static final UUID CREATOR_UUID = UUIDTypeAdapter.fromString("d5034857-9e8a-44cb-a6da-931caff5b838"); //TODO remove
+    public static final UUID CREATOR_UUID = UUIDTypeAdapter.fromString("d5034857-9e8a-44cb-a6da-931caff5b838"); //TODO remove
 
     private static UUID currentPlayerUUID;
     private static boolean creator;
@@ -57,6 +60,11 @@ public class MeshClient implements ClientModInitializer {
                 String name = CollectionHelper.getRandomElement("Creator", "Dave", "Sir", "Kami-sama", "there");
                 VanityManager.getLogger().warn("Hello {}!", name);
             }
+
+            PlayerFeatureRendererCallback.EVENT.register((context, renderDispatcher, slimModel, featureAdder) -> {
+                featureAdder.accept(new TitleFeatureRenderer(context));
+                featureAdder.accept(new EnderCapeFeatureRenderer(context));
+            });
         }
         ClientRegistryProcessor.init();
     }

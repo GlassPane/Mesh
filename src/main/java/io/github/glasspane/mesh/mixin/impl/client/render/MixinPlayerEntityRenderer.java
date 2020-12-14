@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package io.github.glasspane.mesh.mixin.vanity.client.render;
+package io.github.glasspane.mesh.mixin.impl.client.render;
 
-import io.github.glasspane.mesh.impl.client.render.TitleFeatureRenderer;
+import io.github.glasspane.mesh.api.client.event.PlayerFeatureRendererCallback;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -40,7 +40,8 @@ public abstract class MixinPlayerEntityRenderer extends LivingEntityRenderer<Abs
     }
 
     @Inject(method = "<init>(Lnet/minecraft/client/render/entity/EntityRenderDispatcher;Z)V", at = @At("RETURN"))
-    private void addFeatureRendererCallback(EntityRenderDispatcher entityRenderDispatcher_1, boolean slimModel, CallbackInfo ci) {
-        this.addFeature(new TitleFeatureRenderer(this));
+    private void addFeatureRendererCallback(EntityRenderDispatcher renderDispatcher, boolean slimModel, CallbackInfo ci) {
+        //noinspection Convert2MethodRef
+        PlayerFeatureRendererCallback.EVENT.invoker().accept(this, renderDispatcher, slimModel, feature -> this.addFeature(feature));
     }
 }

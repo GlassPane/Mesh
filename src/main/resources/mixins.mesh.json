@@ -10,7 +10,8 @@
     "resources.MixinMinecraftServer"
   ],
   "client": [
-    "client.MixinMinecraftClient"
+    "client.MixinMinecraftClient",
+    "client.render.MixinPlayerEntityRenderer"
   ],
   "server": [
   ],

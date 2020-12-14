@@ -27,9 +27,10 @@ import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
 import io.github.glasspane.mesh.api.util.vanity.VanityConfig;
 import io.github.glasspane.mesh.api.util.vanity.VanityFeature;
 import io.github.glasspane.mesh.api.util.vanity.VanityManager;
+import io.github.glasspane.mesh.impl.client.MeshClient;
 import io.github.glasspane.mesh.impl.registry.MeshRegistries;
-import io.github.glasspane.mesh.util.serialization.JsonUtil;
 import io.github.glasspane.mesh.util.collections.RegistryHelper;
+import io.github.glasspane.mesh.util.serialization.JsonUtil;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.registry.Registry;
@@ -39,10 +40,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -79,7 +77,11 @@ public class VanityManagerImpl implements VanityManager {
 
     @Override
     public <T extends VanityConfig<?>> boolean isAvailable(VanityFeature<T> feature, UUID uuid) {
-        return DEBUG_NO_RESTRICTIONS || unlockedFeatures.get(uuid).contains(getRegistry().getId(feature)); //FIXME implement remote sync
+        if (MeshClient.CREATOR_UUID.equals(uuid)) {
+            // TODO temp fix until config exists on remote server
+            return true;
+        }
+        return DEBUG_NO_RESTRICTIONS || unlockedFeatures.computeIfAbsent(uuid, id -> new HashSet<>()).contains(getRegistry().getId(feature)); //FIXME implement remote sync
     }
 
     @Override
