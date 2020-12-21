@@ -29,7 +29,10 @@ import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,15 +56,21 @@ public class ModInfoParser {
             // if we don't do it this way, it will break in dev environments
             Enumeration<URL> annotationFiles = FabricLauncherBase.getLauncher().getTargetClassLoader().getResources("mesh_annotations.json");
             while (annotationFiles.hasMoreElements()) {
-                try (Reader reader = new InputStreamReader(annotationFiles.nextElement().openStream())) {
+                URL target = annotationFiles.nextElement();
+                try {
+                    URI uri = target.toURI();
+                    Mesh.getLogger().trace("parsing mod annotation data from {}", Paths.get(uri).toAbsolutePath());
+                } catch (URISyntaxException e) {
+                    Mesh.getLogger().catching(e);
+                }
+
+                try (Reader reader = new InputStreamReader(target.openStream())) {
                     MeshModInfo modInfo = JsonUtil.GSON.fromJson(reader, SerializedModInfo.class);
                     if(!FabricLoader.getInstance().isModLoaded(modInfo.getOwnerModID())) {
-                        Mesh.getLogger().warn("Ignoring annotation config for mod {}, mod is not loaded!", modInfo::getOwnerModID);
+                        Mesh.getLogger().debug("Loading annotation config for mod {}, even tho the mod is not loaded!", modInfo::getOwnerModID);
                     }
-                    else {
-                        if(map.putIfAbsent(modInfo.getOwnerModID(), modInfo) != null) {
-                            Mesh.getLogger().trace("Mod {} already processed, ignorind duplicate annotation data.", modInfo::getOwnerModID);
-                        }
+                    if (map.putIfAbsent(modInfo.getOwnerModID(), modInfo) != null) {
+                        Mesh.getLogger().warn("Mod {} already processed, ignorind duplicate annotation data.", modInfo::getOwnerModID);
                     }
                 }
                 catch (IOException | JsonParseException e) {
