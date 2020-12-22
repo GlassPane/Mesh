@@ -32,7 +32,7 @@ public class RegistrySpriteAtlasHolder<T> extends SpriteAtlasHolder implements I
     private final Identifier reloaderID;
 
     public RegistrySpriteAtlasHolder(Identifier reloaderID, Registry<T> registry, TextureManager textureManager, Identifier textureID, String spritePath) {
-        super(textureManager, textureID, "textures/" + spritePath);
+        super(textureManager, textureID, spritePath);
         this.registry = registry;
         this.reloaderID = reloaderID;
     }
