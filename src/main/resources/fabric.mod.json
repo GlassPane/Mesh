@@ -9,7 +9,9 @@
     {
       "name": "UpcraftLP",
       "contact": {
-        "homepage": "https://twitter.com/UpcraftLP"
+        "github": "UpcraftLP",
+        "homepage": "https://upcraft.dev",
+        "twitter": "@UpcraftLP"
       }
     }
   ],
@@ -37,10 +39,10 @@
     ]
   },
   "depends": {
-    "fabricloader": ">=0.7.0"
+    "fabricloader": ">=0.10"
   },
   "recommends": {
-    "fabric": ">=0.3.0"
+    "fabric": "*"
   },
   "mixins": [
     "mixins.mesh.json",

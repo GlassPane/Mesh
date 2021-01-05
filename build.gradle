@@ -76,7 +76,7 @@ repositories {
     }
 }
 
-def apiModules = [
+String[] apiModules = [
         "fabric-api-base",
         "fabric-blockrenderlayer-v1",
         "fabric-command-api-v1",
@@ -127,20 +127,26 @@ dependencies {
 }
 
 task annotationsJar(type: ShadowJar) {
-    from "LICENSE.md"
+    archiveAppendix.set("Annotations")
+    from("LICENSE.md") {
+        rename { "LICENSE_${archiveBaseName.get()}-${archiveAppendix.get()}" }
+    }
     from sourceSets.annotations.output
     from(sourceSets.annotations.resources) {
         include "META-INF/services/**"
     }
     configurations = [project.configurations.annotationsInclude]
-    archiveAppendix.set("Annotations")
+
 }
 
 task apiJar(type: Jar, dependsOn: classes) {
+    archiveAppendix.set("API")
     from(sourceSets.main.output) {
         include String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     }
-    from "LICENSE.md"
+    from("LICENSE.md") {
+        rename { "LICENSE_${archiveBaseName.get()}-${archiveAppendix.get()}" }
+    }
     from(sourceSets.main.resources) {
         inputs.property "version", project.version
         include 'api/**'
@@ -159,13 +165,12 @@ task apiJar(type: Jar, dependsOn: classes) {
             "Built-On-Minecraft": project.minecraft_version,
             "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
     )
-    archiveAppendix.set("API")
     archiveClassifier.set("dev")
 }
 
 task remapApiJar(type: RemapJarTask, dependsOn: apiJar) {
-    input = apiJar.archiveFile.get().asFile
-    addNestedDependencies = false
+    input.set(apiJar.archiveFile.get())
+    addNestedDependencies.set(false)
     archiveAppendix.set("API")
 }
 
@@ -179,7 +184,9 @@ jar {
     exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     exclude "api/**"
 
-    from "LICENSE.md"
+    from ("LICENSE.md") {
+        rename { "LICENSE_${archiveBaseName.get()}" }
+    }
 
     manifest.mainAttributes(
             "Implementation-Title": project.archivesBaseName,
@@ -193,8 +200,11 @@ jar {
 processResources {
     // this will ensure that this task is redone when there's a change
     inputs.property "version", project.version
+    inputs.property "fabric_version", project.fabric_version
+    inputs.property "api_jar", remapApiJar.archiveFileName.get()
+    inputs.property "fabric_api_modules", apiModules
 
-    // replace stuff in fabric.mod.json, nothing else
+    filteringCharset = "UTF-8"
     from(sourceSets.main.resources.srcDirs) {
         include "fabric.mod.json"
 

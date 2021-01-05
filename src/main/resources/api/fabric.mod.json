@@ -8,5 +8,9 @@
   "custom": {
     "modmenu:api": true,
     "modmenu:parent": "mesh"
+  },
+  "depends": {
+    "fabricloader": ">=0.10",
+    "mesh": "^${version}"
   }
 }
