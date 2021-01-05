@@ -1,6 +1,6 @@
 /*
  * Mesh
- * Copyright (C) 2019-2020 GlassPane
+ * Copyright (C) 2019-2021 GlassPane
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
