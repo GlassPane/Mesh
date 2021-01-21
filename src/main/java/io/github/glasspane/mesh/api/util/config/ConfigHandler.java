@@ -22,7 +22,6 @@ import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.SettingNamingConventi
 import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.JanksonValueSerializer;
 import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
 import io.github.glasspane.mesh.util.config.ConfigHandlerImpl;
-import me.shedaniel.fiber2cloth.api.DefaultTypes;
 import net.minecraft.util.Identifier;
 
 import java.util.Map;
@@ -32,7 +31,7 @@ public interface ConfigHandler {
 
     JanksonValueSerializer SERIALIZER = new JanksonValueSerializer(false);
 
-    AnnotatedSettings DEFAULT_CONFIG_SETTINGS = AnnotatedSettings.builder().registerTypeMapping(Identifier.class, DefaultTypes.IDENTIFIER_TYPE).useNamingConvention(SettingNamingConvention.SNAKE_CASE).build();
+    AnnotatedSettings DEFAULT_CONFIG_SETTINGS = AnnotatedSettings.builder().registerTypeMapping(Identifier.class, DefaultFiberConfigTypes.IDENTIFIER).useNamingConvention(SettingNamingConvention.SNAKE_CASE).build();
 
     static <T> T getConfig(Class<T> configClass) {
         return ConfigHandlerImpl.getConfig(configClass);

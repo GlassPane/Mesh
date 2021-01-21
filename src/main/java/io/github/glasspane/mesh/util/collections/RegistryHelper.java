@@ -26,6 +26,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
@@ -62,6 +63,6 @@ public class RegistryHelper {
      */
     @SuppressWarnings("unchecked")
     public static <R extends Runnable> ReentrantThreadExecutor<R> getMainThreadExecutor() {
-        return (ReentrantThreadExecutor<R>) FabricLoader.getInstance().getGameInstance();
+        return Objects.requireNonNull((ReentrantThreadExecutor<R>) FabricLoader.getInstance().getGameInstance(), "no game instance available");
     }
 }

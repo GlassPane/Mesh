@@ -21,7 +21,6 @@ import io.github.glasspane.mesh.api.MeshApiOptions;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.logging.MeshLoggerFactory;
 import io.github.glasspane.mesh.api.util.config.ConfigHandler;
-import io.github.glasspane.mesh.api.util.vanity.VanityManager;
 import io.github.glasspane.mesh.impl.config.MeshConfig;
 import io.github.glasspane.mesh.impl.multiblock.MultiblockReloader;
 import io.github.glasspane.mesh.impl.registry.ModInfoParser;
@@ -96,7 +95,8 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
         ConfigReloader.init();
         MultiblockReloader.init();
         RegistryDiscoverer.register();
-        VanityManager.getInstance().parseRemoteConfig(VanityManager.VANITY_URL).thenRun(() -> VanityManager.getLogger().debug("successfully updated vanity info!", Mesh.NO_LOGGER_PARAMS));
+        // FIXME doesn't work on dedicated servers because fabric loader hasn't obtained the game object yet
+        //VanityManager.getInstance().parseRemoteConfig(VanityManager.VANITY_URL).thenRun(() -> VanityManager.getLogger().debug("successfully updated vanity info!", Mesh.NO_LOGGER_PARAMS));
         MeshCommand.init();
         AliasCommands.init();
     }

@@ -87,7 +87,7 @@ public class ConfigHandlerImpl implements ConfigHandler {
     }
 
     public static void saveConfig(Class<?> configClass, ConfigBranch configBranch) {
-        Path configFile = CONFIG_PATHS.get(configClass);
+        Path configFile = CONFIG_PATHS.get(configClass).toAbsolutePath();
         try {
             Files.createDirectories(configFile.getParent());
             Files.deleteIfExists(configFile);
@@ -96,12 +96,12 @@ public class ConfigHandlerImpl implements ConfigHandler {
             }
         } catch (IOException e) {
             Mesh.getLogger().error("unable to write config file for {} ({})", configClass.getCanonicalName(), CONFIG_ID_LOOKUP.inverse().get(configClass));
-            Mesh.getLogger().trace("file location: " + configFile.toAbsolutePath(), e);
+            Mesh.getLogger().trace("file location: " + configFile, e);
         }
     }
 
     public static <T> void reloadConfig(Class<T> configClass) {
-        Path configFile = FabricLoader.getInstance().getConfigDir().resolve(CONFIG_PATHS.get(configClass));
+        Path configFile = CONFIG_PATHS.get(configClass).toAbsolutePath();
         if (!Files.exists(configFile)) {
             ConfigHandler.saveConfig(configClass);
         }
@@ -109,7 +109,7 @@ public class ConfigHandlerImpl implements ConfigHandler {
         try (InputStream stream = Files.newInputStream(configFile)) {
             FiberSerialization.deserialize(getConfigBranch(configClass), stream, SERIALIZER);
         } catch (IOException | ValueDeserializationException e) {
-            Mesh.getLogger().error("unable to read config file " + CONFIG_PATHS.get(configClass).toAbsolutePath(), e);
+            Mesh.getLogger().error("unable to read config file " + configFile, e);
             refreshConfigObjects(configClass); //fall back to default values
         }
     }
