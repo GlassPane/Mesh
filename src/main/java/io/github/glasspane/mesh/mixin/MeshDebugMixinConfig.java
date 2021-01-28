@@ -32,7 +32,6 @@ import java.util.Set;
 public class MeshDebugMixinConfig implements IMixinConfigPlugin {
     private static final String MIXIN_PACKAGE = "io.github.glasspane.mesh.mixin.debug";
     private static final boolean DEBUG_MODE = MeshApiOptions.DEBUG_MODE;
-    private static final boolean DEVELOPMENT = MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
 
     @Override
     public void onLoad(String mixinPackage) {
@@ -51,11 +50,13 @@ public class MeshDebugMixinConfig implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.startsWith(MIXIN_PACKAGE)) {
             switch (mixinClassName) {
-                case "com.github.glasspane.mesh.mixin.debug.client.MixinMinecraftClient":
-                case "com.github.glasspane.mesh.mixin.debug.server.MixinMinecraftDedicatedServer":
+                case "io.github.glasspane.mesh.mixin.debug.client.MixinMinecraftClient":
+                case "io.github.glasspane.mesh.mixin.debug.server.MixinMinecraftDedicatedServer":
                     return MeshApiOptions.CREATE_VIRTUAL_DATA_DUMP;
-                case "com.github.glasspane.mesh.mixin.debug.client.MixinHandledScreen":
+                case "io.github.glasspane.mesh.mixin.debug.client.MixinHandledScreen":
                     return MeshApiOptions.RENDER_SLOT_NUMBERS;
+                case "io.github.glasspane.mesh.mixin.debug.client.MixinRemoveAuthError":
+                    return MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
             }
             return DEBUG_MODE;
         } else {
