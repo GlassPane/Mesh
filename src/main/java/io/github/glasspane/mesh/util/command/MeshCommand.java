@@ -19,14 +19,19 @@ package io.github.glasspane.mesh.util.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.glasspane.mesh.Mesh;
+import io.github.glasspane.mesh.api.multiblock.MultiblockArgumentType;
 import io.github.glasspane.mesh.util.command.mesh.*;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
 public class MeshCommand {
 
     public static void init() {
+        ArgumentTypes.register("mesh:multiblock", MultiblockArgumentType.class, new ConstantArgumentSerializer<>(MultiblockArgumentType::create));
+
         CommandRegistrationCallback.EVENT.register((commandDispatcher, dedicatedServer) -> {
             LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal(Mesh.MODID).requires(source -> source.hasPermissionLevel(4));
             builder = TpDimCommand.append(builder);
