@@ -325,6 +325,7 @@ task publishToModrinth(type: TaskModrinthUpload, dependsOn: assemble) {
     projectId = project.modrinth_id
     uploadFile = remapJar
     versionNumber = ENV.TAG ?: version
+    versionName = versionNumber // need this here because the Modrinth API doesn't do that by default
     releaseType = isPreviewBuild ? ((ENV.TAG && ENV.TAG.contains("-beta")) ? "beta" : "alpha") : "release"
     "${project.modrinth_game_versions}".split(";").each {
         addGameVersion(it)
