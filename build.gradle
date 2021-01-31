@@ -329,7 +329,7 @@ task publishToModrinth(type: TaskModrinthUpload, dependsOn: assemble) {
     "${project.modrinth_game_versions}".split(";").each {
         addGameVersion(it)
     }
-    addLoader("Fabric")
+    addLoader("fabric")
 }
 
 if (ENV.MODRINTH_TOKEN) {

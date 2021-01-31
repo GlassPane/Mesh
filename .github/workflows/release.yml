@@ -47,6 +47,8 @@ jobs:
           MAVEN_UPLOAD_URL: ${{ secrets.ONYX_MAVEN_UPLOAD_URL }}
           MAVEN_UPLOAD_USER: ${{ secrets.ONYX_MAVEN_USERNAME }}
           MAVEN_UPLOAD_PASSWORD: ${{ secrets.ONYX_MAVEN_ACCESS_TOKEN }}
+          MODRINTH_USER: ${{ secrets.MODRINTH_USER }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
       - name: Upload release assets
         id: upload_release_assets
         uses: AButler/upload-release-assets@v2.0
