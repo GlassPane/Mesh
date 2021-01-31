@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.gson.*
 import net.fabricmc.loom.task.RemapJarTask
+import com.modrinth.minotaur.TaskModrinthUpload
 
 import java.nio.charset.StandardCharsets
 import java.time.Year
@@ -22,6 +23,7 @@ plugins {
     id "java-library"
     id "org.inferred.processors" version "3.3.0"
     id "com.github.johnrengelman.shadow" version "6.0.0"
+    id "com.modrinth.minotaur" version "1.1.0"
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
@@ -32,8 +34,9 @@ def buildTime = ENV.BUILD_TIME ?: new Date().format('yyyyMMddHHmmss')
 group = "io.github.GlassPane"
 archivesBaseName = "Mesh"
 
+boolean isPreviewBuild = !ENV.TAG || ENV.TAG.matches(".+-.+")
 def buildNumber = !ENV.TAG ? ((ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime) + "-") : ""
-def buildMeta = (!ENV.TAG || ENV.TAG.matches(".+-.+")) ? "+${buildNumber}${project.minecraft_version}" : ""
+def buildMeta = isPreviewBuild ? "+${buildNumber}${project.minecraft_version}" : ""
 version = "${ENV.TAG ?: "development"}${buildMeta}"
 
 minecraft {
@@ -314,6 +317,25 @@ publishing {
         }
     }
 }
+
+task publishToModrinth(type: TaskModrinthUpload, dependsOn: assemble) {
+    if(ENV.MODRINTH_TOKEN) {
+        token = ENV.MODRINTH_TOKEN
+    }
+    projectId = project.modrinth_id
+    uploadFile = remapJar
+    versionNumber = ENV.TAG ?: version
+    releaseType = isPreviewBuild ? ((ENV.TAG && ENV.TAG.contains("-beta")) ? "beta" : "alpha") : "release"
+    "${project.modrinth_game_versions}".split(";").each {
+        addGameVersion(it)
+    }
+    addLoader("Fabric")
+}
+
+if (ENV.MODRINTH_TOKEN) {
+    tasks.publish.dependsOn(publishToModrinth)
+}
+
 
 test {
     useJUnitPlatform()
