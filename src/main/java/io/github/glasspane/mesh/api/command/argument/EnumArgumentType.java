@@ -27,6 +27,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.StringIdentifiable;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+@ApiStatus.Experimental
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 
     private final Map<String, T> valueLookup;
