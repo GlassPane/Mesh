@@ -35,9 +35,8 @@ group = "io.github.GlassPane"
 archivesBaseName = "Mesh"
 
 boolean isPreviewBuild = !ENV.TAG || ENV.TAG.matches(".+-.+")
-def buildNumber = !ENV.TAG ? ((ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime) + "-") : ""
-def buildMeta = isPreviewBuild ? "+${buildNumber}${project.minecraft_version}" : ""
-version = "${ENV.TAG ?: "development"}${buildMeta}"
+def buildNumber = !ENV.TAG ? ("${ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime}-${project.minecraft_version}") : ""
+version = (ENV.TAG ?: "development") + ((isPreviewBuild && !ENV.TAG) ? "+${buildNumber}" : "")
 
 minecraft {
     accessWidener = file("src/main/resources/mesh.accesswidener")
