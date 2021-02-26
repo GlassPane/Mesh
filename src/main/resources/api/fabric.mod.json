@@ -6,8 +6,14 @@
   "description": "API for the Mesh Modding Library",
   "version": "${version}",
   "custom": {
-    "modmenu:api": true,
-    "modmenu:parent": "mesh"
+    "modmenu": {
+      "badges": [
+        "library"
+      ],
+      "parent": {
+        "id": "mesh"
+      }
+    }
   },
   "depends": {
     "fabricloader": ">=0.10",

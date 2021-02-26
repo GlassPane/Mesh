@@ -22,7 +22,11 @@
   },
   "license": "LGPL-3.0-or-later",
   "custom": {
-    "modmenu:api": true
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
   },
   "entrypoints": {
     "main": [
