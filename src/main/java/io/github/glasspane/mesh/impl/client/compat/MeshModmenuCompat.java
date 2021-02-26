@@ -18,12 +18,12 @@
 package io.github.glasspane.mesh.impl.client.compat;
 
 import com.google.common.collect.ImmutableMap;
+import com.terraformersmc.modmenu.api.ConfigScreenFactory;
+import com.terraformersmc.modmenu.api.ModMenuApi;
 import io.github.glasspane.mesh.Mesh;
 import io.github.glasspane.mesh.api.annotation.CalledByReflection;
 import io.github.glasspane.mesh.api.util.config.ConfigHandler;
 import io.github.glasspane.mesh.impl.config.MeshConfig;
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
-import io.github.prospector.modmenu.api.ModMenuApi;
 import me.shedaniel.fiber2cloth.api.Fiber2Cloth;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
