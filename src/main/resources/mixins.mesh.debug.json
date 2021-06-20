@@ -1,9 +1,9 @@
 {
   "required": false,
   "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_8",
-  "package": "io.github.glasspane.mesh.mixin.debug",
-  "plugin": "io.github.glasspane.mesh.mixin.MeshDebugMixinConfig",
+  "compatibilityLevel": "JAVA_16",
+  "package": "dev.upcraft.mesh.mixin.debug",
+  "plugin": "dev.upcraft.mesh.mixin.MeshDebugMixinConfig",
   "mixins": [
   ],
   "client": [

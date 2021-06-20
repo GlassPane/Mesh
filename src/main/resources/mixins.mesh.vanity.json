@@ -1,9 +1,9 @@
 {
   "required": true,
-  "minVersion": "0.7.11",
-  "compatibilityLevel": "JAVA_8",
-  "package": "io.github.glasspane.mesh.mixin.vanity",
-  "plugin": "io.github.glasspane.mesh.mixin.MeshVanityMixinConfig",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_16",
+  "package": "dev.upcraft.mesh.mixin.vanity",
+  "plugin": "dev.upcraft.mesh.mixin.MeshVanityMixinConfig",
   "mixins": [
   ],
   "client": [

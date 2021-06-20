@@ -1,9 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_8",
-  "package": "io.github.glasspane.mesh.mixin.impl",
-  "plugin": "io.github.glasspane.mesh.mixin.MeshMixinConfig",
+  "compatibilityLevel": "JAVA_16",
+  "package": "dev.upcraft.mesh.mixin.impl",
+  "plugin": "dev.upcraft.mesh.mixin.MeshMixinConfig",
   "mixins": [
     "crafting.MixinPotionSlot",
     "crafting.MixinRecipeManager",

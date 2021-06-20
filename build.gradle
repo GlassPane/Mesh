@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.gson.*
-import net.fabricmc.loom.task.RemapJarTask
 import com.modrinth.minotaur.TaskModrinthUpload
+import net.fabricmc.loom.task.RemapJarTask
 
 import java.nio.charset.StandardCharsets
 import java.time.Year
@@ -17,8 +17,8 @@ buildscript {
 }
 
 plugins {
-    id "fabric-loom" version "0.6-SNAPSHOT"
-    id "net.minecrell.licenser" version "0.4.1"
+    id "fabric-loom" version "0.8-SNAPSHOT"
+    id "org.cadixdev.licenser" version "0.6.1"
     id "maven-publish"
     id "java-library"
     id "org.inferred.processors" version "3.3.0"
@@ -26,12 +26,10 @@ plugins {
     id "com.modrinth.minotaur" version "1.1.0"
 }
 
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
-
 def ENV = System.getenv()
 def buildTime = ENV.BUILD_TIME ?: new Date().format('yyyyMMddHHmmss')
 
-group = "io.github.GlassPane"
+group = "dev.upcraft"
 archivesBaseName = "Mesh"
 
 boolean isPreviewBuild = !ENV.TAG || ENV.TAG.matches(".+-.+")
@@ -40,6 +38,12 @@ version = (ENV.TAG ?: "development") + ((isPreviewBuild && !ENV.TAG) ? "+${build
 
 minecraft {
     accessWidener = file("src/main/resources/mesh.accesswidener")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(16)
+    }
 }
 
 configurations {
@@ -59,6 +63,7 @@ sourceSets {
 
 repositories {
     mavenLocal()
+    mavenCentral()
     jcenter()
     maven {
         name = "TerraformersMC"
@@ -68,12 +73,8 @@ repositories {
         url = "https://maven.shedaniel.me"
     }
     maven {
-        name = "Ladysnake Libs"
-        url = "https://dl.bintray.com/ladysnake/libs"
-    }
-    maven {
         name = "SonaType SNAPSHOTS"
-        url = "http://oss.sonatype.org/content/repositories/snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots"
     }
     maven {
         name = "JitPack"
@@ -81,54 +82,34 @@ repositories {
     }
 }
 
-String[] apiModules = [
-        "fabric-api-base",
-        "fabric-blockrenderlayer-v1",
-        "fabric-command-api-v1",
-        "fabric-crash-report-info-v1",
-        //"fabric-dimensions-v1", //FIXME currently broken
-        "fabric-item-groups-v0",
-        "fabric-lifecycle-events-v1",
-        "fabric-networking-blockentity-v0",
-        "fabric-networking-v0", // TODO: Use networking v1 when released
-        "fabric-registry-sync-v0",
-        "fabric-resource-loader-v0"
-]
-
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.minecraft_version}+build.${project.yarn_mappings}:v2"
-    //needed to get nullability checks for MC source, otherwise using jetbrains annotations
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     compileOnly "org.jetbrains:annotations:20.1.0"
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
-    apiModules.each {
-        modApi include(fabricApi.module(it, project.fabric_version))
-    }
-    api include("me.zeroeightsix:fiber:${project.fiber_version}")
+    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation(include("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_version}")) {
         exclude group: 'net.fabricmc.fabric-api'
     }
+
+    api include("me.zeroeightsix:fiber:${project.fiber_version}")
+    implementation "blue.endless:jankson:${project.jankson_version}"
     modImplementation(include("me.shedaniel.cloth:fiber2cloth:${project.fiber2cloth_version}")) {
         transitive = false
         //exclude group: 'net.fabricmc.fabric-api'
         //exclude group: 'me.zeroeightsix', module: 'fiber'
     }
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
     annotationProcessor project(path: ":", configuration: "annotations")
 
     //testing
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0-RC1"
-    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.7.0-RC1"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0-RC1"
 
     // dependencies for the annotation processor submodule
     annotationsDependency annotationsInclude("com.google.code.gson:gson:2.8.6")
-
-    // speed up loading of the dev client by disabling DFU
-    modRuntime("com.github.SuperCoder7979:databreaker:${project.databreaker_version}") {
-        exclude module: "fabric-loader"
-    }
 }
 
 task annotationsJar(type: ShadowJar) {
@@ -158,7 +139,7 @@ task apiJar(type: Jar, dependsOn: classes) {
         expand "version": project.version
     }
     eachFile {
-        if(it.path.startsWith("api/")) {
+        if (it.path.startsWith("api/")) {
             it.path = it.path.substring(4)
         }
     }
@@ -189,7 +170,7 @@ jar {
     exclude String.valueOf(findProperty("api_package")).replace('.', '/') + "/**"
     exclude "api/**"
 
-    from ("LICENSE.md") {
+    from("LICENSE.md") {
         rename { "LICENSE_${archiveBaseName.get()}" }
     }
 
@@ -207,52 +188,44 @@ processResources {
     inputs.property "version", project.version
     inputs.property "fabric_version", project.fabric_version
     inputs.property "api_jar", remapApiJar.archiveFileName.get()
-    inputs.property "fabric_api_modules", apiModules
 
     filteringCharset = "UTF-8"
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
-
+    Gson gson = new GsonBuilder().disableHtmlEscaping().create()
+    filesMatching("fabric.mod.json") {
         // add mod metadata
         expand "version": project.version
+        def obj = gson.fromJson(new InputStreamReader(it.open()), JsonObject.class) //verify json integrity
+        def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
+        depends.addProperty("fabric", "^${fabric_version}")
+        if (gradle.taskGraph.hasTask(remapApiJar as Task)) {
+            depends.addProperty("mesh_api", "${project.version}")
+
+            def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
+            def apiJarObject = new JsonObject()
+            apiJarObject.addProperty("file", "META-INF/jars/${remapApiJar.archiveFileName.get()}")
+            jarsArray.add(apiJarObject)
+            obj.add("jars", jarsArray)
+        }
+        if (!depends.keySet().isEmpty()) {
+            obj.add("depends", depends)
+        }
+        // FIXME does not work
+        //it.file.text = gson.toJson(obj)
     }
 
     // copy everything else, that's not the fabric.mod.json
-    from(sourceSets.main.resources.srcDirs) {
-        include "**/*.mcmeta"
-        include "**/*.json"
-        exclude "fabric.mod.json"
-    }
+    //from(sourceSets.main.resources.srcDirs) {
+    //    include "**/*.mcmeta"
+    //    include "**/*.json"
+    //    exclude "fabric.mod.json"
+    //}
 
     doLast {
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create()
 
         // Minify json resources
         fileTree(dir: outputs.files.asPath, include: "**/*.json").each { File file ->
-            def element = gson.fromJson(file.text, JsonElement.class) //verify json integrity
-            if (file.name == "fabric.mod.json") {
-                def obj = element.getAsJsonObject()
-                if (obj.has("recommends")) {
-                    obj.getAsJsonObject("recommends").addProperty("fabric", "^${fabric_version}")
-                }
-                if(gradle.taskGraph.hasTask(remapApiJar as Task)) {
-                    def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
-                    depends.addProperty("mesh_api", "${project.version}")
-                    apiModules.each {
-                        depends.addProperty(it, "*")
-                    }
-                    if (!depends.keySet().isEmpty()) {
-                        obj.add("depends", depends)
-                    }
-
-                    def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
-                    def apiJarObject = new JsonObject()
-                    apiJarObject.addProperty("file", "META-INF/jars/${remapApiJar.archiveFileName.get()}")
-                    jarsArray.add(apiJarObject)
-                    obj.add("jars", jarsArray)
-                }
-            }
-            file.text = gson.toJson(element)
+            def element = gson.fromJson((String) file.text, JsonElement.class) //verify json integrity
+            //file.text = gson.toJson(element)
         }
     }
 
@@ -262,7 +235,6 @@ processResources {
 license {
     header = file("code_quality/${project.license_header}_HEADER.txt")
     // Apply licenses only to main source set
-    sourceSets = [sourceSets.main]
     include "**/*.java"
     charset = StandardCharsets.UTF_8.name()
 
@@ -282,10 +254,8 @@ license {
 }
 
 artifacts {
-    archives (jar) {
-        builtBy remapJar
-    }
-    archives (apiJar) {
+    archives(remapJar)
+    archives(apiJar) {
         builtBy remapApiJar
     }
     archives annotationsJar
@@ -308,7 +278,7 @@ publishing {
     }
 
     repositories {
-        if(ENV.MAVEN_UPLOAD_URL) {
+        if (ENV.MAVEN_UPLOAD_URL) {
             maven {
                 url = ENV.MAVEN_UPLOAD_URL
                 credentials {
@@ -321,7 +291,7 @@ publishing {
 }
 
 task publishToModrinth(type: TaskModrinthUpload, dependsOn: assemble) {
-    if(ENV.MODRINTH_TOKEN) {
+    if (ENV.MODRINTH_TOKEN) {
         token = ENV.MODRINTH_TOKEN
     }
     projectId = project.modrinth_id

@@ -30,16 +30,16 @@
   },
   "entrypoints": {
     "main": [
-      "io.github.glasspane.mesh.Mesh"
+      "dev.upcraft.mesh.Mesh"
     ],
     "client": [
-      "io.github.glasspane.mesh.impl.client.MeshClient"
+      "dev.upcraft.mesh.impl.client.MeshClient"
     ],
     "preLaunch": [
-      "io.github.glasspane.mesh.Mesh"
+      "dev.upcraft.mesh.Mesh"
     ],
     "modmenu": [
-      "io.github.glasspane.mesh.impl.client.compat.MeshModmenuCompat"
+      "dev.upcraft.mesh.impl.client.compat.MeshModmenuCompat"
     ]
   },
   "depends": {
