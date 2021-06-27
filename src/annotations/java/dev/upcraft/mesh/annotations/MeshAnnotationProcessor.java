@@ -67,27 +67,27 @@ public class MeshAnnotationProcessor extends AbstractProcessor {
                         ExecutableElement key = entry.getKey();
                         AnnotationValue annValue = entry.getValue();
                         switch (key.getSimpleName().toString()) {
-                            case "value":
-                                temp = (TypeMirror) annValue.getValue(); // value is class
-                                break;
-                            case "registry":
-                                obj.addProperty("registry", annValue.getValue().toString()); // value is string
-                                break;
-                            case "modid":
+                            case "value" -> temp = (TypeMirror) annValue.getValue(); // value is class
+                            case "registry" -> obj.addProperty("registry", annValue.getValue().toString()); // value is string
+                            case "modid" -> {
                                 String modid = annValue.getValue().toString(); // value is string
                                 obj.addProperty("modid", modid);
                                 if (owner == null) { // TODO find a better way to determine the owner mod of our output file?
                                     owner = modid;
                                 }
-                                break;
-                            case "modsLoaded":
+                            }
+                            case "modsLoaded" -> {
                                 @SuppressWarnings("unchecked") List<? extends AnnotationValue> requiredModsList = (List<? extends AnnotationValue>) annValue.getValue();
                                 JsonArray array = new JsonArray();
                                 requiredModsList.stream().map(annotationValue -> annotationValue.getValue().toString()).forEach(array::add);
                                 if (array.size() > 0) {
                                     obj.add("required_mods", array);
                                 }
-                                break;
+                            }
+                            case "source" -> {
+                                String sourceType = annValue.getValue().toString(); // value is string
+                                obj.addProperty("source", sourceType);
+                            }
                         }
                     }
                     TypeMirror registrySuperType = Objects.requireNonNull(temp, "no type specified");

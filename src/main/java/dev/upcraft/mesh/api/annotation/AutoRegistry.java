@@ -17,7 +17,12 @@
  */
 package dev.upcraft.mesh.api.annotation;
 
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.Registry;
+
 import java.lang.annotation.*;
+import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 public final class AutoRegistry {
     @Documented
@@ -47,6 +52,11 @@ public final class AutoRegistry {
          */
         String[] modsLoaded() default {};
 
+        /**
+         * a valid {@link SourceType} or {@code null}
+         */
+        String source() default "registry";
+
     }
 
     /**
@@ -56,5 +66,43 @@ public final class AutoRegistry {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Ignore {
 
+    }
+
+    public enum SourceType {
+        REGISTRY("registry", () -> Registry.REGISTRIES),
+        BUILT_IN("builtin", () -> BuiltinRegistries.REGISTRIES);
+
+        private final String name;
+        private final Supplier<Registry<? extends Registry<?>>> rootSupplier;
+
+        SourceType(String name, Supplier<Registry<? extends Registry<?>>> rootSupplier) {
+            this.name = name;
+            this.rootSupplier = rootSupplier;
+        }
+
+        public Registry<? extends Registry<?>> getRoot() {
+            return this.rootSupplier.get();
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        public static SourceType fromString(String value) {
+            if(value != null) {
+                for (SourceType type : values()) {
+                    if(type.getName().equals(value)) {
+                        return type;
+                    }
+                }
+                throw new NoSuchElementException(value);
+            }
+            return REGISTRY;
+        }
     }
 }

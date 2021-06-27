@@ -17,6 +17,7 @@
  */
 package dev.upcraft.mesh.api.util;
 
+import dev.upcraft.mesh.api.annotation.AutoRegistry;
 import dev.upcraft.mesh.impl.registry.ModInfoParser;
 import dev.upcraft.mesh.impl.annotation.DataGenInfo;
 import net.minecraft.util.registry.Registry;
@@ -46,6 +47,8 @@ public interface MeshModInfo {
         List<String> getFieldsToRegister();
 
         List<String> getRequiredMods();
+
+        AutoRegistry.SourceType getRegistrySource();
     }
 
 }

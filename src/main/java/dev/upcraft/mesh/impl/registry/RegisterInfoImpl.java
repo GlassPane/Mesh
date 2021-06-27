@@ -18,6 +18,7 @@
 package dev.upcraft.mesh.impl.registry;
 
 import com.google.gson.annotations.SerializedName;
+import dev.upcraft.mesh.api.annotation.AutoRegistry;
 import dev.upcraft.mesh.api.util.MeshModInfo;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -44,6 +45,9 @@ public class RegisterInfoImpl implements MeshModInfo.RegisterInfo {
     @SerializedName("required_mods")
     private final List<String> requiredModIDs = Collections.emptyList();
 
+    @SerializedName("source")
+    private final String registrySource = null;
+
     @Override
     public String getOwnerModid() {
         return modid;
@@ -67,5 +71,10 @@ public class RegisterInfoImpl implements MeshModInfo.RegisterInfo {
     @Override
     public List<String> getRequiredMods() {
         return requiredModIDs;
+    }
+
+    @Override
+    public AutoRegistry.SourceType getRegistrySource() {
+        return AutoRegistry.SourceType.fromString(registrySource);
     }
 }
