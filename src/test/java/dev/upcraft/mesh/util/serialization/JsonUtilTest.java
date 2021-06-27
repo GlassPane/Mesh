@@ -17,12 +17,21 @@
  */
 package dev.upcraft.mesh.util.serialization;
 
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.util.Identifier;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class JsonUtilTest {
+
+    @BeforeAll
+    static void setup() {
+        SharedConstants.createGameVersion();
+        Bootstrap.initialize();
+    }
 
     @Test
     void identifiersSerialize() {
