@@ -30,7 +30,7 @@ public class AsmHelper {
     private static final Remapper remapHack = new Remapper() {
         @Override
         public String map(String internalName) {
-            return FabricLoader.getInstance().getMappingResolver().mapClassName(MappingFormats.INTERMEDIARY, internalName.replace('/', '.')).replace('/', '.');
+            return FabricLoader.getInstance().getMappingResolver().mapClassName(MappingFormats.INTERMEDIARY, internalName.replace('/', '.')).replace('.', '/');
         }
     };
 
