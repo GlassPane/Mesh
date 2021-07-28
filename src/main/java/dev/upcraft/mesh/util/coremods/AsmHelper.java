@@ -19,10 +19,20 @@ package dev.upcraft.mesh.util.coremods;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
+import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import java.util.NoSuchElementException;
+
 public class AsmHelper {
+
+    private static final Remapper remapHack = new Remapper() {
+        @Override
+        public String map(String internalName) {
+            return FabricLoader.getInstance().getMappingResolver().mapClassName(MappingFormats.INTERMEDIARY, internalName.replace('/', '.')).replace('/', '.');
+        }
+    };
 
     public static MethodNode findMethod(ClassNode owner, String methodName, String methodDesc) {
         return findMethod(owner, FabricLoader.getInstance().getMappingResolver().unmapClassName(MappingFormats.INTERMEDIARY, owner.name.replace('/', '.')), methodName, methodDesc);
@@ -31,11 +41,13 @@ public class AsmHelper {
     public static MethodNode findMethod(ClassNode classNode, String methodOwner, String methodName, String methodDesc) {
         MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
         String remappedMethodName = mappings.mapMethodName(MappingFormats.INTERMEDIARY, methodOwner, methodName, methodDesc);
+        String remappedMethodDesc = remapHack.mapMethodDesc(methodDesc);
         for (int i = 0; i < classNode.methods.size(); i++) {
             MethodNode node = classNode.methods.get(i);
-            if (node.name.equals(remappedMethodName))
+            if (node.name.equals(remappedMethodName) && node.desc.equals(remappedMethodDesc)) {
                 return node;
+            }
         }
-        throw new IllegalArgumentException(String.format("Method %s does not exist in %s", remappedMethodName, classNode.name));
+        throw new NoSuchElementException(String.format("Method %s does not exist in %s", remappedMethodName, classNode.name));
     }
 }
