@@ -43,9 +43,9 @@ public class HandCommand {
             MutableText result = new TranslatableText("command.mesh.debug.helditem_name", stack.getName());
             result = result.append("\n").append(new TranslatableText("command.mesh.debug.helditem_id", Registry.ITEM.getId(stack.getItem())));
             result = result.append("\n").append(new TranslatableText("command.mesh.debug.helditem_count", stack.getCount()));
-            if (stack.hasTag()) {
+            if (stack.hasNbt()) {
                 //noinspection ConstantConditions
-                result = result.append("\n").append(new TranslatableText("command.mesh.debug.helditem_nbt", NbtHelper.toPrettyPrintedText(stack.getTag())).styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("command.mesh.debug.helditem_copy_nbt"))).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, stack.getTag().asString()))));
+                result = result.append("\n").append(new TranslatableText("command.mesh.debug.helditem_nbt", NbtHelper.toPrettyPrintedText(stack.getNbt())).styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("command.mesh.debug.helditem_copy_nbt"))).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, stack.getNbt().asString()))));
             }
             context.getSource().sendFeedback(result, false);
             return 1;

@@ -19,11 +19,13 @@ package dev.upcraft.mesh.util.math;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class MathUtil {
 
-    public static final Double TAU = 2.0D * Math.PI;
+    public static final double TAU = 2.0D * Math.PI;
+    private static final float RADIANS_TO_DEG = 360.0F / MathHelper.TAU;
 
     public static double getDistanceXZ(Vec3d vec1, Vec3d vec2) {
         return getDistanceXZ(vec1.x, vec1.z, vec2.x, vec2.z);
@@ -39,6 +41,6 @@ public class MathUtil {
      */
     @Environment(EnvType.CLIENT)
     public static float toDegrees(float radians) {
-        return radians * 57.295776F;
+        return radians * RADIANS_TO_DEG;
     }
 }

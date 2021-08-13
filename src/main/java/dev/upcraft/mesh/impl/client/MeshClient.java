@@ -18,18 +18,24 @@
 package dev.upcraft.mesh.impl.client;
 
 import com.mojang.util.UUIDTypeAdapter;
-import dev.upcraft.mesh.impl.client.registry.ClientRegistryProcessor;
-import dev.upcraft.mesh.impl.client.render.EnderCapeFeatureRenderer;
-import dev.upcraft.mesh.impl.client.render.TitleFeatureRenderer;
 import dev.upcraft.mesh.api.MeshApiOptions;
 import dev.upcraft.mesh.api.annotation.CalledByReflection;
-import dev.upcraft.mesh.api.client.event.PlayerFeatureRendererCallback;
 import dev.upcraft.mesh.api.util.vanity.VanityManager;
+import dev.upcraft.mesh.impl.client.registry.ClientRegistryProcessor;
+import dev.upcraft.mesh.impl.client.render.EnderCapeFeatureRenderer;
+import dev.upcraft.mesh.impl.client.render.EnderSphereFeatureRenderer;
+import dev.upcraft.mesh.impl.client.render.TitleFeatureRenderer;
 import dev.upcraft.mesh.util.collections.CollectionHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRendererContext;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import org.apache.commons.lang3.Validate;
 
 import java.util.UUID;
@@ -55,15 +61,23 @@ public class MeshClient implements ClientModInitializer {
     public void onInitializeClient() {
         currentPlayerUUID = MinecraftClient.getInstance().getSession().getProfile().getId();
         Validate.notNull(currentPlayerUUID, "current player has no UUID! this is a serious error!");
+        creator = CREATOR_UUID.equals(currentPlayerUUID);
         if (MeshApiOptions.VANITY_FEATURES_ENABLED) {
-            if (creator = CREATOR_UUID.equals(currentPlayerUUID)) {
+            if (creator) {
                 String name = CollectionHelper.getRandomElement("Creator", "Dave", "Sir", "Kami-sama", "there");
                 VanityManager.getLogger().warn("Hello {}!", name);
             }
 
-            PlayerFeatureRendererCallback.EVENT.register((featureCtx, renderCtx, slimModel, featureAdder) -> {
-                featureAdder.accept(new TitleFeatureRenderer(featureCtx));
-                featureAdder.accept(new EnderCapeFeatureRenderer(featureCtx));
+            LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+                if(entityType == EntityType.PLAYER && entityRenderer instanceof PlayerEntityRenderer featureCtx) {
+                    registrationHelper.register(new TitleFeatureRenderer(featureCtx));
+                    registrationHelper.register(new EnderCapeFeatureRenderer(featureCtx));
+                }
+                if(entityRenderer.getModel() instanceof BipedEntityModel) {
+                    //noinspection unchecked
+                    registrationHelper.register(new EnderSphereFeatureRenderer((FeatureRendererContext<LivingEntity, BipedEntityModel<LivingEntity>>) entityRenderer));
+                }
+
             });
         }
         ClientRegistryProcessor.init();

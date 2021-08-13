@@ -52,7 +52,7 @@ public class JsonUtil {
         ItemStack stack = new ItemStack(item);
         if (json.has("nbt")) {
             try {
-                stack.setTag(StringNbtReader.parse(JsonHelper.getString(json, "nbt")));
+                stack.setNbt(StringNbtReader.parse(JsonHelper.getString(json, "nbt")));
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT tag", e);
             }

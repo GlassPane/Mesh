@@ -70,6 +70,11 @@ public class TitleFeature extends VanityFeature<TitleFeature.Config> {
         }
 
         @Override
+        public boolean isEnabled() {
+            return getCurrentTitle() != null;
+        }
+
+        @Override
         protected void deserializeConfig(JsonArray json) throws JsonParseException {
             this.availableTitles.clear();
             for (JsonElement element : json) {

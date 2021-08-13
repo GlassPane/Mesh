@@ -17,9 +17,9 @@
  */
 package dev.upcraft.mesh.impl.client.render;
 
+import dev.upcraft.mesh.api.util.vanity.VanityManager;
 import dev.upcraft.mesh.impl.vanity.RegisteredVanityFeatures;
 import dev.upcraft.mesh.impl.vanity.feature.EnderCapeFeature;
-import dev.upcraft.mesh.api.util.vanity.VanityManager;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -36,12 +36,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3f;
 
-import java.util.Random;
-
 public class EnderCapeFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
-
-    private static final Random RANDOM = new Random(31100L);
-    private static final float LAYER_0_INTENSITY = 0.15F;
 
     public EnderCapeFeatureRenderer(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> context) {
         super(context);

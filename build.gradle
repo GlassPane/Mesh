@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    id "fabric-loom" version "0.8-SNAPSHOT"
+    id "fabric-loom" version "0.9.+"
     id "org.cadixdev.licenser" version "0.6.1"
     id "maven-publish"
     id "java-library"
@@ -36,8 +36,8 @@ boolean isPreviewBuild = !ENV.TAG || ENV.TAG.matches(".+-.+")
 def buildNumber = !ENV.TAG ? ("${ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime}-${project.minecraft_version}") : ""
 version = (ENV.TAG ?: "development") + ((isPreviewBuild && !ENV.TAG) ? "+${buildNumber}" : "")
 
-minecraft {
-    accessWidener = file("src/main/resources/mesh.accesswidener")
+loom {
+    accessWidenerPath.set(file("src/main/resources/mesh.accesswidener"))
 }
 
 java {
@@ -64,16 +64,24 @@ sourceSets {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
+    jcenter() // fiber2cloth; TODO remove
     maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/releases"
+        name = "Quilt" // mirror for modmenu
+        url = "https://maven.quiltmc.org/repository/release"
+    }
+    maven {
+        name = "Ladysnake Mods"
+        url = "https://ladysnake.jfrog.io/artifactory/mods"
+        content {
+            includeGroup "io.github.ladysnake"
+            includeGroupByRegex "io\\.github\\.onyxstudios.*"
+        }
     }
     maven {
         url = "https://maven.shedaniel.me"
     }
     maven {
-        name = "SonaType SNAPSHOTS"
+        name = "Nexus OSS Repository"
         url = "https://oss.sonatype.org/content/repositories/snapshots"
     }
     maven {
@@ -85,7 +93,7 @@ repositories {
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    compileOnly "org.jetbrains:annotations:20.1.0"
+    compileOnly 'org.jetbrains:annotations:21.0.1'
     modApi "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -105,11 +113,16 @@ dependencies {
     annotationProcessor project(path: ":", configuration: "annotations")
 
     //testing
-    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0-RC1"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0-RC1"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0-M1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0-M1'
 
     // dependencies for the annotation processor submodule
     annotationsDependency annotationsInclude("com.google.code.gson:gson:2.8.6")
+
+    // compat
+    modCompileOnly("io.github.ladysnake:requiem-api:${project.requiem_version}") {
+        transitive = false
+    }
 }
 
 task annotationsJar(type: ShadowJar) {

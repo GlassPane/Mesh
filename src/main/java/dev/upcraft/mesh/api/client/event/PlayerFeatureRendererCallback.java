@@ -17,6 +17,7 @@
  */
 package dev.upcraft.mesh.api.client.event;
 
+import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -29,10 +30,10 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.function.Consumer;
 
 /**
- * @deprecated will be removed in a future update, however currently there is no replacement
+ * @deprecated will be removed in a future update, use {@link LivingEntityFeatureRendererRegistrationCallback}
  */
 @Deprecated
-@ApiStatus.ScheduledForRemoval
+@ApiStatus.ScheduledForRemoval(inVersion = "0.15.0-alpha")
 public interface PlayerFeatureRendererCallback {
 
     Event<PlayerFeatureRendererCallback> EVENT = EventFactory.createArrayBacked(PlayerFeatureRendererCallback.class, callbacks -> (featureCtx, renderCtx, slimModel, featureAdder) -> {

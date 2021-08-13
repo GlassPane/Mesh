@@ -32,7 +32,7 @@ public abstract class VanityFeature<T extends VanityConfig<?>> {
     protected final Map<UUID, T> configs = new HashMap<>();
     protected final Function<UUID, T> configFactory;
 
-    protected VanityFeature(Function<UUID, T> configFactory) {
+    public VanityFeature(Function<UUID, T> configFactory) {
         this.configFactory = configFactory;
     }
 

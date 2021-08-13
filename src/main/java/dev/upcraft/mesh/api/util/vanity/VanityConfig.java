@@ -26,6 +26,7 @@ import java.util.UUID;
 public abstract class VanityConfig<T extends JsonElement> {
 
     private final UUID uuid;
+    private boolean enabled;
 
     protected VanityConfig(UUID uuid) {
         this.uuid = uuid;
@@ -38,6 +39,14 @@ public abstract class VanityConfig<T extends JsonElement> {
         } catch (ClassCastException e) {
             throw new JsonSyntaxException("encountered wrong element type!", e);
         }
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    protected void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     protected abstract void deserializeConfig(T json) throws JsonParseException;

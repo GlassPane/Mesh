@@ -41,7 +41,7 @@ public class DumpRecipesCommand {
     public static LiteralArgumentBuilder<ServerCommandSource> append(LiteralArgumentBuilder<ServerCommandSource> $) {
         return $.then(CommandManager.literal("dump_recipes").executes(context -> {
             Path outDir = Mesh.getOutputDir().resolve("recipe_dump");
-            MinecraftServer server = context.getSource().getMinecraftServer();
+            MinecraftServer server = context.getSource().getServer();
             Map<RecipeType<?>, Set<Recipe<?>>> recipes = new IdentityHashMap<>();
             Collection<Recipe<?>> recipeMap = server.getRecipeManager().values();
             recipeMap.forEach(recipe -> recipes.computeIfAbsent(recipe.getType(), type -> new HashSet<>()).add(recipe));
@@ -63,7 +63,7 @@ public class DumpRecipesCommand {
                     Mesh.getLogger().error("unable to write recipe dump to file: " + outputFile.toAbsolutePath(), e);
                 }
             });
-            if (server.isSinglePlayer() && MeshApiOptions.CLIENTSIDE_ENVIRONMENT) {
+            if (server.isSingleplayer() && MeshApiOptions.CLIENTSIDE_ENVIRONMENT) {
                 Util.getOperatingSystem().open(outDir.toUri());
             }
             context.getSource().sendFeedback(new TranslatableText("command.mesh.debug.recipe_dump", recipeMap.size()), true);

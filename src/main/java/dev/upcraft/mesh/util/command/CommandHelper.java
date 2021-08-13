@@ -33,7 +33,7 @@ public class CommandHelper {
      */
     public static <S> LiteralArgumentBuilder<S> createRedirect(LiteralArgumentBuilder<S> command, CommandNode<S> target) {
         // loosely based on https://github.com/VelocityPowered/Velocity/blob/8abc9c80a69158ebae0121fda78b55c865c0abad/proxy/src/main/java/com/velocitypowered/proxy/util/BrigadierUtils.java#L38
-        var builder = command.requires(command.getRequirement().and(target.getRequirement())).forward(target.getRedirect(), target.getRedirectModifier(), target.isFork()).executes(target.getCommand());
+        LiteralArgumentBuilder builder = command.requires(command.getRequirement().and(target.getRequirement())).forward(target.getRedirect(), target.getRedirectModifier(), target.isFork()).executes(target.getCommand());
         target.getChildren().forEach(builder::then);
         return builder;
     }

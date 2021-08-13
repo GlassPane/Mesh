@@ -18,6 +18,7 @@
 package dev.upcraft.mesh.impl.vanity;
 
 import dev.upcraft.mesh.impl.vanity.feature.EnderCapeFeature;
+import dev.upcraft.mesh.impl.vanity.feature.EnderSphereFeature;
 import dev.upcraft.mesh.impl.vanity.feature.TitleFeature;
 import dev.upcraft.mesh.Mesh;
 import dev.upcraft.mesh.api.annotation.AutoRegistry;
@@ -28,4 +29,5 @@ public class RegisteredVanityFeatures {
 
     public static final VanityFeature<TitleFeature.Config> TITLE = new TitleFeature();
     public static final VanityFeature<EnderCapeFeature.Config> ENDER_CAPE = new EnderCapeFeature();
+    public static final VanityFeature<EnderSphereFeature.Config> ENDER_SPHERE = new EnderSphereFeature();
 }
