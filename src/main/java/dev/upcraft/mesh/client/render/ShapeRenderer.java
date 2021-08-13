@@ -39,9 +39,9 @@ import java.awt.*;
 public final class ShapeRenderer {
     private final float[] color;
     private final MatrixStack matrixStack;
-    private VertexConsumer vertexConsumer;
-    private Identifier texture = TextureManager.MISSING_IDENTIFIER;
-    private VertexConsumerProvider.Immediate immediate;
+    private final VertexConsumer vertexConsumer;
+    private final Identifier texture = TextureManager.MISSING_IDENTIFIER;
+    private final VertexConsumerProvider.Immediate immediate;
 
     public ShapeRenderer(MatrixStack matrixStack, VertexConsumerProvider.Immediate immediate, RenderLayer renderLayer) {
         Validate.isTrue(renderLayer.getDrawMode() == VertexFormat.DrawMode.QUADS, "Only QUADS draw mode supported!");

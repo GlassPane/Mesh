@@ -48,7 +48,7 @@ public final class RegistryObject<T> implements Supplier<T> {
     @Override
     public T get() {
         if (value == null) {
-            value = registry.getOrEmpty(id).orElseThrow(() -> new NullPointerException("Object does not exist: " + id.toString()));
+            value = registry.getOrEmpty(id).orElseThrow(() -> new NullPointerException("Object does not exist: " + id));
         }
         return value;
     }

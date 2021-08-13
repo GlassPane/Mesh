@@ -63,7 +63,7 @@ public class MeshRecipeManager {
                                 GSON.toJson(jsonProvider.toJson(), writer);
                             }
                         } catch (IOException e) {
-                            Mesh.getLogger().error("unable to write file " + recipeFile.toString(), e);
+                            Mesh.getLogger().error("unable to write file " + recipeFile, e);
                         }
                     }
                 }
