@@ -57,7 +57,7 @@ public interface ConfigHandler {
      * @param configClass     the POJO representation of the configuration
      * @param settingsFactory a factory for providing an instance of {@linkplain AnnotatedSettings}; if not provided {@linkplain ConfigHandler#DEFAULT_CONFIG_SETTINGS} will be used
      * @see AnnotatedSettings.Builder
-     * @since 0.5.3
+     * @since 0.12.0
      */
     static void registerConfig(String modid, String configPath, Class<?> configClass, Supplier<AnnotatedSettings> settingsFactory) {
         ConfigHandlerImpl.registerConfig(modid, configPath, configClass, settingsFactory);
