@@ -23,15 +23,19 @@ import dev.upcraft.mesh.api.logging.MeshLoggerFactory;
 import dev.upcraft.mesh.api.util.config.ConfigHandler;
 import dev.upcraft.mesh.impl.config.MeshConfig;
 import dev.upcraft.mesh.impl.registry.ModInfoParser;
-import dev.upcraft.mesh.util.command.MeshCommand;
-import dev.upcraft.mesh.util.itemgroup.MeshItemGroup;
 import dev.upcraft.mesh.impl.registry.RegistryDiscoverer;
 import dev.upcraft.mesh.impl.registry.RegistryProcessor;
+import dev.upcraft.mesh.util.command.MeshCommand;
 import dev.upcraft.mesh.util.command.alias.AliasCommands;
+import dev.upcraft.mesh.util.command.mesh.StructureFilterCommand;
 import dev.upcraft.mesh.util.config.ConfigReloader;
+import dev.upcraft.mesh.util.itemgroup.MeshItemGroup;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Util;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
@@ -91,12 +95,15 @@ public class Mesh implements ModInitializer, PreLaunchEntrypoint {
     public void onInitialize() {
         MeshItemGroup.init();
         RegistryProcessor.init();
-        ConfigReloader.init();
         RegistryDiscoverer.register();
         // FIXME doesn't work on dedicated servers because fabric loader hasn't obtained the game object yet
         //VanityManager.getInstance().parseRemoteConfig(VanityManager.VANITY_URL).thenRun(() -> VanityManager.getLogger().debug("successfully updated vanity info!", Mesh.NO_LOGGER_PARAMS));
         MeshCommand.init();
         AliasCommands.init();
+        Util.make(ResourceManagerHelper.get(ResourceType.SERVER_DATA), manager -> {
+            manager.registerReloadListener(new ConfigReloader());
+            manager.registerReloadListener(StructureFilterCommand.RELOADER);
+        });
     }
 
     @Override

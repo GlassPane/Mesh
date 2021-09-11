@@ -21,11 +21,10 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import dev.upcraft.mesh.api.command.MeshCommandExceptions;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.StringIdentifiable;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -40,7 +39,6 @@ import java.util.stream.Collectors;
 @ApiStatus.Experimental
 public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
 
-    private static final Dynamic2CommandExceptionType INVALID_ENUM_ARGUMENT_EXCEPTION = new Dynamic2CommandExceptionType((value, clazz) -> new TranslatableText("commands.mesh.argument.enum.invalid", clazz, value));
     private final Map<String, T> valueLookup;
     private final Class<T> enumClass;
 
@@ -68,7 +66,7 @@ public class EnumArgumentType<T extends Enum<T>> implements ArgumentType<T> {
         String input = reader.getString().substring(i, reader.getCursor()).toLowerCase(Locale.ROOT);
         T result = valueLookup.get(input);
         if (result == null) {
-            throw INVALID_ENUM_ARGUMENT_EXCEPTION.create(input, enumClass.getSimpleName());
+            throw MeshCommandExceptions.INVALID_ENUM_ARGUMENT_EXCEPTION.create(input, enumClass.getSimpleName());
         }
 
         return result;

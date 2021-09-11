@@ -15,25 +15,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; If not, see <https://www.gnu.org/licenses>.
  */
-package dev.upcraft.mesh.util.config;
+package dev.upcraft.mesh.api.util;
 
 import dev.upcraft.mesh.Mesh;
-import dev.upcraft.mesh.api.util.MeshResourceListenerKeys;
-import dev.upcraft.mesh.api.util.config.ConfigHandler;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
-public class ConfigReloader implements SimpleSynchronousResourceReloadListener {
+public interface MeshResourceListenerKeys {
 
-    @Override
-    public Identifier getFabricId() {
-        return MeshResourceListenerKeys.CONFIG_RELOADER;
-    }
-
-    @Override
-    public void reload(ResourceManager var1) {
-        Mesh.getLogger().debug("reloading configs");
-        ConfigHandler.reloadAll();
-    }
+    Identifier CONFIG_RELOADER = new Identifier(Mesh.MODID, "config_reloader");
+    Identifier STRUCTURE_NAME_CACHE = new Identifier(Mesh.MODID, "structure_finder");
 }

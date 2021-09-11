@@ -20,8 +20,8 @@ package dev.upcraft.mesh.util.command.mesh;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import dev.upcraft.mesh.Mesh;
+import dev.upcraft.mesh.api.command.MeshCommandExceptions;
 import dev.upcraft.mesh.api.command.argument.EnumArgumentType;
 import dev.upcraft.mesh.util.serialization.JsonUtil;
 import net.minecraft.server.command.CommandManager;
@@ -42,8 +42,6 @@ import java.util.function.Supplier;
 
 public class DumpTagsCommand {
 
-    private static final SimpleCommandExceptionType IO_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("commands.mesh.io_error"));
-
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static LiteralArgumentBuilder<ServerCommandSource> append(LiteralArgumentBuilder<ServerCommandSource> $) {
         return $.then(CommandManager.literal("tag_export").then(CommandManager.argument("type", EnumArgumentType.of(Type.class)).executes(context -> {
@@ -57,7 +55,7 @@ public class DumpTagsCommand {
                     Files.createDirectories(outputFile.getParent());
                 } catch (IOException e) {
                     Mesh.getLogger().error("unable to create directory", e);
-                    throw IO_EXCEPTION.create();
+                    throw MeshCommandExceptions.IO_EXCEPTION.create();
                 }
 
                 JsonObject result = new JsonObject();
@@ -76,7 +74,7 @@ public class DumpTagsCommand {
                     JsonUtil.GSON.get().toJson(result, writer);
                 } catch (IOException e) {
                     Mesh.getLogger().error("error writing to file", e);
-                    throw IO_EXCEPTION.create();
+                    throw MeshCommandExceptions.IO_EXCEPTION.create();
                 }
             }
             context.getSource().sendFeedback(new TranslatableText("command.mesh.debug.tag_export", tagMap.size()), true);

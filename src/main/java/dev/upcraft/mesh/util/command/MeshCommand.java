@@ -19,10 +19,14 @@ package dev.upcraft.mesh.util.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.upcraft.mesh.Mesh;
+import dev.upcraft.mesh.api.command.argument.BlockTagArgumentType;
 import dev.upcraft.mesh.util.command.mesh.*;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.minecraft.command.argument.ArgumentTypes;
+import net.minecraft.command.argument.serialize.ConstantArgumentSerializer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Identifier;
 
 public class MeshCommand {
 
@@ -34,7 +38,9 @@ public class MeshCommand {
             builder = DebugCommand.append(builder);
             builder = DumpRecipesCommand.append(builder);
             builder = DumpTagsCommand.append(builder);
+            builder = StructureFilterCommand.append(builder);
             commandDispatcher.register(builder);
         });
+        ArgumentTypes.register(new Identifier(Mesh.MODID, "block_tag").toString(), BlockTagArgumentType.class, new ConstantArgumentSerializer<>(BlockTagArgumentType::tag));
     }
 }

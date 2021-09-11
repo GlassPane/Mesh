@@ -10,7 +10,14 @@
   "command.mesh.debug.tp_self": "Teleported to %s!",
   "command.mesh.debug.recipe_dump": "Successfully saved %s recipe names to disk!",
   "command.mesh.debug.tag_export": "Successfully saved %s tags to disk!",
-  "command.mesh.argument.multiblock.invalid": "Unknown Multiblock '%s'",
-  "commands.mesh.argument.enum.invalid": "no such element in %s: %s",
-  "commands.mesh.io_error": "An IO Error occurred, check the server log for details."
+  "command.mesh.filter_structures.fail": "No structures found matching your criteria!",
+  "command.mesh.filter_structures.list_item": "#%s: %s",
+  "command.mesh.filter_structures.file": "Successfully saved %s structure names at %s!",
+  "command.mesh.argument.block_tag.unknown": "Unknown block tag: %s",
+  "command.mesh.argument.enum.invalid": "No such element in %s: %s",
+  "command.mesh.argument.multiblock.invalid": "Unknown multiblock: %s",
+  "command.mesh.error.io_error": "An IO Error occurred, check the server log for details.",
+  "command.mesh.error.path.invalid": "Invalid path: %s",
+  "chat.mesh.open_file.click": "Click to Open",
+  "chat.mesh.open_folder.click": "Click to Open Folder"
 }
