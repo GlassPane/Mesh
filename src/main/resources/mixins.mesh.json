@@ -5,6 +5,9 @@
   "package": "dev.upcraft.mesh.mixin.impl",
   "plugin": "dev.upcraft.mesh.mixin.MeshMixinConfig",
   "mixins": [
+    "command.MixinCommandElement",
+    "command.MixinCommandManager",
+    "command.MixinExecuteCommand",
     "crafting.MixinPotionSlot",
     "crafting.MixinRecipeManager",
     "event.MixinLivingEntity",

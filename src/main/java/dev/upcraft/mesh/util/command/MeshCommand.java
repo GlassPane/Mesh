@@ -33,12 +33,13 @@ public class MeshCommand {
     public static void init() {
         CommandRegistrationCallback.EVENT.register((commandDispatcher, dedicatedServer) -> {
             LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal(Mesh.MODID).requires(source -> source.hasPermissionLevel(4));
-            builder = TpDimCommand.append(builder);
-            builder = HandCommand.append(builder);
             builder = DebugCommand.append(builder);
             builder = DumpRecipesCommand.append(builder);
             builder = DumpTagsCommand.append(builder);
+            builder = GetExceptionCommand.append(builder);
+            builder = HandCommand.append(builder);
             builder = StructureFilterCommand.append(builder);
+            builder = TpDimCommand.append(builder);
             commandDispatcher.register(builder);
         });
         ArgumentTypes.register(new Identifier(Mesh.MODID, "block_tag").toString(), BlockTagArgumentType.class, new ConstantArgumentSerializer<>(BlockTagArgumentType::tag));

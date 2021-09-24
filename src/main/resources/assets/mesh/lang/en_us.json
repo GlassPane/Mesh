@@ -13,6 +13,8 @@
   "command.mesh.filter_structures.fail": "No structures found matching your criteria!",
   "command.mesh.filter_structures.list_item": "#%s: %s",
   "command.mesh.filter_structures.file": "Successfully saved %s structure names at %s!",
+  "command.mesh.get_exception.empty": "No recorded exception found!",
+  "command.mesh.get_exception.clear": "Exception cache cleared!",
   "command.mesh.argument.block_tag.unknown": "Unknown block tag: %s",
   "command.mesh.argument.enum.invalid": "No such element in %s: %s",
   "command.mesh.argument.multiblock.invalid": "Unknown multiblock: %s",

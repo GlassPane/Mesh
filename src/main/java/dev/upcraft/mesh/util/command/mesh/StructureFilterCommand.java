@@ -25,6 +25,7 @@ import dev.upcraft.mesh.Mesh;
 import dev.upcraft.mesh.api.command.MeshCommandExceptions;
 import dev.upcraft.mesh.api.command.argument.BlockTagArgumentType;
 import dev.upcraft.mesh.api.util.MeshResourceListenerKeys;
+import dev.upcraft.mesh.util.command.CommandHelper;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -105,7 +106,7 @@ public class StructureFilterCommand {
         }
         for (int i = 1; i <= values.size(); i++) {
             Identifier id = values.get(i - 1);
-            Text message = new TranslatableText("command.mesh.filter_structures.list_item", i, new LiteralText(id.toString()).formatted(Formatting.WHITE)).styled(it -> it.withFormatting(Formatting.GRAY).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, id.toString())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("chat.copy.click"))));
+            Text message = new TranslatableText("command.mesh.filter_structures.list_item", i, new LiteralText(id.toString()).formatted(Formatting.WHITE)).styled(it -> it.withFormatting(Formatting.GRAY).withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, id.toString())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, CommandHelper.getClickToCopyToClipboardText())));
             ctx.getSource().sendFeedback(message, false);
         }
         return values.size();

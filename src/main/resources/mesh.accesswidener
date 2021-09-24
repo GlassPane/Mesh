@@ -14,3 +14,5 @@ accessible field net/minecraft/util/registry/Registry DEFAULT_ENTRIES Ljava/util
 
 accessible field net/minecraft/client/render/block/entity/EndPortalBlockEntityRenderer field_21732 Ljava/util/List;
 accessible field net/minecraft/client/render/entity/model/PlayerEntityModel cloak Lnet/minecraft/client/model/ModelPart;
+
+extendable class net/minecraft/server/command/ExecuteCommand$Condition

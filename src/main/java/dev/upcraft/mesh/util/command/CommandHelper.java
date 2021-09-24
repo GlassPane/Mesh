@@ -18,7 +18,15 @@
 package dev.upcraft.mesh.util.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.CommandNode;
+import net.minecraft.command.CommandException;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class CommandHelper {
 
@@ -36,5 +44,49 @@ public class CommandHelper {
         LiteralArgumentBuilder<S> builder = command.requires(command.getRequirement().and(target.getRequirement())).forward(target.getRedirect(), target.getRedirectModifier(), target.isFork()).executes(target.getCommand());
         target.getChildren().forEach(builder::then);
         return builder;
+    }
+
+    public static MutableText getCopyToClipboardText() {
+        return new TranslatableText("chat.copy");
+    }
+
+    /**
+     * @since 0.14.0
+     */
+    public static MutableText getClickToCopyToClipboardText() {
+        return new TranslatableText("chat.copy.click");
+    }
+
+    /**
+     * retrieves the most recent recorded exception thrown while executing commands
+     * @see CommandException
+     * @see CommandSyntaxException
+     *
+     * @since 0.14.0
+     */
+    public static Optional<Exception> getLastCommandException() {
+        return Optional.ofNullable(lastCommandException);
+    }
+
+    @Nullable
+    private static Exception lastCommandException = null;
+
+    public static boolean clearException() {
+        boolean result = lastCommandException != null;
+        lastCommandException = null;
+        return result;
+    }
+
+    /**
+     * records a command that was used, its result, and the exception that was thrown, if any
+     * @implNote if the exception is not {@code null}, the result parameter becomes meaningless and should always be {@code 0}
+     *
+     * @since 0.14.0
+     */
+    public static void recordCommand(String command, int result, @Nullable Exception e) {
+        // TODO do more processing on commands
+        if(e != null) {
+            lastCommandException = e;
+        }
     }
 }
