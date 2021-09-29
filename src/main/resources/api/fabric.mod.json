@@ -16,7 +16,6 @@
     }
   },
   "depends": {
-    "fabricloader": ">=0.10",
-    "mesh": "^${version}"
+    "fabricloader": ">=0.11.3"
   }
 }
