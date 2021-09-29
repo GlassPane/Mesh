@@ -17,9 +17,16 @@
  */
 package dev.upcraft.mesh.mixin;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import com.ibm.icu.impl.locale.XCldrStub;
 import dev.upcraft.mesh.api.MeshApiOptions;
 import dev.upcraft.mesh.api.annotation.CalledByReflection;
+import dev.upcraft.mesh.api.logging.MeshLoggerFactory;
 import dev.upcraft.mesh.impl.config.MeshSystemProperties;
+import net.fabricmc.loader.api.FabricLoader;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -31,9 +38,12 @@ import java.util.Set;
 @CalledByReflection
 public class MeshMixinConfig implements IMixinConfigPlugin {
 
+    private static final String MODID = "mesh";
     private static final String MIXIN_PACKAGE = "dev.upcraft.mesh.mixin.impl";
     private static final boolean DEBUG_MODE = MeshApiOptions.DEBUG_MODE;
     private static final boolean DEVELOPMENT = MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
+    private static final boolean ARCHITECTURY_LOADED = FabricLoader.getInstance().isModLoaded("architectury");
+    private static final Logger LOGGER = MeshLoggerFactory.createPrefixLogger(MODID +"_mixin_config","Mesh Mixin Config", () -> DEBUG_MODE);
 
     static {
         MeshSystemProperties.load();
@@ -55,6 +65,16 @@ public class MeshMixinConfig implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (mixinClassName.startsWith(MIXIN_PACKAGE)) {
+            switch (mixinClassName) {
+                // TODO find workaround for achitectury
+                case "dev.upcraft.mesh.mixin.impl.command.MixinCommandElement":
+                case "dev.upcraft.mesh.mixin.impl.command.MixinCommandManager":
+                case "dev.upcraft.mesh.mixin.impl.command.MixinExecuteCommand":
+                    if(ARCHITECTURY_LOADED) {
+                        LOGGER.trace("Disabling mixin {} for architectury compatibility!", mixinClassName);
+                        return false;
+                    }
+            }
             return true;
         } else {
             throw new IllegalArgumentException("Invalid Package for Class " + mixinClassName + ", expected: " + MIXIN_PACKAGE);
