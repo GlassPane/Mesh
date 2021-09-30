@@ -12,7 +12,7 @@
 
 -  :globe_with_meridians: automatic loading of environment variables from `.env` files at runtime
 - :zap: automatically register anything that has a registry
-- :hammer: ​inject recipes at runtime
+- :hammer: inject recipes at runtime
 - :bug: wide variety of [debug features](#Notes)
 
 ## Installation
@@ -33,9 +33,9 @@ After that, you simply add the api and main artifact as runtime dependencies (de
 ```gradle
 dependencies {
 
-	modRuntime "io.github.GlassPane:Mesh:${project.mesh_version}"
-	modApi "io.github.GlassPane:Mesh-API:${project.mesh_version}"
-	annotationProcessor "io.github.GlassPane:Mesh-Annotations:${project.mesh_version}" // optional; currently only needed for the automatic registration feature
+	modRuntime "dev.upcraft:Mesh:${project.mesh_version}"
+	modApi "dev.upcraft:Mesh-API:${project.mesh_version}"
+	annotationProcessor "dev.upcraft:Mesh-Annotations:${project.mesh_version}" // optional; currently only needed for the automatic registration feature
 	
 }
 ```
@@ -44,11 +44,8 @@ dependencies {
 
 ## Notes
 
-- **Debug mode** is enabled by setting the `mesh.debug` system property to `true`. For more fine-tuned control see [MeshApiOptions](src/main/java/io/github/glasspane/mesh/api/MeshApiOptions.java).
+- **Debug mode** is enabled by setting the `mesh.debug` system property to `true`. For more fine-tuned control see [MeshApiOptions](src/main/java/dev/upcraft/mesh/api/MeshApiOptions.java).
 
 - **Development mode** is enabled by setting the `fabric.development` system property to `true` (default for mod workspaces).
 
 ---
-
-
-
