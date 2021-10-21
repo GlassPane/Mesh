@@ -7,6 +7,8 @@
   "mixins": [
   ],
   "client": [
+    "client.session.MixinSessionHandler",
+    "client.session.RunArgsNetworkAccessor",
     "client.MixinHandledScreen",
     "client.MixinMinecraftClient",
     "client.MixinRemoveAuthError"

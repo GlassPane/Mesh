@@ -20,9 +20,11 @@ package dev.upcraft.mesh.util.itemgroup;
 import dev.upcraft.mesh.Mesh;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LightBlock;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 public class MeshItemGroup {
 
@@ -36,6 +38,17 @@ public class MeshItemGroup {
             list.add(new ItemStack(Blocks.CHAIN_COMMAND_BLOCK));
             list.add(new ItemStack(Blocks.STRUCTURE_BLOCK));
             list.add(new ItemStack(Blocks.STRUCTURE_VOID));
+            list.add(new ItemStack(Blocks.LIGHT));
+            list.add(Util.make(() -> {
+                ItemStack stack = new ItemStack(Blocks.LIGHT);
+                stack.getOrCreateSubNbt("BlockStateTag").putString(LightBlock.LEVEL_15.getName(), String.valueOf(10));
+                return stack;
+            }));
+            list.add(Util.make(() -> {
+                ItemStack stack = new ItemStack(Blocks.LIGHT);
+                stack.getOrCreateSubNbt("BlockStateTag").putString(LightBlock.LEVEL_15.getName(), String.valueOf(5));
+                return stack;
+            }));
         }).build();
     }
 
