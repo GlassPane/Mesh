@@ -56,6 +56,8 @@ public class MeshDebugMixinConfig implements IMixinConfigPlugin {
                 case "dev.upcraft.mesh.mixin.debug.client.MixinHandledScreen":
                     return MeshApiOptions.RENDER_SLOT_NUMBERS;
                 case "dev.upcraft.mesh.mixin.debug.client.MixinRemoveAuthError":
+                case "dev.upcraft.mesh.mixin.debug.client.session.MixinSessionHandler":
+                case "dev.upcraft.mesh.mixin.debug.client.session.RunArgsNetworkAccessor":
                     return MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT;
             }
             return DEBUG_MODE;
