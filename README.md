@@ -36,7 +36,7 @@ dependencies {
 	modRuntime "dev.upcraft:Mesh:${project.mesh_version}"
 	modApi "dev.upcraft:Mesh-API:${project.mesh_version}"
 	annotationProcessor "dev.upcraft:Mesh-Annotations:${project.mesh_version}" // optional; currently only needed for the automatic registration feature
-	
+
 }
 ```
 
@@ -47,5 +47,7 @@ dependencies {
 - **Debug mode** is enabled by setting the `mesh.debug` system property to `true`. For more fine-tuned control see [MeshApiOptions](src/main/java/dev/upcraft/mesh/api/MeshApiOptions.java).
 
 - **Development mode** is enabled by setting the `fabric.development` system property to `true` (default for mod workspaces).
+
+  - **in development mode only:** set the `mesh.minecraft.session.username` and `mesh.minecraft.session.uuid` system properties to automatically update your session on game start, and get your username and skin.
 
 ---
