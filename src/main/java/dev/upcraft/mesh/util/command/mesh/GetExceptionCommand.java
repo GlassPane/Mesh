@@ -17,6 +17,7 @@
  */
 package dev.upcraft.mesh.util.command.mesh;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -39,7 +40,7 @@ public class GetExceptionCommand {
             return getException(ctx, clear);
         }))).then(CommandManager.literal("clear").executes(ctx -> {
             ctx.getSource().sendFeedback(new TranslatableText("command.mesh.get_exception.clear"), true);
-            return CommandHelper.clearException() ? 1 : 0;
+            return CommandHelper.clearException() ? Command.SINGLE_SUCCESS : 0;
         })));
     }
 
@@ -79,7 +80,7 @@ public class GetExceptionCommand {
             if(clear) {
                 CommandHelper.clearException();
             }
-            return 1;
+            return Command.SINGLE_SUCCESS;
         }
     }
 }

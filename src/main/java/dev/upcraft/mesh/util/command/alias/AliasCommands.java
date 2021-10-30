@@ -27,11 +27,9 @@ import net.minecraft.server.command.CommandManager;
 public class AliasCommands {
 
     public static void init() {
-        //FIXME both redirects are broken
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicatedServer) -> {
             dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("day").requires(serverCommandSource -> Mesh.getConfig().commands.enableDayNightCommands), dispatcher.findNode(Lists.newArrayList("time", "set", "day"))));
             dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("night").requires(serverCommandSource -> Mesh.getConfig().commands.enableDayNightCommands), dispatcher.findNode(Lists.newArrayList("time", "set", "night"))));
-
             TpDimCommand.registerAliases(dispatcher);
         });
     }

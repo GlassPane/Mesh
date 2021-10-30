@@ -19,6 +19,7 @@ package dev.upcraft.mesh.util.command.mesh;
 
 import com.google.common.annotations.Beta;
 import com.google.common.collect.Lists;
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import dev.upcraft.mesh.Mesh;
@@ -43,7 +44,7 @@ public class TpDimCommand {
             Identifier dimID = context.getArgument("dimension", Identifier.class);
             teleport(context.getSource().getPlayer(), targetWorld);
             context.getSource().sendFeedback(new TranslatableText("command.mesh.debug.tp_self", dimID), true);
-            return 1;
+            return Command.SINGLE_SUCCESS;
         }).then(CommandManager.argument("target", EntityArgumentType.entities()).executes(context -> {
             Collection<? extends Entity> entities = EntityArgumentType.getEntities(context, "target");
             ServerWorld targetWorld = DimensionArgumentType.getDimensionArgument(context, "dimension");

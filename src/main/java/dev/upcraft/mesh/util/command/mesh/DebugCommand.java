@@ -17,6 +17,7 @@
  */
 package dev.upcraft.mesh.util.command.mesh;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -27,7 +28,7 @@ public class DebugCommand {
     public static LiteralArgumentBuilder<ServerCommandSource> append(LiteralArgumentBuilder<ServerCommandSource> $) {
         return $.then(CommandManager.literal("debug").executes(context -> {
             context.getSource().sendFeedback(new LiteralText("Hello there!"), false); //boolean: broadcast to OPs
-            return 0;
+            return Command.SINGLE_SUCCESS;
         }));
     }
 }

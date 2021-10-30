@@ -17,6 +17,7 @@
  */
 package dev.upcraft.mesh.util.command.mesh;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -48,7 +49,7 @@ public class HandCommand {
                 result = result.append("\n").append(new TranslatableText("command.mesh.debug.helditem_nbt", NbtHelper.toPrettyPrintedText(stack.getNbt())).styled(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("command.mesh.debug.helditem_copy_nbt"))).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, stack.getNbt().asString()))));
             }
             context.getSource().sendFeedback(result, false);
-            return 1;
+            return Command.SINGLE_SUCCESS;
         } else {
             context.getSource().sendError(new TranslatableText("command.mesh.debug.error.helditem_empty"));
             return 0;

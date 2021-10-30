@@ -17,6 +17,7 @@
  */
 package dev.upcraft.mesh.util.command.mesh;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -131,7 +132,7 @@ public class StructureFilterCommand {
         Text filePath = new LiteralText(file.toString()).formatted(Formatting.BLUE, Formatting.ITALIC);
         Text message = new TranslatableText("command.mesh.filter_structures.file", values.size(), filePath).styled(it -> it.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getParent().toString())).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableText("chat.mesh.open_folder.click"))));
         ctx.getSource().sendFeedback(message, false);
-        return 1;
+        return Command.SINGLE_SUCCESS;
     }
 
     private static List<Identifier> getStructureList(CommandContext<ServerCommandSource> ctx, Predicate<Block> filter) {
