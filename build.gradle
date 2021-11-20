@@ -8,11 +8,11 @@ import java.time.Year
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath "com.google.code.gson:gson:2.8.6"
+        classpath "com.google.code.gson:gson:2.8.9"
     }
 }
 
@@ -39,11 +39,8 @@ boolean isPreviewBuild = !ENV.TAG || ENV.TAG.matches(".+-.+")
 def buildNumber = !ENV.TAG ? ("${ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}" : buildTime}-${project.minecraft_version}") : ""
 version = (ENV.TAG ?: "development") + ((isPreviewBuild && !ENV.TAG) ? "+${buildNumber}" : "")
 
-loom {
-    accessWidenerPath.set(file("src/main/resources/mesh.accesswidener"))
-}
-
 java {
+    withSourcesJar()
     toolchain {
         languageVersion = JavaLanguageVersion.of(javaVersion)
     }
@@ -62,7 +59,34 @@ sourceSets {
             runtimeClasspath += configurations.annotationsDependency
         }
     }
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
 }
+
+loom {
+    accessWidenerPath.set(file("src/main/resources/mesh.accesswidener"))
+    runs {
+        gametest {
+            server()
+            name = "Game Test"
+            vmArg "-Dfabric-api.gametest"
+            vmArg "-Dfabric-api.gametest.report-file=${project.buildDir}/junit.xml"
+            runDir "build/gametest"
+            source = project.sourceSets.gametest
+        }
+
+        gametestClient {
+            client()
+            name = "Game Test Client"
+            source = project.sourceSets.gametest
+        }
+    }
+}
+test.dependsOn runGametest
 
 repositories {
     mavenCentral()
@@ -104,10 +128,6 @@ dependencies {
     }
 
     annotationProcessor project(path: ":", configuration: "annotations")
-
-    //testing
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0-M1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0-M1'
 
     // dependencies for the annotation processor submodule
     annotationsDependency annotationsInclude("com.google.code.gson:gson:2.8.6")
@@ -204,7 +224,8 @@ processResources {
         def depends = obj.getAsJsonObject("depends") ?: new JsonObject()
         depends.addProperty("fabric", ">=${fabric_version}")
         if (gradle.taskGraph.hasTask(remapApiJar as Task)) {
-            depends.addProperty("mesh_api", "${project.version}")
+            // FIXME find a workaround that doesn't break builds because of gametest run
+            //depends.addProperty("mesh_api", "${project.version}")
 
             def jarsArray = obj.getAsJsonArray("jars") ?: new JsonArray()
             def apiJarObject = new JsonObject()
@@ -249,18 +270,20 @@ license {
     header = file("code_quality/${project.license_header}_HEADER.txt")
     // Apply licenses only to main source set
     include "**/*.java"
+    exclude {
+        sourceSets.gametest.allJava.contains(it.file)
+    }
+
     charset = StandardCharsets.UTF_8.name()
 
-    //FIXME style block is broken
-    //see https://github.com/Minecrell/licenser/issues/10
-    //style {
-    //    java = "BLOCK_COMMENT"
-    //}
+    style {
+        java = "BLOCK_COMMENT"
+    }
     newLine = false // remove the empty line between header and package name
     //ignoreFailures = true //Ignore failures and only print a warning on license violations
 
     //export variables
-    ext {
+    properties {
         year = Year.now()
         projectDisplayName = project.archivesBaseName
     }
@@ -347,9 +370,4 @@ if (ENV.MODRINTH_TOKEN) {
 }
 if (ENV.CURSEFORGE_TOKEN) {
     tasks.publish.dependsOn(tasks.curseforge)
-}
-
-
-test {
-    useJUnitPlatform()
 }

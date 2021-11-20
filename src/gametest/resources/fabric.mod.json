@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "mesh_gametest",
+  "name": "Mesh GameTest",
+  "version": "0.1.0-alpha",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-gametest": [
+      "dev.upcraft.mesh.test.main.baseline.AlwaysTrueTest",
+      "dev.upcraft.mesh.test.main.serialization.JsonUtilTest"
+    ]
+  }
+}
