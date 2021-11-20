@@ -309,6 +309,7 @@ curseforge {
         "${project.curseforge_game_versions}".split(",").each {
             addGameVersion(it)
         }
+        addGameVersion("Fabric") // set ModLoader to Fabric
 
         mainArtifact(remapJar) {
             displayName = "${archivesBaseName} ${ENV.TAG ?: version}"
