@@ -33,7 +33,7 @@ import java.util.Map;
 @Mixin(RecipeManager.class)
 public class MixinRecipeManager {
 
-    @Inject(method = "apply", at = @At("HEAD"))
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void createMeshRecipes(Map<Identifier, JsonObject> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         MeshRecipeManager.reloadRecipes(map, profiler);
     }
