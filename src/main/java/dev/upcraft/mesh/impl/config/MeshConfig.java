@@ -17,13 +17,15 @@
  */
 package dev.upcraft.mesh.impl.config;
 
-import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.Setting;
-import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.Settings;
+import dev.upcraft.mesh.Mesh;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.annotation.Config;
+import me.shedaniel.autoconfig.annotation.ConfigEntry;
 
-@Settings
-public class MeshConfig {
+@Config(name = Mesh.MODID)
+public class MeshConfig implements ConfigData {
 
-    @Setting.Group
+    @ConfigEntry.Gui.CollapsibleObject(startExpanded = true)
     public final Commands commands = new Commands();
 
     public static class Commands {

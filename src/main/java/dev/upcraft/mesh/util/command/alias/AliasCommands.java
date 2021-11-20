@@ -17,19 +17,22 @@
  */
 package dev.upcraft.mesh.util.command.alias;
 
-import com.google.common.collect.Lists;
 import dev.upcraft.mesh.Mesh;
 import dev.upcraft.mesh.util.command.CommandHelper;
 import dev.upcraft.mesh.util.command.mesh.TpDimCommand;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 
+import java.util.Arrays;
+
 public class AliasCommands {
 
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicatedServer) -> {
-            dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("day").requires(serverCommandSource -> Mesh.getConfig().commands.enableDayNightCommands), dispatcher.findNode(Lists.newArrayList("time", "set", "day"))));
-            dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("night").requires(serverCommandSource -> Mesh.getConfig().commands.enableDayNightCommands), dispatcher.findNode(Lists.newArrayList("time", "set", "night"))));
+            if(Mesh.getConfig().commands.enableDayNightCommands) {
+                dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("day"), dispatcher.findNode(Arrays.asList("time", "set", "day"))));
+                dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("night"), dispatcher.findNode(Arrays.asList("time", "set", "night"))));
+            }
             TpDimCommand.registerAliases(dispatcher);
         });
     }

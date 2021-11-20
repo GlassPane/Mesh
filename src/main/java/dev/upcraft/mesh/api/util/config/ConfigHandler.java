@@ -18,73 +18,57 @@
 package dev.upcraft.mesh.api.util.config;
 
 import dev.upcraft.mesh.util.config.ConfigHandlerImpl;
-import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.AnnotatedSettings;
-import io.github.fablabsmc.fablabs.api.fiber.v1.annotation.SettingNamingConvention;
-import io.github.fablabsmc.fablabs.api.fiber.v1.serialization.JanksonValueSerializer;
-import io.github.fablabsmc.fablabs.api.fiber.v1.tree.ConfigBranch;
-import net.minecraft.util.Identifier;
+import me.shedaniel.autoconfig.ConfigData;
+import me.shedaniel.autoconfig.serializer.ConfigSerializer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
+/**
+ * @since 0.17.0
+ */
 public interface ConfigHandler {
 
-    JanksonValueSerializer SERIALIZER = new JanksonValueSerializer(false);
+    static <T extends ConfigData> T getConfig(Class<T> configClass) {
+        return getConfigHandler(configClass).get();
+    }
 
-    AnnotatedSettings DEFAULT_CONFIG_SETTINGS = AnnotatedSettings.builder().registerTypeMapping(Identifier.class, DefaultFiberConfigTypes.IDENTIFIER).useNamingConvention(SettingNamingConvention.SNAKE_CASE).build();
-
-    static <T> T getConfig(Class<T> configClass) {
-        return ConfigHandlerImpl.getConfig(configClass);
+    static <T extends ConfigData> Supplier<T> getConfigHandler(Class<T> configClass) {
+        return ConfigHandlerImpl.getConfigHolder(configClass);
     }
 
     /**
-     * @param modid the mod ID for which to register the config. there can only be one config per mod ID.
+     * convenience overload for {@link #registerConfig(String, Class, ConfigSerializer.Factory)}
      */
-    static void registerConfig(String modid, Class<?> configClass) {
-        registerConfig(modid, modid, configClass);
+    static <T extends ConfigData> void registerConfig(String modid, Class<T> configClass) {
+        registerConfig(modid, configClass, null);
     }
 
     /**
-     * Convenience overload of {@linkplain ConfigHandler#registerConfig(String, String, Class, Supplier)}
+     * register a config class to AutoConfig, as well as let Mesh create a config GUI for it.
+     * @param modid the mod ID for which to register the config
+     * @param configClass the config class
+     * @param serializerFactory an optional factory for config serializers, or {@code null} to use {@link #createDefaultConfigSerializerFactory()}
      */
-    static void registerConfig(String modid, String configPath, Class<?> configClass) {
-        registerConfig(modid, configPath, configClass, () -> DEFAULT_CONFIG_SETTINGS);
+    static <T extends ConfigData> void registerConfig(String modid, Class<T> configClass, @Nullable ConfigSerializer.Factory<T> serializerFactory) {
+        ConfigHandlerImpl.registerConfig(modid, configClass, serializerFactory);
     }
 
-    /**
-     * @param modid           the mod ID for which to register the config. there can only be one config per mod ID.
-     * @param configPath      the filename of the config (without .json5 extension)
-     * @param configClass     the POJO representation of the configuration
-     * @param settingsFactory a factory for providing an instance of {@linkplain AnnotatedSettings}; if not provided {@linkplain ConfigHandler#DEFAULT_CONFIG_SETTINGS} will be used
-     * @see AnnotatedSettings.Builder
-     * @since 0.12.0
-     */
-    static void registerConfig(String modid, String configPath, Class<?> configClass, Supplier<AnnotatedSettings> settingsFactory) {
-        ConfigHandlerImpl.registerConfig(modid, configPath, configClass, settingsFactory);
+    static <T extends ConfigData> boolean reloadConfig(Class<T> configClass) {
+        return ConfigHandlerImpl.reloadConfig(configClass);
     }
 
-    static void saveConfig(Class<?> configClass) {
-        saveConfig(configClass, getConfigBranch(configClass));
-    }
-
-    static void saveConfig(Class<?> configClass, ConfigBranch configBranch) {
-        ConfigHandlerImpl.saveConfig(configClass, configBranch);
-    }
-
-    static ConfigBranch getConfigBranch(Class<?> configClass) {
-        return ConfigHandlerImpl.getConfigBranch(configClass);
-    }
-
-    static <T> void reloadConfig(Class<T> configClass) {
-        ConfigHandlerImpl.reloadConfig(configClass);
-    }
-
-    static Map<String, Class<?>> getRegisteredConfigs() {
+    static Map<String, Class<? extends ConfigData>> getRegisteredConfigs() {
         return ConfigHandlerImpl.getRegisteredConfigs();
     }
 
     static void reloadAll() {
         ConfigHandlerImpl.reloadAll();
+    }
+
+    static <T extends ConfigData> ConfigSerializer.Factory<T> createDefaultConfigSerializerFactory() {
+        return ConfigHandlerImpl.createDefaultConfigSerializerFactory();
     }
 
 }
