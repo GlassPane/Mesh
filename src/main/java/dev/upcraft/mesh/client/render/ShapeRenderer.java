@@ -99,7 +99,7 @@ public final class ShapeRenderer {
     public ShapeRenderer quad(Vec3f relativePos, Vec3f orientation, float rotation, float scale) {
         this.matrixStack.push();
         this.matrixStack.translate(relativePos.getX(), relativePos.getY(), relativePos.getZ());
-        Matrix4f modelView = this.matrixStack.peek().getModel();
+        Matrix4f modelView = this.matrixStack.peek().getPositionMatrix();
         modelView.multiply(new Quaternion(orientation, rotation, true));
         this.matrixStack.scale(scale, 1.0F, scale);
         Vec3f pos1 = new Vec3f(scale * 1.0F, 0.0005F, scale * -1.0F);

@@ -34,7 +34,7 @@ public class MeshSessionHandler {
                 if(idString != null) {
                     uuid = idString;
                 }
-                return Optional.of(new Session(username, uuid, previous.getAccessToken(), previous.getAccountType().name()));
+                return Optional.of(new Session(username, uuid, previous.getAccessToken(), previous.getXuid(), previous.getClientId(), previous.getAccountType()));
             }
         }
         return Optional.empty();

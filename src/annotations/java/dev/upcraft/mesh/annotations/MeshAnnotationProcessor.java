@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 
-@SupportedSourceVersion(SourceVersion.RELEASE_16)
+@SupportedSourceVersion(SourceVersion.RELEASE_17)
 @SupportedAnnotationTypes({MeshAnnotationProcessor.AUTOREGISTRY_REGISTER_CLASS, MeshAnnotationProcessor.AUTOREGISTRY_IGNORE_CLASS})
 public class MeshAnnotationProcessor extends AbstractProcessor {
 

@@ -56,7 +56,7 @@ public class TitleFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEn
                 matrices.translate(0.0D, height, 0.0D);
                 matrices.multiply(renderDispatcher.getRotation());
                 matrices.scale(-0.025F, -0.025F, 0.025F);
-                Matrix4f modelView = matrices.peek().getModel();
+                Matrix4f modelView = matrices.peek().getPositionMatrix();
                 int bgColor = (int) (MinecraftClient.getInstance().options.getTextBackgroundOpacity(0.25F) * 255.0F) << 24;
                 float xOffset = -textRenderer.getWidth(title) / 2.0F;
                 float yOffset = "deadmau5".equals(player.getEntityName()) ? -10.0F : 0.0F;

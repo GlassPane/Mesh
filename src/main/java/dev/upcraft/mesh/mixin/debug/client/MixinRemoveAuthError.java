@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(MinecraftClient.class)
 public class MixinRemoveAuthError {
 
-    @Redirect(method = "createSocialInteractionsService", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;Ljava/lang/Throwable;)V"))
+    @Redirect(method = "createUserApiService", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;Ljava/lang/Throwable;)V"))
     private void error(Logger logger, String message, Throwable t) {
         logger.debug(message);
     }

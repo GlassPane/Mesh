@@ -39,6 +39,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.structure.StructureManager;
 import net.minecraft.tag.Tag;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;

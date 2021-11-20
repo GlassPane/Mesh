@@ -17,7 +17,7 @@
  */
 package dev.upcraft.mesh.mixin.debug.client.session;
 
-import com.mojang.authlib.minecraft.SocialInteractionsService;
+import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import dev.upcraft.mesh.Mesh;
 import dev.upcraft.mesh.api.MeshApiOptions;
@@ -33,8 +33,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MinecraftClient.class)
 public abstract class MixinSessionHandler {
 
-    @Inject(method = "createSocialInteractionsService", at = @At("HEAD"))
-    private void construct(YggdrasilAuthenticationService yggdrasilAuthenticationService, RunArgs runArgs, CallbackInfoReturnable<SocialInteractionsService> cir) {
+    @Inject(method = "createUserApiService", at = @At("HEAD"))
+    private void construct(YggdrasilAuthenticationService yggdrasilAuthenticationService, RunArgs runArgs, CallbackInfoReturnable<UserApiService> cir) {
         if(MeshApiOptions.FABRIC_DEVELOPMENT_ENVIRONMENT) {
             MeshSessionHandler.tryLoadSession(runArgs.network.session).ifPresent(s -> {
                 Mesh.getLogger().warn("Updating session state!");

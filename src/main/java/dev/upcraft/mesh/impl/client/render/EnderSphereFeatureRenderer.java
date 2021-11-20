@@ -82,7 +82,7 @@ public class EnderSphereFeatureRenderer extends FeatureRenderer<LivingEntity, Bi
 
                 matrices.multiply(dir.getRotationQuaternion());
 
-                Matrix4f model = matrices.peek().getModel();
+                Matrix4f model = matrices.peek().getPositionMatrix();
                 for (float x = -0.5F; x <= 0.5F; x += stepSize) {
                     for (float z = -0.5F; z <= 0.5F; z += stepSize) {
                         Vec3f p00 = new Vec3f(x, 0.5F, z);
