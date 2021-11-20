@@ -20,6 +20,7 @@ package dev.upcraft.mesh.impl.client.compat;
 import com.google.common.collect.Maps;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
+import dev.upcraft.mesh.Mesh;
 import dev.upcraft.mesh.api.annotation.CalledByReflection;
 import dev.upcraft.mesh.api.util.config.ConfigHandler;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -32,6 +33,11 @@ import java.util.Map;
 @CalledByReflection
 @Environment(EnvType.CLIENT)
 public class MeshModmenuCompat implements ModMenuApi {
+
+    @Override
+    public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return parent -> AutoConfig.getConfigScreen(ConfigHandler.getRegisteredConfigs().get(Mesh.MODID), parent).get();
+    }
 
     @Override
     public Map<String, ConfigScreenFactory<?>> getProvidedConfigScreenFactories() {

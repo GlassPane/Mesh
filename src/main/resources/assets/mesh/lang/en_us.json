@@ -21,5 +21,8 @@
   "command.mesh.error.io_error": "An IO Error occurred, check the server log for details.",
   "command.mesh.error.path.invalid": "Invalid path: %s",
   "chat.mesh.open_file.click": "Click to Open",
-  "chat.mesh.open_folder.click": "Click to Open Folder"
+  "chat.mesh.open_folder.click": "Click to Open Folder",
+  "text.autoconfig.mesh.title": "Mesh",
+  "text.autoconfig.mesh.option.commands": "Commands",
+  "text.autoconfig.mesh.option.commands.enableDayNightCommands": "Enable day/night commands"
 }

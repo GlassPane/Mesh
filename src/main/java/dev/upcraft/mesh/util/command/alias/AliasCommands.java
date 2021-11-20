@@ -29,10 +29,8 @@ public class AliasCommands {
 
     public static void init() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicatedServer) -> {
-            if(Mesh.getConfig().commands.enableDayNightCommands) {
-                dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("day"), dispatcher.findNode(Arrays.asList("time", "set", "day"))));
-                dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("night"), dispatcher.findNode(Arrays.asList("time", "set", "night"))));
-            }
+            dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("day").requires(source -> Mesh.getConfig().commands.enableDayNightCommands), dispatcher.findNode(Arrays.asList("time", "set", "day"))));
+            dispatcher.register(CommandHelper.createRedirect(CommandManager.literal("night").requires(source -> Mesh.getConfig().commands.enableDayNightCommands), dispatcher.findNode(Arrays.asList("time", "set", "night"))));
             TpDimCommand.registerAliases(dispatcher);
         });
     }
