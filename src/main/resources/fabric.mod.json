@@ -51,8 +51,7 @@
   },
   "mixins": [
     "mixins.mesh.json",
-    "mixins.mesh.debug.json",
-    "mixins.mesh.vanity.json"
+    "mixins.mesh.debug.json"
   ],
   "accessWidener": "META-INF/mesh.aww"
 }
